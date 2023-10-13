@@ -19,7 +19,7 @@ const PersonPage = () => {
       </div>
 
       <div className="flex gap-2">
-        <div px-5>
+        <div className="px-5">
           <div className="mb-6 primary-border-color p-5">
             <h3 className="h3-bold mb-4">Reference</h3>
             <CategoryCard image2 hideTitle />
@@ -28,6 +28,11 @@ const PersonPage = () => {
           <CategoryCardItem />
           <CategoryCardItem />
           <CategoryCardItem />
+          <div className="w-100 px-5 flex-center">
+            <div className="w-[80%] -mt-10 pb-2">
+              <Button btnText="Submit" />
+            </div>
+          </div>
         </div>
 
         <div className="min-w-[250px] flex flex-col justify-around primary-border-color p-2 h-auto">

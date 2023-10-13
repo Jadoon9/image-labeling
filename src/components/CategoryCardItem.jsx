@@ -22,11 +22,8 @@ const CategoryCardItem = () => {
       </div>
 
       <div className="flex items-center justify-center w-full space-x-4 my-5">
-        <div className="w-[250px]">
+        <div className="w-[80%]">
           <Button btnText="Sync" nobg />
-        </div>
-        <div className="w-[250px]">
-          <Button btnText="Submit" />
         </div>
       </div>
     </div>
