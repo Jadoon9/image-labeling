@@ -23,7 +23,7 @@ const Sidebar = () => {
         <div class="flex gap-1 rounded-[16px] items-center border secondary-background p-2">
           <CiSearch />
           <input
-            class="outline-none body-regular focus:outline-none secondary-background"
+            class="outline-none py-2 body-regular focus:outline-none secondary-background"
             type="text"
             placeholder="Search..."
           />
