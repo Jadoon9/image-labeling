@@ -17,16 +17,16 @@ const CategoryCard = ({ title, typ, image2, hideTitle }) => {
       </div>
 
       <div className="flex-center gap-10 mt-4">
-        <div className="p-1 custom-shadow rounded-[8px]">
+        <div className="p-1 custom-shadow rounded-[8px] h-8 w-8 ">
           <img src={restartIon} alt="rest" className="h-7 w-7" />
         </div>
-        <div className="p-1 custom-shadow rounded-[8px]">
+        <div className="p-1 custom-shadow rounded-[8px] h-8 w-8">
           <img src={zoomIcon} alt="rest" className="h-7 w-7" />
         </div>
-        <div className="p-1 custom-shadow rounded-[8px]">
+        <div className="p-1 custom-shadow rounded-[8px] h-8 w-8">
           <img src={dropIcon} alt="rest" className="h-7 w-7" />
         </div>
-        <div className="p-1 custom-shadow rounded-[8px]">
+        <div className="p-1 custom-shadow rounded-[8px] h-8 w-8">
           <img src={gameIcon} alt="rest" className="h-7 w-7" />
         </div>
       </div>
