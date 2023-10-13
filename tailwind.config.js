@@ -35,6 +35,9 @@ module.exports = {
           400: "#858EAD",
         },
       },
+      focus: {
+        "primary-border-color": "#C8BCF6", // Replace with your desired focus border color
+      },
 
       fontFamily: {
         openSans: ["Open Sans", "sans-serif"],
