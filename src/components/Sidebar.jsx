@@ -11,7 +11,7 @@ import { TbLogout } from "react-icons/tb";
 const Sidebar = () => {
   const [enabled, setEnabled] = useState(false);
   return (
-    <section className="custom-scrollbar sticky left-0 top-0 flex h-screen flex-col justify-between overflow-y-auto p-4 pt-20  lg:w-[266px]">
+    <section className="custom-scrollbar sticky left-0 top-0 flex h-screen flex-col justify-between overflow-y-auto p-4 pt-20  lg:w-[266px] max-md:hidden">
       <div className="flex flex-1 flex-col  gap-6">
         <div className="flex gap-2">
           <img src={Avatar} alt="avatar" className="w-10 h-10" />
