@@ -65,19 +65,25 @@ const Sidebar = () => {
           </div>
           <div className="flex align-middle gap-5 mt-10 cursor-pointer">
             <BsSun />
-            <p className="body-regular">Light Mode</p>
-            <Switch
-              checked={enabled}
-              onChange={setEnabled}
-              className={`${enabled ? "primary-background" : "bg-gray-300"}
-          relative inline-flex h-[20px] w-[60px] shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
-            >
-              <span
-                aria-hidden="true"
-                className={`${enabled ? "translate-x-9" : "translate-x-0"}
-            pointer-events-none inline-block h-[20px] w-[20px] transform rounded-full bg-black shadow-lg ring-0 transition duration-200 ease-in-out`}
-              />
-            </Switch>
+            <p className="body-regular flex-1">Light Mode</p>
+
+            <Switch.Group>
+              <div className="flex items-center">
+                <Switch
+                  checked={enabled}
+                  onChange={setEnabled}
+                  className={`${
+                    enabled ? "primary-background" : ""
+                  } relative inline-flex h-6 w-11 primary-border-color items-center rounded-full transition-colors focus:outline-none `}
+                >
+                  <span
+                    className={`${
+                      enabled ? "translate-x-6" : "translate-x-1"
+                    } inline-block h-4 w-4 transform rounded-full bg-black transition-transform`}
+                  />
+                </Switch>
+              </div>
+            </Switch.Group>
           </div>
         </div>
       </div>

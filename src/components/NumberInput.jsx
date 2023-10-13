@@ -13,7 +13,7 @@ const NumberInput = ({ label }) => {
       <div className="relative flex items-center mt-2">
         <input
           type="number"
-          className="primary-border-color w-full rounded-[8px] p-2 focus:outline-none h-[42px] focus:ring focus:border-[primary-border-color] !appearance-none "
+          className="primary-border-color w-full rounded-[8px] p-2 focus:outline-none h-[42px] focus:ring focus:border-[primary-border-color] appearance-none  -moz-appearance: textfield; "
         />
         <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
           <button className="px-1 py-1 rounded-[6px]  custom-shadow-2 focus:outline-none">
