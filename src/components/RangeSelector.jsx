@@ -10,16 +10,17 @@ const YourComponent = () => {
   return (
     <div className="p-5">
       <input
+        id="small-range"
         type="range"
         min="0"
         max="100"
         value={rangeValue}
         onChange={handleRangeChange}
-        className="slider appearance-none w-full h-3 rounded-full bg-gray-300 outline-none focus:outline-none overflow-hidden"
         style={{
-          background: `linear-gradient(to right, #c8bcf6 0%, #c8bcf6 ${rangeValue}%, #D1D5DB ${rangeValue}%, #D1D5DB 100%)`,
+          background: `linear-gradient(to right, #A993FF 0%, #A993FF ${rangeValue}%, #D1D5DB ${rangeValue}%, #D1D5DB 100%)`,
         }}
-      />
+        className="w-full h-1 mb-6 bg-gray-200 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700"
+      ></input>
     </div>
   );
 };
