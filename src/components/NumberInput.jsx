@@ -4,7 +4,7 @@ const NumberInput = ({ label }) => {
   return (
     <div>
       {label ? (
-        <label htmlFor="" className="body-regular text-[#4F4F4F]">
+        <label htmlFor="" className="body-regular w-100 text-[#4F4F4F]">
           {label}
         </label>
       ) : (

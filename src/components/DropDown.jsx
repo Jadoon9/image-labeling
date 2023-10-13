@@ -6,18 +6,7 @@ const DropDown = ({ options, onChange, value, label, placeholder, icon }) => {
   return (
     <div className="w-full">
       <label className="body-regular text-[#4F4F4F]">{label}</label>
-      {/* <select
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        className="h-[42px] rounded-[8px] primary-border-color mt-2 py-2 leading-tight border-[primary-border-color]  focus:outline-none "
-      >
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select> */}
+
       <Menu as="div" className="relative w-full ">
         <div>
           <Menu.Button className="w-full inline-flex h-[42px] justify-between rounded-md  px-4 py-2 text-sm font-medium body-regular primary-border-color">

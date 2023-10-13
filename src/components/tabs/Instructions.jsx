@@ -7,15 +7,15 @@ import { useNavigate } from "react-router-dom";
 const Instructions = () => {
   const navigate = useNavigate();
   return (
-    <div className="p-5 flex flex-col h-screen">
+    <div className="p-5 flex flex-col justify-between h-full">
       <label htmlFor="" className="body-light text-[#4F4F4F]">
         Instruction notes
       </label>
       <textarea
-        className="primary-border-color rounded-[8px] p-2 body-regular mt-2"
+        className="primary-border-color w-full  rounded-[8px] p-2 body-regular mt-2"
         name=""
         id=""
-        cols="50"
+        cols="40"
         rows="10"
         placeholder="Write note here"
       ></textarea>
@@ -25,7 +25,7 @@ const Instructions = () => {
         <CheckBox text="Randomize Categories" />
       </div>
 
-      <div className="flex-between relative bottom-0 mt-auto">
+      <div className="flex-between relative bottom-0 mt-40">
         <BackButton />
         <div className="w-32">
           <Button btnText="Finish" icon onClick={() => navigate("/person")} />
