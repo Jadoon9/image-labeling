@@ -38,7 +38,7 @@ const PersonPage = () => {
           </div>
         </div>
 
-        <div className="w-[200px] md:w-[250px] flex flex-col justify-around primary-border-color p-2 h-auto">
+        <div className="w-[200px] md:w-[250px] flex flex-col  max-md:hidden justify-around primary-border-color p-2 h-auto">
           <div>
             <RangeSelector />
             <div className="flex flex-col gap-5">

@@ -1,13 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import Sidebar from "./Sidebar";
 import { Outlet } from "react-router-dom";
+import { GiHamburgerMenu } from "react-icons/gi";
 
 const VerticalLayout = ({ children }) => {
+  const [open, setOpen] = useState(false);
+  const handleSidebar = () => {
+    setOpen(!open);
+  };
+
   return (
     <main className="relative">
+      <button
+        className="flex items-start px-8 py-3 md:hidden "
+        onClick={handleSidebar}
+      >
+        <GiHamburgerMenu className="w-5 h-5" />
+      </button>
       <div className="flex">
-        <Sidebar />
-        <div className="flex-1  px-5">
+        <Sidebar sidebarOpen={open} setSidebarOpen={handleSidebar} />
+        <div className="flex-1 px-5">
           <Outlet />
         </div>
       </div>
