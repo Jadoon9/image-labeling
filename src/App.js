@@ -5,16 +5,12 @@ import CreateProject from "./pages/CreateProject";
 import TabsPage from "./pages/TabsPage";
 import PersonPage from "./pages/PersonPage";
 import IsAuthenticated from "./components/IsAuthenticated";
-import { useState } from "react";
+
+import { useSelector } from "react-redux";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isLoggedIn } = useSelector((state) => state.auth);
   const navigate = useNavigate();
-
-  const handleSignIn = () => {
-    setIsLoggedIn(true);
-    navigate("/");
-  };
 
   return (
     <div>
@@ -27,10 +23,7 @@ function App() {
           </Route>
         </Route>
 
-        <Route
-          path="/sign-in"
-          element={<SignIn handleSignIn={handleSignIn} />}
-        />
+        <Route path="/sign-in" element={<SignIn />} />
       </Routes>
     </div>
   );

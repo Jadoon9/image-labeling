@@ -78,7 +78,18 @@ body {
   }
 
   .flex-start {
-    @apply flex justify-start items-center;
+    @apply flex justify-start align-top;
+  }
+
+  .flex-col-start {
+    @apply flex flex-col justify-start align-top;
+  }
+
+  .flex-col-between {
+    @apply flex flex-col justify-between align-middle;
+  }
+  .flex-col-center {
+    @apply flex flex-col justify-center align-middle;
   }
 
   /*===================================== Colors  =====================================*/

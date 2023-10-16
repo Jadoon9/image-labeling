@@ -11,9 +11,9 @@ import {
   REGISTER,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import { rootReducer } from "./reducers";
-import { authApiSlice } from "../services/authApiSlice";
-import { noAuthApiSlice } from "../services/noAuthApiSlice";
+import { rootReducer } from "./slice/rootReducer";
+import { authApiService } from "./services/authService";
+import { noAuthApiService } from "./services/noAuthService";
 
 const persistConfig = {
   key: "root",
@@ -32,7 +32,8 @@ export const store = configureStore({
       immutableCheck: {
         warnAfter: 500, // Increase the threshold as needed
       },
-    }).concat(noAuthApiSlice.middleware, authApiSlice.middleware),
+    }).concat(authApiService.middleware, noAuthApiService.middleware),
 });
 
+export const persistor = persistStore(store);
 setupListeners(store.dispatch);

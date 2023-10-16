@@ -83,10 +83,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                       {/* =============================== */}
                       <div className=" flex flex-col flex-1 gap-3">
                         <h3 className="h3-bold mt-10">Projects</h3>
-                        {sidebarItems.map((item) => {
+                        {sidebarItems.map((item, idx) => {
                           return (
                             <>
-                              <Disclosure>
+                              <Disclosure key={idx}>
                                 {({ open }) => (
                                   <>
                                     <Disclosure.Button className="flex flex-between w-full justify-between rounded-[16px]  secondary-background px-4 py-2 text-left text-sm font-medium focus:outline-none h-[56px]">
@@ -169,10 +169,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
           {/* =============================== */}
           <div className=" flex flex-col flex-1 gap-3">
             <h3 className="h3-bold mt-10">Projects</h3>
-            {sidebarItems.map((item) => {
+            {sidebarItems.map((item, idx) => {
               return (
                 <>
-                  <Disclosure>
+                  <Disclosure key={idx}>
                     {({ open }) => (
                       <>
                         <Disclosure.Button className="flex flex-between w-full justify-between rounded-[16px]  secondary-background px-4 py-2 text-left text-sm font-medium focus:outline-none h-[56px]">

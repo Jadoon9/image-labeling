@@ -3,7 +3,7 @@ import { BsChevronRight } from "react-icons/bs";
 
 const Button = ({ btnText, onClick, icon, nobg, type }) => {
   return (
-    <div
+    <button
       className={`w-full cursor-pointer tracking-wider text-black text-center ${
         nobg ? "" : "primary-background"
       } py-[10px] px-auto rounded-[8px] primary-border-color`}
@@ -15,7 +15,7 @@ const Button = ({ btnText, onClick, icon, nobg, type }) => {
 
         {icon && <BsChevronRight />}
       </div>
-    </div>
+    </button>
   );
 };
 

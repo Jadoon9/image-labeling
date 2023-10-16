@@ -4,11 +4,16 @@ import Input from "../components/Input";
 import Button from "../components/Button";
 import { Form, Formik } from "formik";
 import { loginValSchema } from "../utils/validations";
+import { useDispatch } from "react-redux";
+import { userLogin } from "../store/slice/authSlice";
+import { useNavigate } from "react-router-dom";
 
 const SignIn = ({ handleSignIn }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   return (
     <div
-      class="min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat"
+      className="min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: `url(${bgImage})` }}
     >
       <Formik
@@ -19,9 +24,11 @@ const SignIn = ({ handleSignIn }) => {
         validationSchema={loginValSchema}
         onSubmit={(values) => {
           console.log(values, "valuess");
+          dispatch(userLogin());
+          navigate("/");
         }}
       >
-        {({ values, handleChange, handleSubmit, setFieldValue }) => (
+        {() => (
           <Form>
             <div className="flex flex-col bg-white justify-between custom-shadow h-[500px] w-[640px] p-10 rounded-[16px] ">
               <h2 className="h2-bold">Sign In to your account</h2>

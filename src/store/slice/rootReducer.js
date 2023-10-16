@@ -1,12 +1,14 @@
 import { combineReducers } from "@reduxjs/toolkit";
-import { authApiSlice } from "../services/authService";
-import { noAuthApiSlice } from "../services/noAuthService";
+import { authApiService } from "../services/authService";
+import { noAuthApiService } from "../services/noAuthService";
+import authSlice from "./authSlice";
 
 //Import  Reducers
 
 export const appReducers = combineReducers({
-  [noAuthApiSlice.reducerPath]: noAuthApiSlice.reducer,
-  [authApiSlice.reducerPath]: authApiSlice.reducer,
+  [noAuthApiService.reducerPath]: noAuthApiService.reducer,
+  [authApiService.reducerPath]: authApiService.reducer,
+  auth: authSlice,
 });
 
 export const rootReducer = (state, action) => {
