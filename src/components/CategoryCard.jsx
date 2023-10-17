@@ -7,13 +7,28 @@ import dropIcon from "../assets/mdi_water-opacity.svg";
 import gameIcon from "../assets/game-icons_level-four.svg";
 
 const CategoryCard = ({ title, typ, image2, hideTitle }) => {
+  const imageUrls = [
+    "https://via.placeholder.com/150",
+    "https://via.placeholder.com/200",
+    "https://via.placeholder.com/250",
+    "https://via.placeholder.com/300",
+    "https://via.placeholder.com/350",
+    "https://via.placeholder.com/400",
+    "https://via.placeholder.com/450",
+    "https://via.placeholder.com/500",
+    "https://via.placeholder.com/550",
+    "https://via.placeholder.com/600",
+  ];
   return (
     <div className="w-full custom-shadow p-5 rounded-[22px]">
       {!hideTitle && <h3 className="h3-bold">Category 1</h3>}
       {!hideTitle && <p className="body-light mt-2">Type 1</p>}
-      <div className="flex-center gap-10 ">
-        <UploadFiles img={imageUplaod} />
-        {image2 && <UploadFiles img={imageUplaod} />}
+      <div className="flex flex-col overflow-scroll custom-scrollbar gap-10 h-[180px] ">
+        {imageUrls.map((img, idx) => (
+          <img src={img} alt="img" className="w-full h-[150px]" />
+        ))}
+        {/* <UploadFiles img={imageUplaod} /> */}
+        {/* {image2 && <UploadFiles img={imageUplaod} />} */}
       </div>
 
       <div className="flex-center gap-10 mt-4">

@@ -9,7 +9,7 @@ const Input = ({ type, placeholder, label, name }) => {
         {label}
       </label>
       <input
-        className="primary-border-color focus:primary-border-color text-secondary-500 body-regular w-full h-[42px] mt-2 rounded-[8px] p-2 focus:border-[#9f7aea] mb-2"
+        className="primary-border-color  focus:outline-none focus:ring-1 focus:border-[primary-border-color]  text-secondary-500 body-regular w-full h-[42px] mt-2 rounded-[8px] p-2  mb-2"
         type={type}
         placeholder={placeholder}
         name={name}
