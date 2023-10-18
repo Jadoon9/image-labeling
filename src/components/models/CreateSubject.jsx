@@ -2,6 +2,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import Input from "../Input";
 import Button from "../Button";
+import { Form, Formik } from "formik";
 
 export default function MyModal({ isOpen, handleOpen }) {
   return (
@@ -39,12 +40,29 @@ export default function MyModal({ isOpen, handleOpen }) {
                     Enter Name of Session
                   </Dialog.Title>
 
-                  <div className="flex flex-col gap-6 justify-center items-center mt-2">
-                    <Input label="Enter Name of Session" />
-                    <div className="w-1/2 ">
-                      <Button btnText="Create Session" />
-                    </div>
-                  </div>
+                  <Formik
+                    initialValues={{
+                      sessionName: "",
+                    }}
+                    // validationSchema={taxonomySchema}
+                    onSubmit={(values) => {
+                      console.log(values, "valuess");
+                    }}
+                  >
+                    {() => (
+                      <Form>
+                        <div className="flex flex-col gap-6 justify-center items-center mt-2">
+                          <Input
+                            label="Enter Name of Session"
+                            name="sessionName"
+                          />
+                          <div className="w-1/2 ">
+                            <Button btnText="Create Session" />
+                          </div>
+                        </div>
+                      </Form>
+                    )}
+                  </Formik>
                 </Dialog.Panel>
               </Transition.Child>
             </div>

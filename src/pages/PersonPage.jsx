@@ -9,15 +9,13 @@ import CategoryCard from "../components/CategoryCard";
 import CreateSubject from "../components/models/CreateSubject";
 
 const PersonPage = () => {
-  const [isOpen, setIsOpen] = useState(false);
   return (
     <div>
-      <CreateSubject isOpen={isOpen} handleOpen={() => setIsOpen(!isOpen)} />
       <div className="flex-between py-10 ">
         <BackButton />
         <h3 className="h3-bold">Person 1</h3>
         <div className="w-48">
-          <Button btnText="Next" showIcon onClick={() => setIsOpen(!isOpen)} />
+          <Button btnText="Next" showIcon />
         </div>
       </div>
 

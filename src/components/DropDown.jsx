@@ -22,7 +22,9 @@ const DropDown = ({
       <Listbox {...field} className="z-10">
         <div className="relative mt-1">
           <Listbox.Button className="w-full cursor-default appearance-none primary-border-color rounded-[8px] h-[42px] py-2 pl-3 pr-10 text-left focus:outline-none">
-            <span className="block truncate">{field.value}</span>
+            <span className="block truncate body-light ">
+              {field.value || placeholder}
+            </span>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
               <ChevronUpDownIcon
                 className="h-5 w-5 text-gray-400"

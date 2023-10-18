@@ -8,6 +8,7 @@ import Button from "../Button";
 import { HiOutlineFolder } from "react-icons/hi2";
 import { Form, Formik } from "formik";
 import { taxonomySchema } from "../../utils/validations";
+import Checkbox from "../CheckBox";
 
 const Taxonomy = () => {
   return (
@@ -50,7 +51,7 @@ const Taxonomy = () => {
                     <div className="w-full   md:w-[49%]">
                       <Input label="Question" name="question" />
                     </div>
-                    <div className="w-full  md:w-[49%]">
+                    <div className="w-full md:w-[49%]">
                       <DropDown
                         options={drpItems}
                         label="Reference Class"
@@ -70,36 +71,113 @@ const Taxonomy = () => {
                       <Input label="Label" name="label" />
                       <p className="body-light mt-1">Add another option +</p>
                     </div>
-                    <div className="flex justify-between align-top  w-full  md:w-[49%] gap-2">
-                      <div className="w-full md:w-[49%] ">
-                        <NumberInput
-                          label="Evaluation Page Layout"
-                          name="evaluationPageLayout"
-                        />
-                      </div>
-                      <div className=" md:w-[49%] w-full ">
-                        <NumberInput name="evaluationPageLayout" />
-                      </div>
-                    </div>
                   </div>
-
-                  <div className="flex flex-wrap w-full ">
-                    <div className="flex gap-1 w-1/2 ">
-                      <div className="w-full md:w-[49%]">
-                        <NumberInput label="Labels" name="label" />
-                      </div>
-                      <div className="w-full md:w-[49%]">
-                        <NumberInput name="label" />
-                      </div>
+                  <div className="flex justify-between align-top  w-full  md:w-[49%] gap-2">
+                    <div className="w-full md:w-[49%] ">
+                      <NumberInput
+                        label="Evaluation Page Layout"
+                        name="evaluationPageLayout"
+                      />
+                    </div>
+                    <div className=" md:w-[49%] w-full ">
+                      <NumberInput name="evaluationPageLayout" />
                     </div>
                   </div>
                 </div>
-                <div className="pl-5 md:w-[49%]">
-                  <DropDown
-                    label="Select Option"
-                    options={drpItems}
-                    name="selectOptions"
-                  />
+
+                <div className="flex gap-10 px-5  w-1/2">
+                  <div className="w-1/3"></div>
+                  <div className="w-2/3 flex gap-2 ">
+                    <div className="w-1/2">
+                      <DropDown
+                        options={drpItems}
+                        name="referenceClass"
+                        placeholder="Cat 1"
+                        icon={
+                          <HiOutlineFolder
+                            className=" h-5 w-5 text-right text-secondary-500 "
+                            aria-hidden="true"
+                          />
+                        }
+                      />
+                    </div>
+                    <div className="w-1/2">
+                      <DropDown
+                        options={drpItems}
+                        name="referenceClass"
+                        placeholder="Cat 2"
+                        icon={
+                          <HiOutlineFolder
+                            className=" h-5 w-5 text-right text-secondary-500 "
+                            aria-hidden="true"
+                          />
+                        }
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex gap-10 px-5 w-1/2 mt-4">
+                  <div className="w-1/3 ">
+                    <div className="w-full">
+                      <DropDown
+                        options={drpItems}
+                        name="referenceClass"
+                        placeholder="Type 1"
+                        icon={
+                          <HiOutlineFolder
+                            className=" h-5 w-5 text-right text-secondary-500 "
+                            aria-hidden="true"
+                          />
+                        }
+                      />
+                    </div>
+                  </div>
+                  <div className="w-2/3 flex gap-2 ">
+                    <Checkbox />
+                    <Checkbox />
+                  </div>
+                </div>
+
+                <div className="flex gap-10 px-5 w-1/2 mt-4">
+                  <div className="w-1/3">
+                    <div className="w-full">
+                      <DropDown
+                        options={drpItems}
+                        name="referenceClass"
+                        placeholder="Type 2"
+                        icon={
+                          <HiOutlineFolder
+                            className=" h-5 w-5 text-right text-secondary-500 "
+                            aria-hidden="true"
+                          />
+                        }
+                      />
+                    </div>
+                  </div>
+                  <div className="w-2/3 flex gap-2 ">
+                    <Checkbox />
+                    <Checkbox />
+                  </div>
+                </div>
+
+                <div className="flex gap-10 px-5 w-1/2 mt-4">
+                  <div className="w-1/3 ">
+                    <div className="w-full">
+                      <DropDown
+                        options={drpItems}
+                        name="referenceClass"
+                        placeholder="Type 3"
+                        icon={
+                          <HiOutlineFolder
+                            className=" h-5 w-5 text-right text-secondary-500 "
+                            aria-hidden="true"
+                          />
+                        }
+                      />
+                    </div>
+                  </div>
+                  <div className="w-2/3 flex gap-2 "></div>
                 </div>
               </div>
 

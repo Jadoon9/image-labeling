@@ -5,18 +5,22 @@ import CreateProject from "./pages/CreateProject";
 import TabsPage from "./pages/TabsPage";
 import PersonPage from "./pages/PersonPage";
 import IsAuthenticated from "./components/IsAuthenticated";
+import CreateSubject from "./components/models/CreateSubject";
 
 import { useSelector } from "react-redux";
+import { useState } from "react";
 
 function App() {
   const { isLoggedIn } = useSelector((state) => state.auth);
+  const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
   return (
     <div>
+      <CreateSubject isOpen={isOpen} handleOpen={() => setIsOpen(!isOpen)} />
       <Routes>
         <Route element={<IsAuthenticated isLoggedIn={isLoggedIn} />}>
-          <Route element={<VerticalLayout />}>
+          <Route element={<VerticalLayout setIsOpen={setIsOpen} />}>
             <Route path="/" element={<CreateProject />} />
             <Route path="/tabs-page" element={<TabsPage />} />
             <Route path="/person" element={<PersonPage />} />

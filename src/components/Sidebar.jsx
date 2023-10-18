@@ -8,8 +8,10 @@ import { BsChevronDown } from "react-icons/bs";
 import { BsSun } from "react-icons/bs";
 import { TbLogout } from "react-icons/tb";
 import { MdCancel } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
-const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
+const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
+  const navigate = useNavigate();
   const [enabled, setEnabled] = useState(false);
   return (
     <>
@@ -82,7 +84,15 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                       </div>
                       {/* =============================== */}
                       <div className=" flex flex-col flex-1 gap-3">
-                        <h3 className="h3-bold mt-10">Projects</h3>
+                        <div className="mt-10">
+                          <h3 className="h3-bold">Projects</h3>
+                          <p
+                            className="body-regular cursor-pointer"
+                            onClick={() => navigate("/")}
+                          >
+                            Create New Project +
+                          </p>
+                        </div>
                         {sidebarItems.map((item, idx) => {
                           return (
                             <>
@@ -149,6 +159,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </Dialog>
       </Transition.Root>
+      {/* Desktop */}
       <section className="custom-scrollbar sticky left-0 top-0 flex h-screen flex-col justify-between overflow-y-auto p-4 pt-20  lg:w-[266px] max-md:hidden">
         <div className="flex flex-1 flex-col  gap-6">
           <div className="flex gap-2">
@@ -168,7 +179,15 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
           {/* =============================== */}
           <div className=" flex flex-col flex-1 gap-3">
-            <h3 className="h3-bold mt-10">Projects</h3>
+            <div className="mt-10">
+              <h3 className="h3-bold">Projects</h3>
+              <p
+                className="body-regular cursor-pointer"
+                onClick={() => navigate("/")}
+              >
+                Create New Project +
+              </p>
+            </div>
             {sidebarItems.map((item, idx) => {
               return (
                 <>
@@ -183,8 +202,15 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                             } h-4 w-4 `}
                           />
                         </Disclosure.Button>
-                        <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500">
-                          Section1
+
+                        <Disclosure.Panel className="px-4 pt-4 pb-2 body-regular">
+                          <p
+                            className="body-light mb-1 text-[#4444F4] cursor-pointer"
+                            onClick={() => setIsOpen(true)}
+                          >
+                            Create a session +
+                          </p>
+                          Session 1
                         </Disclosure.Panel>
                       </>
                     )}
