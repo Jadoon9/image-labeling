@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Input from "../Input";
 import NumberInput from "../NumberInput";
 import DropDown from "../DropDown";
@@ -9,10 +9,24 @@ import { HiOutlineFolder } from "react-icons/hi2";
 import { Form, Formik } from "formik";
 import { taxonomySchema } from "../../utils/validations";
 import Checkbox from "../CheckBox";
+import CreateOption from "../models/CreateOption";
+import CreateLabel from "../models/CreateLabel";
 
 const Taxonomy = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isOpenLabelModal, setIsOpenLabelModal] = useState(false);
+
+  const handleOpen = () => {
+    setIsOpen(!isOpen);
+  };
+  const handleOpeLabeln = () => {
+    setIsOpenLabelModal(!isOpenLabelModal);
+  };
+
   return (
     <>
+      <CreateOption isOpen={isOpen} handleOpen={handleOpen} />
+      <CreateLabel isOpen={isOpenLabelModal} handleOpen={handleOpeLabeln} />
       <Formik
         initialValues={{
           projectName: "",
@@ -43,7 +57,12 @@ const Taxonomy = () => {
                         label="Options"
                         name="options"
                       />
-                      <p className="body-light mt-1">Add another option +</p>
+                      <p
+                        className="body-light mt-1 cursor-pointer"
+                        onClick={handleOpen}
+                      >
+                        Add another option +
+                      </p>
                     </div>
                   </div>
 
@@ -69,7 +88,12 @@ const Taxonomy = () => {
                   <div className="flex justify-between align-top  flex-wrap  w-full">
                     <div className="w-full md:w-[49%] ">
                       <Input label="Label" name="label" />
-                      <p className="body-light mt-1">Add another option +</p>
+                      <p
+                        className="body-light mt-1 cursor-pointer"
+                        onClick={handleOpeLabeln}
+                      >
+                        Add another label +
+                      </p>
                     </div>
                   </div>
                   <div className="flex justify-between align-top  w-full  md:w-[49%] gap-2">
