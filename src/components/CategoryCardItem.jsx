@@ -7,8 +7,7 @@ const CategoryCardItem = ({ imageUrls }) => {
   return (
     <div className=" flex flex-wrap justify-between gap-5  px-5 mb-10 w-full">
       <div className="flex items-center mb-1 space-x-4 w-full">
-        <CategoryCard images={imageUrls} />
-        <CategoryCard images={imageUrls} />
+        <CategoryCard />
       </div>
       <div className="flex items-start space-x-4 w-full">
         <Checkbox text="Option 1" />

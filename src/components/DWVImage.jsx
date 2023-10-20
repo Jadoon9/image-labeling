@@ -29,13 +29,11 @@ cornerstoneTools.init({
   globalToolSyncEnabled: false,
   showSVGCursors: false,
 });
-const fontFamily =
-  "Work Sans, Roboto, OpenSans, HelveticaNeue-Light, Helvetica Neue Light, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif";
 
-cornerstoneTools.textStyle.setFont(`16px ${fontFamily}`);
+// cornerstoneTools.textStyle.setFont(`16px ${fontFamily}`);
 
 // Set the tool width
-cornerstoneTools.toolStyle.setToolWidth(5);
+cornerstoneTools.toolStyle.setToolWidth(1);
 
 // Set color for inactive tools
 cornerstoneTools.toolColors.setToolColor("rgb(255, 255, 0)");
@@ -48,6 +46,8 @@ const DWVImage = ({ dicomImage }) => {
   const [imageIds, setImageIds] = useState([]);
   const [isFullscreen, setIsFullscreen] = useState(false);
   let element;
+
+  // ... (other functions remain unchanged)
 
   const handleFullscreenToggle = () => {
     const element = document.getElementById("dicomImage");
@@ -190,7 +190,6 @@ const DWVImage = ({ dicomImage }) => {
   return (
     <>
       <div>
-        <h2>DICOM viewer demo</h2>
         <input type="file" onChange={handleFileChange} multiple />
         <button onClick={setZoomActive}>Zoom/Pan</button>
         <button onClick={setMouseWheelActive} style={{ marginLeft: "10px" }}>
@@ -205,37 +204,36 @@ const DWVImage = ({ dicomImage }) => {
         <button onClick={handleReset} style={{ marginLeft: "10px" }}>
           Eraser
         </button>
-        <div className="dicom-wrapper">
-          <div className="thumbnail-selector">
-            <div className="thumbnail-list" id="thumbnail-list">
-              {imageIds.map((imageId) => {
-                return (
-                  <a
+
+        <div className="thumbnail-selector">
+          <div className="thumbnail-list" id="thumbnail-list">
+            {imageIds.map((imageId) => {
+              return (
+                <a
+                  onContextMenu={() => false}
+                  unselectable="on"
+                  onMouseDown={() => false}
+                  onSelect={() => false}
+                >
+                  <div
+                    id={imageId}
+                    className="thumbnail-item"
                     onContextMenu={() => false}
                     unselectable="on"
                     onMouseDown={() => false}
                     onSelect={() => false}
-                  >
-                    <div
-                      id={imageId}
-                      className="thumbnail-item"
-                      onContextMenu={() => false}
-                      unselectable="on"
-                      onMouseDown={() => false}
-                      onSelect={() => false}
-                    />
-                  </a>
-                );
-              })}
-            </div>
+                  />
+                </a>
+              );
+            })}
           </div>
-          <div
-            onContextMenu={() => false}
-            className="dicom-viewer"
-            unselectable="on"
-          >
-            <div id="dicomImage" />
-          </div>
+        </div>
+        <div
+          onContextMenu={() => false}
+          className="dicom-viewer"
+          unselectable="on"
+        >
+          <div id="dicomImage" />
         </div>
       </div>
     </>
