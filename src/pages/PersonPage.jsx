@@ -7,20 +7,11 @@ import RangeSelector from "../components/RangeSelector";
 import Checkbox from "../components/CheckBox";
 import CategoryCard from "../components/CategoryCard";
 import CreateSubject from "../components/models/CreateSubject";
-import DwvImage from "../components/DWVImage";
 
-const imageUrls = [
-  "https://source.unsplash.com/random/1",
-  "https://source.unsplash.com/random/2",
-  "https://source.unsplash.com/random/3",
-  "https://source.unsplash.com/random/4",
-  "https://source.unsplash.com/random/5",
-  "https://source.unsplash.com/random/6",
-  "https://source.unsplash.com/random/7",
-  "https://source.unsplash.com/random/8",
-  "https://source.unsplash.com/random/9",
-  "https://source.unsplash.com/random/10",
-];
+import image1 from "../assets/dicom data/case1/AI_ABC/1.dcm";
+import image2 from "../assets/dicom data/case1/AI_ABC/2.dcm";
+
+const imageUrls = [image1, image2];
 
 const PersonPage = () => {
   return (

@@ -35,7 +35,7 @@ const fontFamily =
 cornerstoneTools.textStyle.setFont(`16px ${fontFamily}`);
 
 // Set the tool width
-cornerstoneTools.toolStyle.setToolWidth(2);
+cornerstoneTools.toolStyle.setToolWidth(5);
 
 // Set color for inactive tools
 cornerstoneTools.toolColors.setToolColor("rgb(255, 255, 0)");
@@ -46,8 +46,36 @@ cornerstoneTools.toolColors.setActiveColor("rgb(0, 255, 0)");
 const DWVImage = ({ dicomImage }) => {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [imageIds, setImageIds] = useState([]);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   let element;
 
+  const handleFullscreenToggle = () => {
+    const element = document.getElementById("dicomImage");
+
+    if (!isFullscreen) {
+      if (element.requestFullscreen) {
+        element.requestFullscreen();
+      } else if (element.mozRequestFullScreen) {
+        element.mozRequestFullScreen();
+      } else if (element.webkitRequestFullscreen) {
+        element.webkitRequestFullscreen();
+      } else if (element.msRequestFullscreen) {
+        element.msRequestFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      }
+    }
+
+    setIsFullscreen(!isFullscreen);
+  };
   const loadAndViewImage = (imageId) => {
     const element = document.getElementById("dicomImage");
     const start = new Date().getTime();
@@ -62,89 +90,64 @@ const DWVImage = ({ dicomImage }) => {
       }
     );
   };
+  const handleReset = () => {
+    const element = document.getElementById("dicomImage");
 
-  const staticImageUrls = [image1, image2];
+    // Reset zoom and pan
+    cornerstone.reset(element);
+
+    // Reset other tools if needed
+    const stack = cornerstoneTools.getToolState(element, "stack");
+    if (stack && stack.data && stack.data.length > 0) {
+      stack.data[0].currentImageIdIndex = 0;
+    }
+
+    // Reset other tools as necessary (example: length tool)
+    const lengthToolData = cornerstoneTools.getToolState(element, "Length");
+    if (
+      lengthToolData &&
+      lengthToolData.data &&
+      lengthToolData.data.length > 0
+    ) {
+      lengthToolData.data[0].measurementData.measurementValue = 0;
+    }
+
+    // Call updateImage to redraw the image after reset
+    cornerstone.updateImage(element);
+  };
+
+  // loadAndViewImage(dicomImage);
 
   useEffect(() => {
     element = document.getElementById("dicomImage");
     cornerstone.enable(element);
   });
 
-  useEffect(() => {
-    // handleStaticData();
-  }, []);
-
-  const handleStaticData = () => {
-    // Define an array of static DICOM image URLs or file paths
-    // debugger;
-    const imageIds = staticImageUrls.map((imageUrl) => {
-      return cornerstoneWADOImageLoader.wadouri.fileManager.add(imageUrl);
-    });
-
-    setImageIds(imageIds);
-
-    const StackScrollMouseWheelTool =
-      cornerstoneTools.StackScrollMouseWheelTool;
-
-    const stack = {
-      currentImageIdIndex: 0,
-      imageIds,
-    };
-
-    cornerstone.loadImage(imageIds[0]).then((image) => {
-      cornerstone.displayImage(element, image);
-      cornerstoneTools.addStackStateManager(element, ["stack"]);
-      cornerstoneTools.addToolState(element, "stack", stack);
-    });
-
-    setTimeout(() => {
-      imageIds.forEach((imageId) => {
-        const thumbnailElement = document.getElementById(imageId);
-        cornerstone.enable(thumbnailElement);
-        cornerstone.loadImage(imageId).then((image) => {
-          cornerstone.displayImage(thumbnailElement, image);
-          cornerstoneTools.addStackStateManager(element, ["stack"]);
-          cornerstoneTools.addToolState(element, "stack", stack);
-        });
-      });
-    }, 1000);
-
-    cornerstoneTools.addTool(StackScrollMouseWheelTool);
-    cornerstoneTools.setToolActive("StackScrollMouseWheel", {});
-  };
-
   const handleFileChange = (e) => {
-    // debugger;
     const files = Array.from(e.target.files);
     setUploadedFiles(files);
+
     const imageIds = files.map((file) => {
       return cornerstoneWADOImageLoader.wadouri.fileManager.add(file);
     });
 
     setImageIds(imageIds);
-    const StackScrollMouseWheelTool =
-      cornerstoneTools.StackScrollMouseWheelTool;
 
     const stack = {
       currentImageIdIndex: 0,
-      imageIds,
+      imageIds: imageIds,
     };
-    cornerstone.loadImage(imageIds[0]).then((image) => {
+
+    cornerstone.loadAndCacheImage(imageIds[0]).then((image) => {
+      const element = document.getElementById("dicomImage");
       cornerstone.displayImage(element, image);
       cornerstoneTools.addStackStateManager(element, ["stack"]);
       cornerstoneTools.addToolState(element, "stack", stack);
     });
-    setTimeout(() => {
-      imageIds.forEach((imageId) => {
-        const thumbnailElement = document.getElementById(imageId);
-        cornerstone.enable(thumbnailElement);
-        cornerstone.loadImage(imageId).then((image) => {
-          cornerstone.displayImage(thumbnailElement, image);
-          cornerstoneTools.addStackStateManager(element, ["stack"]);
-          cornerstoneTools.addToolState(element, "stack", stack);
-        });
-      });
-    }, 1000);
+
+    // Add the Stack Scroll tool and make it active
+    const StackScrollMouseWheelTool =
+      cornerstoneTools.StackScrollMouseWheelTool;
     cornerstoneTools.addTool(StackScrollMouseWheelTool);
     cornerstoneTools.setToolActive("StackScrollMouseWheel", {});
   };
@@ -184,72 +187,55 @@ const DWVImage = ({ dicomImage }) => {
     cornerstoneTools.addTool(EraserTool);
     cornerstoneTools.setToolActive("Eraser", { mouseButtonMask: 1 });
   };
-
   return (
     <>
       <div>
+        <h2>DICOM viewer demo</h2>
         <input type="file" onChange={handleFileChange} multiple />
-        <div className="flex-center gap-10 ">
-          <button
-            onClick={setEraserActive}
-            className="p-1 custom-shadow rounded-[8px] h-8 w-8 "
-          >
-            <img src={restartIon} alt="rest" className="h-7 w-7" />
-          </button>
-          <button
-            className="p-1 custom-shadow rounded-[8px] h-8 w-8"
-            onClick={setMouseWheelActive}
-          >
-            <img src={zoomIcon} alt="rest" className="h-7 w-7" />
-          </button>
-          <button
-            className="p-1 custom-shadow rounded-[8px] h-8 w-8"
-            onClick={setWwwcActive}
-          >
-            <img src={dropIcon} alt="rest" className="h-7 w-7" />
-          </button>
-          <button
-            className="p-1 custom-shadow rounded-[8px] h-8 w-8"
-            onClick={setZoomActive}
-          >
-            <img src={gameIcon} alt="rest" className="h-7 w-7" />
-          </button>
-        </div>
-        {/* <button onClick={setLengthActive} style={{ marginLeft: "10px" }}>
+        <button onClick={setZoomActive}>Zoom/Pan</button>
+        <button onClick={setMouseWheelActive} style={{ marginLeft: "10px" }}>
+          Scroll
+        </button>
+        <button onClick={handleFullscreenToggle} style={{ marginLeft: "10px" }}>
           Length
-        </button> */}
-
-        {/* <button style={{ marginLeft: "10px" }}>Eraser</button> */}
-
-        <div id="thumbnail-list">
-          {imageIds.map((imageId) => {
-            return (
-              // eslint-disable-next-line jsx-a11y/anchor-is-valid
-              <a
-                onContextMenu={() => false}
-                unselectable="on"
-                onMouseDown={() => false}
-                onSelect={() => false}
-              >
-                <div
-                  id={imageId}
-                  className="thumbnail-item"
-                  onContextMenu={() => false}
-                  unselectable="on"
-                  onMouseDown={() => false}
-                  onSelect={() => false}
-                />
-              </a>
-            );
-          })}
-        </div>
-
-        <div
-          onContextMenu={() => false}
-          className="w-[300px]"
-          unselectable="on"
-        >
-          <div id="dicomImage" />
+        </button>
+        <button onClick={setWwwcActive} style={{ marginLeft: "10px" }}>
+          WWWC
+        </button>
+        <button onClick={handleReset} style={{ marginLeft: "10px" }}>
+          Eraser
+        </button>
+        <div className="dicom-wrapper">
+          <div className="thumbnail-selector">
+            <div className="thumbnail-list" id="thumbnail-list">
+              {imageIds.map((imageId) => {
+                return (
+                  <a
+                    onContextMenu={() => false}
+                    unselectable="on"
+                    onMouseDown={() => false}
+                    onSelect={() => false}
+                  >
+                    <div
+                      id={imageId}
+                      className="thumbnail-item"
+                      onContextMenu={() => false}
+                      unselectable="on"
+                      onMouseDown={() => false}
+                      onSelect={() => false}
+                    />
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+          <div
+            onContextMenu={() => false}
+            className="dicom-viewer"
+            unselectable="on"
+          >
+            <div id="dicomImage" />
+          </div>
         </div>
       </div>
     </>

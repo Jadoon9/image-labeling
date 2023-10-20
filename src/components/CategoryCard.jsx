@@ -8,13 +8,14 @@ import gameIcon from "../assets/game-icons_level-four.svg";
 import DwvImage from "./DWVImage";
 
 const CategoryCard = ({ title, typ, image2, hideTitle, images }) => {
+  console.log(images, "99898");
   return (
     <div className="w-full custom-shadow p-5 rounded-[22px]">
       {!hideTitle && <h3 className="h3-bold">Category 1</h3>}
       {!hideTitle && <p className="body-light mt-2">Type 1</p>}
 
-      <div className="flex flex-col overflow-scroll custom-scrollbar gap-10 h-[180px] ">
-        <DwvImage image={images[0]} />
+      <div className="flex flex-col overflow-scroll custom-scrollbar gap-10 h-[250px] ">
+        <DwvImage dicomImage={images[0]} />
         {/* {images.map((img, idx) => (
           <DwvImage image={img} />
 

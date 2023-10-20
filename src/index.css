@@ -108,13 +108,14 @@ body {
 .dropBoxBorder.hover {
   border: 5px dashed #3f51b5; /*indigo*/
 }
+
 #input-file-link {
   text-decoration-line: underline;
 }
 
-.cornerstone-canvas {
+/* .cornerstone-canvas {
   max-width: 300px;
-}
+} */
 
 @layer utilities {
   .flex-center {
