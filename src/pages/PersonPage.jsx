@@ -7,6 +7,20 @@ import RangeSelector from "../components/RangeSelector";
 import Checkbox from "../components/CheckBox";
 import CategoryCard from "../components/CategoryCard";
 import CreateSubject from "../components/models/CreateSubject";
+import DwvImage from "../components/DWVImage";
+
+const imageUrls = [
+  "https://source.unsplash.com/random/1",
+  "https://source.unsplash.com/random/2",
+  "https://source.unsplash.com/random/3",
+  "https://source.unsplash.com/random/4",
+  "https://source.unsplash.com/random/5",
+  "https://source.unsplash.com/random/6",
+  "https://source.unsplash.com/random/7",
+  "https://source.unsplash.com/random/8",
+  "https://source.unsplash.com/random/9",
+  "https://source.unsplash.com/random/10",
+];
 
 const PersonPage = () => {
   return (
@@ -23,12 +37,13 @@ const PersonPage = () => {
         <div className="px-5">
           <div className="mb-6 primary-border-color p-5">
             <h3 className="h3-bold mb-4">Reference</h3>
-            <CategoryCard image2 hideTitle />
+            <CategoryCard image2 hideTitle images={imageUrls} />
           </div>
-          <CategoryCardItem />
-          <CategoryCardItem />
-          <CategoryCardItem />
-          <CategoryCardItem />
+
+          <CategoryCardItem imageUrls={imageUrls} />
+          <CategoryCardItem imageUrls={imageUrls} />
+          <CategoryCardItem imageUrls={imageUrls} />
+          <CategoryCardItem imageUrls={imageUrls} />
           <div className="w-100 px-5 flex-center">
             <div className="w-[80%] -mt-10 pb-2">
               <Button btnText="Submit" />
