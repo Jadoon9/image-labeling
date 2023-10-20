@@ -36,33 +36,40 @@ const PersonPage = () => {
           </div>
         </div>
 
-        <div className="w-[200px] md:w-[250px] flex flex-col  max-md:hidden justify-around primary-border-color p-2 h-auto">
-          <div>
+        <div className="w-[200px]  md:w-[250px] flex flex-col  gap-72  max-md:hidden primary-border-color p-2 h-auto">
+          <div className="mt-40  h-[180px]">
             <RangeSelector />
             <div className="flex flex-col gap-5">
-              <Checkbox text="Option 1" />
-              <Checkbox text="Option 2" />
+              <Checkbox text="Label 1" />
+              <Checkbox text="Label 2" />
             </div>
           </div>
-          <div>
+          <div className=" h-[180px]">
             <RangeSelector />
             <div className="flex flex-col gap-5">
-              <Checkbox text="Option 1" />
-              <Checkbox text="Option 2" />
+              <Checkbox text="Label 1" />
+              <Checkbox text="Label 2" />
             </div>
           </div>
-          <div>
+          <div className=" h-[180px]">
             <RangeSelector />
             <div className="flex flex-col gap-5">
-              <Checkbox text="Option 1" />
-              <Checkbox text="Option 2" />
+              <Checkbox text="Label 1" />
+              <Checkbox text="Label 2" />
             </div>
           </div>
-          <div>
+          <div className=" h-[180px]">
             <RangeSelector />
             <div className="flex flex-col gap-5">
-              <Checkbox text="Option 1" />
-              <Checkbox text="Option 2" />
+              <Checkbox text="Label 1" />
+              <Checkbox text="Label 2" />
+            </div>
+          </div>
+          <div className=" h-[180px]">
+            <RangeSelector />
+            <div className="flex flex-col gap-5">
+              <Checkbox text="Label 1" />
+              <Checkbox text="Label 2" />
             </div>
           </div>
         </div>
