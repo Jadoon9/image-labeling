@@ -34,7 +34,7 @@ const DropDown = ({
           </Listbox.Button>
           <Transition
             as={Fragment}
-            leave="transition ease-in duration-100"
+            leave="transition ease-in duration-100 "
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
@@ -43,7 +43,7 @@ const DropDown = ({
                 <Listbox.Option
                   key={idx}
                   className={({ active }) =>
-                    `relative cursor-default select-none py-2 z-10 pl-10 pr-4 ${
+                    `relative cursor-default select-none py-2 z-20 pl-10 pr-4 ${
                       active ? "bg-amber-100 text-amber-900" : "text-gray-900"
                     }`
                   }
