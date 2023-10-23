@@ -113,9 +113,10 @@ body {
   text-decoration-line: underline;
 }
 
-/* .cornerstone-canvas {
-  max-width: 300px;
-} */
+.cornerstone-canvas {
+  height: 270px;
+  margin-block: 8px;
+}
 
 @layer utilities {
   .flex-center {

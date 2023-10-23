@@ -9,6 +9,7 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "cornerstone": "^0.1.1",
     "cornerstone-core": "^2.6.1",
     "cornerstone-math": "^0.1.10",
     "cornerstone-tools": "^6.0.10",
