@@ -171,7 +171,7 @@ const CategoryCard = ({ hideTitle, cat, type, images }) => {
     };
 
     loadImages();
-  }, [cat]);
+  }, []);
 
   const handleFileChange = (imageUrls) => {
     debugger;
@@ -239,22 +239,11 @@ const CategoryCard = ({ hideTitle, cat, type, images }) => {
     cornerstoneTools.setToolActive("Eraser", { mouseButtonMask: 1 });
   };
   return (
-    <div className="w-full custom-shadow p-3 rounded-[22px] ">
+    <div className="w-full custom-shadow  p-3 rounded-[22px] ">
       {!hideTitle && <h3 className="h3-bold">Category {cat}</h3>}
       {!hideTitle && <p className="body-light mt-2">Type {type}</p>}
 
-      <div className="flex flex-col overflow-scroll custom-scrollbar !h-[300px] ">
-        {/* <input
-          type="file"
-          className="body-light"
-          onChange={handleFileChange}
-          multiple
-        /> */}
-
-        {/* <button onClick={setMouseWheelActive} style={{ marginLeft: "10px" }}>
-            Scroll
-          </button> */}
-
+      <div className="flex flex-col overflow-scroll custom-scrollbar ">
         <div className="" id="thumbnail-list">
           {imageIds.map((imageId) => {
             return (
@@ -317,13 +306,6 @@ const CategoryCard = ({ hideTitle, cat, type, images }) => {
             <img src={gameIcon} alt="rest" />
           </button>
         </div>
-        {/* {images.map((img, idx) => (
-          <DwvImage image={img} />
-
-        
-        ))} */}
-        {/* <UploadFiles img={imageUplaod} /> */}
-        {/* {image2 && <UploadFiles img={imageUplaod} />} */}
       </div>
     </div>
   );
