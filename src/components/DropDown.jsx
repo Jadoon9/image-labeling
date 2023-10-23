@@ -74,7 +74,7 @@ const DropDown = ({ options, label, placeholder, name }) => {
                           <p className="body-light flex-1 ">{item.value}</p>
 
                           <div onClick={(e) => handleRemoveItem(e, item)}>
-                            <AiTwotoneDelete />
+                            <AiTwotoneDelete className="text-red-400" />
                           </div>
                         </div>
                       )}

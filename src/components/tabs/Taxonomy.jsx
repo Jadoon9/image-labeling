@@ -20,7 +20,8 @@ const Taxonomy = () => {
           question: "",
           referenceClass: "",
           label: "",
-          evaluationPageLayout: "",
+          evaluationPageLayout1: 0,
+          evaluationPageLayout2: 0,
           cat1: "",
           cat2: "",
           type1: "",
@@ -47,7 +48,9 @@ const Taxonomy = () => {
                         label="Options"
                         name="options"
                       />
-                      <p className="body-light mt-1">Add another option +</p>
+                      <p className="body-light mt-1 cursor-pointer">
+                        Add another option +
+                      </p>
                     </div>
                   </div>
 
@@ -83,18 +86,20 @@ const Taxonomy = () => {
                           />
                         }
                       />
-                      <p className="body-light mt-1">Add another option +</p>
+                      <p className="body-light mt-1 cursor-pointer">
+                        Add Another option +
+                      </p>
                     </div>
                   </div>
                   <div className="flex justify-between align-top  w-full  md:w-[49%] gap-2">
                     <div className="w-full md:w-[49%] ">
                       <NumberInput
                         label="Evaluation Page Layout"
-                        name="evaluationPageLayout"
+                        name="evaluationPageLayout1"
                       />
                     </div>
                     <div className=" md:w-[49%] w-full ">
-                      <NumberInput name="evaluationPageLayout" />
+                      <NumberInput name="evaluationPageLayout2" />
                     </div>
                   </div>
                 </div>

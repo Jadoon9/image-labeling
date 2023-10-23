@@ -2,10 +2,9 @@ import { useField } from "formik";
 import React, { useState } from "react";
 
 const Checkbox = ({ id, text, name }) => {
-  // const [field, meta, helpers] = useField(name);
-  let field;
-  let meta;
-  console.log(field, "232312");
+  const [field, meta, helpers] = useField(name);
+  // let field;
+  // let meta;
 
   return (
     <div className=" w-full flex items-center gap-24">
