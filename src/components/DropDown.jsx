@@ -1,75 +1,90 @@
-import { Listbox, Menu, Transition } from "@headlessui/react";
-import { Field, useField } from "formik";
-import React, { Fragment } from "react";
-import { BiChevronDown } from "react-icons/bi";
+import { Listbox, Transition } from "@headlessui/react";
+import { Field, useField, useFormikContext } from "formik";
+import React, { Fragment, useState } from "react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
+import { AiTwotoneDelete } from "react-icons/ai";
 
-const DropDown = ({
-  options,
-  onChange,
-  value,
-  label,
-  placeholder,
-  icon,
-  name,
-}) => {
-  const [field, meta] = useField(name);
-  console.log(field, "iu988");
+const DropDown = ({ options, label, placeholder, name }) => {
+  const [field, meta, helpers] = useField(name);
+  const [optionsData, setOptionsData] = useState(options);
+
+  const handleChange = (selectedOption) => {
+    helpers.setValue(selectedOption);
+  };
+
+  const handleRemoveItem = (e, selected) => {
+    e.stopPropagation();
+    console.log(selected, "899");
+    setOptionsData(optionsData.filter((item) => item.id !== selected.id));
+  };
+
   return (
     <div className="w-full">
       <label className="body-regular text-[#4F4F4F]">{label}</label>
 
-      <Listbox {...field} className="z-10">
-        <div className="relative mt-1">
-          <Listbox.Button className="w-full cursor-default appearance-none primary-border-color rounded-[8px] h-[42px] py-2 pl-3 pr-10 text-left focus:outline-none">
-            <span className="block truncate body-light ">
-              {field.value || placeholder}
-            </span>
-            <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-              <ChevronUpDownIcon
-                className="h-5 w-5 text-gray-400"
-                aria-hidden="true"
-              />
-            </span>
-          </Listbox.Button>
-          <Transition
-            as={Fragment}
-            leave="transition ease-in duration-100 "
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-              {options.map((item, idx) => (
-                <Listbox.Option
-                  key={idx}
-                  className={({ active }) =>
-                    `relative cursor-default select-none py-2 z-20 pl-10 pr-4 ${
-                      active ? "bg-amber-100 text-amber-900" : "text-gray-900"
-                    }`
-                  }
-                  value={item.value}
-                >
-                  {({ selected }) => (
-                    <>
-                      <span
-                        className={`block truncate ${
-                          selected ? "body-regular" : "body-regular"
-                        }`}
-                      >
-                        {item.value}
-                      </span>
-                      {selected ? (
-                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
-                          <CheckIcon className="h-5 w-5" aria-hidden="true" />
-                        </span>
-                      ) : null}
-                    </>
-                  )}
-                </Listbox.Option>
-              ))}
-            </Listbox.Options>
-          </Transition>
-        </div>
+      <Listbox
+        value={field.value}
+        onChange={(selectedOption) => handleChange(selectedOption)}
+      >
+        {({ open }) => (
+          <>
+            <div className="relative mt-1">
+              <Listbox.Button className="w-full cursor-default appearance-none primary-border-color rounded-[8px] h-[42px] py-2 pl-3 pr-10 text-left focus:outline-none">
+                <span className="block truncate body-light ">
+                  {field.value || placeholder}
+                </span>
+                <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                  <ChevronUpDownIcon
+                    className="h-5 w-5 text-gray-400"
+                    aria-hidden="true"
+                  />
+                </span>
+              </Listbox.Button>
+              <Transition
+                as={Fragment}
+                show={open}
+                enter="transition ease-out duration-100"
+                enterFrom="transform opacity-0 scale-95"
+                enterTo="transform opacity-100 scale-100"
+                leave="transition ease-in duration-75"
+                leaveFrom="transform opacity-100 scale-100"
+                leaveTo="transform opacity-0 scale-95"
+              >
+                <Listbox.Options className="absolute mt-1 w-full py-2 z-30 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                  {optionsData.map((item, idx) => (
+                    <Listbox.Option key={idx} value={item.value}>
+                      {({ active, selected }) => (
+                        <div
+                          className={`${
+                            active
+                              ? "bg-amber-100 text-amber-900"
+                              : "text-gray-900"
+                          } cursor-pointer select-none relative px-4 py-2 flex align-middle gap-3 items-start`}
+                        >
+                          {selected ? (
+                            <span className="flex items-center">
+                              <CheckIcon
+                                className="h-5 w-2 text-amber-600"
+                                aria-hidden="true"
+                              />
+                            </span>
+                          ) : (
+                            <p className=" h-5 w-2 "></p>
+                          )}
+                          <p className="body-light flex-1 ">{item.value}</p>
+
+                          <div onClick={(e) => handleRemoveItem(e, item)}>
+                            <AiTwotoneDelete className="text-red-400" />
+                          </div>
+                        </div>
+                      )}
+                    </Listbox.Option>
+                  ))}
+                </Listbox.Options>
+              </Transition>
+            </div>
+          </>
+        )}
       </Listbox>
 
       {meta.touched && meta.error && (

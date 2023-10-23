@@ -1,6 +1,20 @@
 import React from "react";
+import { Field, useField, useFormikContext } from "formik";
 
-const NumberInput = ({ label }) => {
+const NumberInput = ({ label, name }) => {
+  const [field, meta, helpers] = useField(name);
+
+  console.log(field, "hghg");
+  const incrementNumber = (e) => {
+    e.preventDefault();
+    helpers.setValue(field?.value + 1);
+  };
+
+  const decrementNumber = (e) => {
+    e.preventDefault();
+    helpers.setValue(field?.value - 1);
+  };
+
   return (
     <div>
       {label ? (
@@ -12,11 +26,19 @@ const NumberInput = ({ label }) => {
       )}
       <div className="relative flex items-center mt-2">
         <input
+          style={{
+            WebkitAppearance: "none", // For Chrome and Safari
+            MozAppearance: "textfield", // For Firefox
+          }}
           type="number"
-          className="primary-border-color w-full rounded-[8px] p-2 focus:outline-none h-[42px] focus:ring-1 focus:border-[primary-border-color] appearance-none  -moz-appearance: textfield; "
+          className="primary-border-color body-light w-full rounded-[8px] p-2 focus:outline-none h-[42px] focus:ring-1 focus:border-[primary-border-color] appearance-none  -moz-appearance: textfield; "
+          {...field}
         />
         <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
-          <button className="px-1 py-1 rounded-[6px]  custom-shadow-2 focus:outline-none">
+          <button
+            className="px-1 py-1 rounded-[6px]  custom-shadow-2 focus:outline-none"
+            onClick={(e) => incrementNumber(e)}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="w-4 h-4 text-gray-600"
@@ -32,7 +54,10 @@ const NumberInput = ({ label }) => {
               ></path>
             </svg>
           </button>
-          <button className="px-1 py-1 rounded-[6px] ml-1 custom-shadow-2  focus:outline-none">
+          <button
+            className="px-1 py-1 rounded-[6px] ml-1 custom-shadow-2  focus:outline-none"
+            onClick={(e) => decrementNumber(e)}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="w-4 h-4 text-gray-600"

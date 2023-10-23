@@ -9,11 +9,14 @@ import CreateSubject from "./components/models/CreateSubject";
 
 import { useSelector } from "react-redux";
 import { useState } from "react";
+import { useDcomImage } from "./hooks/useDcomImage";
 
 function App() {
   const { isLoggedIn } = useSelector((state) => state.auth);
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+
+  // const dcom = useDcomImage()
 
   return (
     <div>

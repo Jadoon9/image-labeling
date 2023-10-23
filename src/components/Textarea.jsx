@@ -6,10 +6,10 @@ const Textarea = ({ name }) => {
   return (
     <>
       <textarea
-        className="primary-border-color w-full !focus:ring-1 !focus:border-[primary-border-color] rounded-[8px] p-2 body-regular mt-2"
+        className="primary-border-color w-full !focus:ring-1 !h-[500px] !focus:border-[primary-border-color] rounded-[8px] p-2 body-regular mt-2"
         id=""
         cols="40"
-        rows="10"
+        rows="20"
         placeholder="Write note here"
         name={name}
         {...field}

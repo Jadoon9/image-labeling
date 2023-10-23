@@ -34,8 +34,13 @@ const Taxonomy = () => {
           question: "",
           referenceClass: "",
           label: "",
-          evaluationPageLayout: "",
-          selectOptions: "",
+          evaluationPageLayout1: 0,
+          evaluationPageLayout2: 0,
+          cat1: "",
+          cat2: "",
+          type1: "",
+          type2: "",
+          type3: "",
         }}
         validationSchema={taxonomySchema}
         onSubmit={(values) => {
@@ -57,10 +62,7 @@ const Taxonomy = () => {
                         label="Options"
                         name="options"
                       />
-                      <p
-                        className="body-light mt-1 cursor-pointer"
-                        onClick={handleOpen}
-                      >
+                      <p className="body-light mt-1 cursor-pointer">
                         Add another option +
                       </p>
                     </div>
@@ -87,12 +89,19 @@ const Taxonomy = () => {
 
                   <div className="flex justify-between align-top  flex-wrap  w-full">
                     <div className="w-full md:w-[49%] ">
-                      <Input label="Label" name="label" />
-                      <p
-                        className="body-light mt-1 cursor-pointer"
-                        onClick={handleOpeLabeln}
-                      >
-                        Add another label +
+                      <DropDown
+                        options={drpItems}
+                        label="Labels"
+                        name="label"
+                        icon={
+                          <HiOutlineFolder
+                            className=" h-5 w-5 text-right text-secondary-500 "
+                            aria-hidden="true"
+                          />
+                        }
+                      />
+                      <p className="body-light mt-1 cursor-pointer">
+                        Add Another option +
                       </p>
                     </div>
                   </div>
@@ -100,11 +109,11 @@ const Taxonomy = () => {
                     <div className="w-full md:w-[49%] ">
                       <NumberInput
                         label="Evaluation Page Layout"
-                        name="evaluationPageLayout"
+                        name="evaluationPageLayout1"
                       />
                     </div>
                     <div className=" md:w-[49%] w-full ">
-                      <NumberInput name="evaluationPageLayout" />
+                      <NumberInput name="evaluationPageLayout2" />
                     </div>
                   </div>
                 </div>
@@ -115,7 +124,7 @@ const Taxonomy = () => {
                     <div className="w-1/2">
                       <DropDown
                         options={drpItems}
-                        name="referenceClass"
+                        name="cat1"
                         placeholder="Cat 1"
                         icon={
                           <HiOutlineFolder
@@ -128,7 +137,7 @@ const Taxonomy = () => {
                     <div className="w-1/2">
                       <DropDown
                         options={drpItems}
-                        name="referenceClass"
+                        name="cat2"
                         placeholder="Cat 2"
                         icon={
                           <HiOutlineFolder
@@ -146,7 +155,7 @@ const Taxonomy = () => {
                     <div className="w-full">
                       <DropDown
                         options={drpItems}
-                        name="referenceClass"
+                        name="type1"
                         placeholder="Type 1"
                         icon={
                           <HiOutlineFolder
@@ -168,7 +177,7 @@ const Taxonomy = () => {
                     <div className="w-full">
                       <DropDown
                         options={drpItems}
-                        name="referenceClass"
+                        name="type2"
                         placeholder="Type 2"
                         icon={
                           <HiOutlineFolder
@@ -190,7 +199,7 @@ const Taxonomy = () => {
                     <div className="w-full">
                       <DropDown
                         options={drpItems}
-                        name="referenceClass"
+                        name="type3"
                         placeholder="Type 3"
                         icon={
                           <HiOutlineFolder
