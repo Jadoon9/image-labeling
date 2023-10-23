@@ -37,6 +37,6 @@ export const taxonomySchema = yup.object({
   type3: yup.string().required("Please select a type"),
 });
 
-export const projectSchema = yup.object({
-  option1: yup.string().required("Please enter Project Name"),
-});
+// export const projectSchema = yup.object({
+//   option1: yup.string().required("Please enter Project Name"),
+// });
