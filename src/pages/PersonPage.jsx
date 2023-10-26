@@ -67,7 +67,7 @@ const PersonPage = () => {
                       />
                     </div>
                   </div>
-                  {/* <div className={`grid col-span-2 w-full gap-2 relative`}> */}
+
                   <div
                     className={`grid ${
                       columns ? `grid-cols-${columns}` : "grid-cols-2"
