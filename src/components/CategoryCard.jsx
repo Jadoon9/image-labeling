@@ -28,7 +28,16 @@ cornerstoneTools.init({
   showSVGCursors: false,
 });
 
-const CategoryCard = ({ hideTitle, cat, type, images }) => {
+const StackScrollSynchronizer = cornerstoneTools.StackScrollSynchronizer;
+
+const CategoryCard = ({
+  hideTitle,
+  cat,
+  type,
+  images,
+  elementId1,
+  elementId2,
+}) => {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [imageIds, setImageIds] = useState([]);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -96,6 +105,7 @@ const CategoryCard = ({ hideTitle, cat, type, images }) => {
       }
     );
   };
+
   const handleReset = () => {
     const element = document.getElementById(`${elementId}`);
 
@@ -142,7 +152,7 @@ const CategoryCard = ({ hideTitle, cat, type, images }) => {
         setImageIds(imageIds);
 
         // Load and display the first image
-        const element = document.getElementById(`dicomImag${cat}`);
+        const element = document.getElementById(elementId);
         cornerstone.enable(element);
         const image = await cornerstone.loadImage(imageIds[0]);
         const viewport = cornerstone.getDefaultViewportForImage(element, image);
@@ -163,7 +173,6 @@ const CategoryCard = ({ hideTitle, cat, type, images }) => {
         const StackScrollMouseWheelTool =
           cornerstoneTools.StackScrollMouseWheelTool;
         cornerstoneTools.addTool(StackScrollMouseWheelTool);
-        cornerstoneTools.setToolActive("StackScrollMouseWheel", {});
         cornerstoneTools.setToolActive("StackScrollMouseWheel", {});
       } catch (error) {
         console.error("Error loading images:", error);
@@ -203,7 +212,7 @@ const CategoryCard = ({ hideTitle, cat, type, images }) => {
     cornerstoneTools.setToolActive("StackScrollMouseWheel", {});
   };
 
-  const setZoomActive = (e) => {
+  const setZoomActive = () => {
     const ZoomMouseWheelTool = cornerstoneTools.ZoomMouseWheelTool;
 
     cornerstoneTools.addTool(ZoomMouseWheelTool);
@@ -233,13 +242,15 @@ const CategoryCard = ({ hideTitle, cat, type, images }) => {
     cornerstoneTools.setToolActive("Wwwc", { mouseButtonMask: 1 });
   };
 
-  const setEraserActive = (e) => {
-    const EraserTool = cornerstoneTools.EraserTool;
-    cornerstoneTools.addTool(EraserTool);
-    cornerstoneTools.setToolActive("Eraser", { mouseButtonMask: 1 });
+  const setScrollActive = (elementId1, elementId2) => {
+    const StackScrollMouseWheelTool =
+      cornerstoneTools.StackScrollMouseWheelTool;
+    cornerstoneTools.addTool(StackScrollMouseWheelTool);
+    cornerstoneTools.setToolActive("StackScrollMouseWheel", {});
   };
+
   return (
-    <div className="w-full custom-shadow  p-3 rounded-[22px] ">
+    <div className="w-full custom-shadow  p-1 rounded-[22px] ">
       {!hideTitle && <h3 className="h3-bold">Category {cat}</h3>}
       {!hideTitle && <p className="body-light mt-2">Type {type}</p>}
 
@@ -267,41 +278,32 @@ const CategoryCard = ({ hideTitle, cat, type, images }) => {
           })}
         </div>
 
-        {isFullscreen && (
-          <button
-            className="absolute  z-10 top-32 right-2 p-2 bg-white h-20 w-20  text-red rounded-full"
-            onClick={handleExitFullscreen}
-          >
-            Xasdad
-          </button>
-        )}
-
         <div onContextMenu={() => false} unselectable="on">
           <div id={elementId} />
         </div>
 
-        <div className="flex-center gap-10 mb-1 ">
+        <div className="flex-center gap-1 mb-1 ">
           <button
-            className="p-1 custom-shadow rounded-[8px] h-7 w-7 "
+            className="p-1 custom-shadow rounded-[8px] h-6 w-6 "
             onClick={handleReset}
           >
             <img src={restartIon} alt="rest" className="" />
           </button>
           <button
-            className="p-1 custom-shadow rounded-[8px]  h-7 w-7  "
+            className="p-1 custom-shadow rounded-[8px] h-6 w-6  "
             onClick={setZoomActive}
           >
             <img src={zoomIcon} alt="rest" />
           </button>
           <button
-            className="p-1 custom-shadow rounded-[8px] h-7 w-7 "
+            className="p-1 custom-shadow rounded-[8px]h-6 w-6  "
             onClick={setWwwcActive}
           >
             <img src={dropIcon} alt="rest" />
           </button>
           <button
-            className="p-1 custom-shadow rounded-[8px]  h-7 w-7  "
-            onClick={handleFullscreenToggle}
+            className="p-1 custom-shadow rounded-[8px]  h-6 w-6   "
+            onClick={() => setScrollActive(elementId1, elementId2)}
           >
             <img src={gameIcon} alt="rest" />
           </button>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import BackButton from "../components/BackButton";
 import Button from "../components/Button";
 import { Form, Formik } from "formik";
+import { useSelector } from "react-redux";
 
 import CategoryCardItem from "../components/CategoryCardItem";
 import RangeSelector from "../components/RangeSelector";
@@ -27,6 +28,8 @@ const categories = [
 ];
 
 const PersonPage = () => {
+  const { rows, columns } = useSelector((state) => state.layout);
+  console.log(columns, "chhecc");
   return (
     <>
       <Formik
@@ -64,148 +67,41 @@ const PersonPage = () => {
                       />
                     </div>
                   </div>
-                  {/* Row 1 */}
-                  <>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 w-full">
-                      {/* {categories.map((item, index) => ( */}
-                      <div className=" flex flex-col gap-4 p-4">
-                        <CategoryCard
-                          cat={categories[0].cat}
-                          type={categories[0].type}
-                          elemntId={`dicomImage${categories[0].cat}`}
-                          images={categories[0].images}
-                        />
-
-                        <div className="flex flex-col gap-6 mt-2">
-                          <Checkbox name="option1" text="Option 1" />
-                          <Checkbox name="option2" text="Option 2" />
-                        </div>
-                      </div>
-                      <div className=" flex flex-col gap-4 p-4 ">
-                        <CategoryCard
-                          cat={categories[1].cat}
-                          type={categories[1].type}
-                          elemntId={`dicomImage${categories[1].cat}`}
-                          images={categories[1].images}
-                        />
-
-                        <div className="flex flex-col gap-6 mt-2">
-                          <Checkbox name="option3" text="Option 3" />
-                          <Checkbox name="option4" text="Option 4" />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-center w-full space-x-4 my-5">
-                      <div className="w-[80%]">
-                        <Button btnText="Sync" nobg />
-                      </div>
-                    </div>
-                  </>
-                  {/* Row 2 */}
-                  <>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 w-full">
-                      {/* {categories.map((item, index) => ( */}
-                      <div className=" flex flex-col gap-4 p-4">
-                        <CategoryCard
-                          cat={categories[2].cat}
-                          type={categories[2].type}
-                          elemntId={`dicomImage${categories[2].cat}`}
-                          images={categories[2].images}
-                        />
-
-                        <div className="flex flex-col gap-6 mt-2">
-                          <Checkbox
-                            id="option1"
-                            name="option1"
-                            text="Option 1"
+                  {/* <div className={`grid col-span-2 w-full gap-2 relative`}> */}
+                  <div
+                    className={`grid ${
+                      columns ? `grid-cols-${columns}` : "grid-cols-2"
+                    } w-full relative `}
+                  >
+                    {categories.map((item, index) => {
+                      return (
+                        <div key={item.cat} className="flex flex-col gap-4 p-1">
+                          <CategoryCard
+                            cat={item.cat}
+                            type={item.type}
+                            elementId={`dicomImage${item.cat}`}
+                            images={item.images}
                           />
-                          <Checkbox
-                            id="option2"
-                            name="option2"
-                            text="Option 2"
-                          />
+                          <div className="flex flex-col gap-6 mt-2">
+                            <Checkbox name="option1" text="Option 1" />
+                            <Checkbox name="option2" text="Option 2" />
+                          </div>
+                          {/* Display button under every 2 items */}
+                          {(index + 1) % 2 === 0 && (
+                            <div className="w-full">
+                              <div className="col-span-2 flex items-center justify-center w-full mt-8 mb-8 ">
+                                <div className="w-[80%] absolute left-20 ">
+                                  <Button btnText="Sync" nobg />
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                          {/* Empty div for spacing */}
                         </div>
-                      </div>
-                      <div className=" flex flex-col gap-4 p-4 ">
-                        <CategoryCard
-                          cat={categories[3].cat}
-                          type={categories[3].type}
-                          elemntId={`dicomImage${categories[3].cat}`}
-                          images={categories[3].images}
-                        />
+                      );
+                    })}
 
-                        <div className="flex flex-col gap-6 mt-2">
-                          <Checkbox name="option3" text="Option 3" />
-                          <Checkbox name="option4" text="Option 4" />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-center w-full space-x-4 my-5">
-                      <div className="w-[80%]">
-                        <Button btnText="Sync" nobg />
-                      </div>
-                    </div>
-                  </>
-                  {/* Row 3 */}
-                  <>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 w-full">
-                      {/* {categories.map((item, index) => ( */}
-                      <div className=" flex flex-col gap-4 p-4">
-                        <CategoryCard
-                          cat={categories[4].cat}
-                          type={categories[4].type}
-                          elemntId={`dicomImage${categories[4].cat}`}
-                          images={categories[4].images}
-                        />
-
-                        <div className="flex flex-col gap-6 mt-2">
-                          <Checkbox
-                            id="option1"
-                            name="option1"
-                            text="Option 1"
-                          />
-                          <Checkbox
-                            id="option2"
-                            name="option2"
-                            text="Option 2"
-                          />
-                        </div>
-                      </div>
-                      <div className=" flex flex-col gap-4 p-4 ">
-                        <CategoryCard
-                          cat={categories[5].cat}
-                          type={categories[5].type}
-                          elemntId={`dicomImage${categories[5].cat}`}
-                          images={categories[5].images}
-                        />
-
-                        <div className="flex flex-col gap-6 mt-2">
-                          <Checkbox
-                            id="option3"
-                            name="option3"
-                            text="Option 3"
-                          />
-                          <Checkbox
-                            id="option4"
-                            name="option4"
-                            text="Option 4"
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-center w-full space-x-4 my-5">
-                      <div className="w-[80%]">
-                        <Button btnText="Sync" nobg />
-                      </div>
-                    </div>
-                  </>
-                  <div className=" flex items-center justify-center w-full space-x-4 my-5 ">
-                    <div className="w-[80%] mt-2 pb-2">
-                      <Button btnText="Submit" />
-                    </div>
+                    {/* Centered button spanning full width */}
                   </div>
                 </div>
 

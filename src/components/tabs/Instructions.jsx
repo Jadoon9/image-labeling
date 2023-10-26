@@ -29,7 +29,7 @@ const Instructions = () => {
               <label htmlFor="" className="body-light text-[#4F4F4F]">
                 Instruction notes
               </label>
-              <Textarea name="notes" />
+              <Textarea name="notes" rows={20} cols={40} />
               <div className="mt-10 flex flex-col gap-4 ">
                 <CheckBox
                   text="Randomize Cases"

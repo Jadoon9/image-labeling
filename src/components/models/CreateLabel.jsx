@@ -3,12 +3,16 @@ import { Fragment } from "react";
 import Input from "../Input";
 import Button from "../Button";
 import { Form, Formik } from "formik";
+import Checkbox from "../CheckBox";
+import DropDown from "../DropDown";
+import { drpItems } from "../../constants/index";
+import Textarea from "../Textarea";
 
 export default function CreateLabel({ isOpen, handleOpen }) {
   return (
     <>
       <Transition appear show={isOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={handleOpen}>
+        <Dialog as="div" className="relative z-10 " onClose={handleOpen}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -37,25 +41,54 @@ export default function CreateLabel({ isOpen, handleOpen }) {
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900"
                   >
-                    Enter Name of Label
+                    Create Label
                   </Dialog.Title>
 
                   <Formik
                     initialValues={{
-                      sessionName: "",
+                      labelName: "",
+                      numericalRange: false,
+                      string: false,
+                      maxVal: 0,
+                      minVal: 0,
                     }}
                     // validationSchema={taxonomySchema}
                     onSubmit={(values) => {
                       console.log(values, "valuess");
                     }}
                   >
-                    {() => (
+                    {(values) => (
                       <Form>
                         <div className="flex flex-col gap-6 justify-center items-center mt-2">
-                          <Input
-                            label="Enter Name of Label"
-                            name="sessionName"
-                          />
+                          <div className="flex w-full mt-2">
+                            <Checkbox
+                              id="numericalRange"
+                              name="numericalRange"
+                              text="Numerical Range"
+                            />
+                            <Checkbox id="string" name="string" text="String" />
+                          </div>
+
+                          {values.values.numericalRange ? (
+                            <>
+                              {" "}
+                              <DropDown
+                                name="maxVal"
+                                options={drpItems}
+                                placeholder="Max Value"
+                              />
+                              <DropDown
+                                name="minVal"
+                                options={drpItems}
+                                placeholder="Min Value"
+                              />
+                            </>
+                          ) : (
+                            <>
+                              <Textarea name="labelName" rows={2} cols={40} />
+                            </>
+                          )}
+
                           <div className="w-1/2 ">
                             <Button btnText="Create Label" />
                           </div>

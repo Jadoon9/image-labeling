@@ -8,13 +8,15 @@ import Button from "../Button";
 import { HiOutlineFolder } from "react-icons/hi2";
 import { Form, Formik } from "formik";
 import { taxonomySchema } from "../../utils/validations";
-import Checkbox from "../CheckBox";
 import CreateOption from "../models/CreateOption";
 import CreateLabel from "../models/CreateLabel";
+import DynamicTable from "../DynamicTable";
+import { useSelector } from "react-redux";
 
 const Taxonomy = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenLabelModal, setIsOpenLabelModal] = useState(false);
+  const { columns, rows } = useSelector((item) => item.layout);
 
   const handleOpen = () => {
     setIsOpen(!isOpen);
@@ -34,8 +36,8 @@ const Taxonomy = () => {
           question: "",
           referenceClass: "",
           label: "",
-          evaluationPageLayout1: 0,
-          evaluationPageLayout2: 0,
+          rows: 0,
+          columns: 0,
           cat1: "",
           cat2: "",
           type1: "",
@@ -47,7 +49,7 @@ const Taxonomy = () => {
           console.log(values, "valuess");
         }}
       >
-        {() => (
+        {(data) => (
           <Form>
             <div className="flex flex-col h-full">
               <div className="flex-1">
@@ -62,7 +64,10 @@ const Taxonomy = () => {
                         label="Options"
                         name="options"
                       />
-                      <p className="body-light mt-1 cursor-pointer">
+                      <p
+                        className="body-light mt-1 cursor-pointer"
+                        onClick={handleOpen}
+                      >
                         Add another option +
                       </p>
                     </div>
@@ -100,25 +105,40 @@ const Taxonomy = () => {
                           />
                         }
                       />
-                      <p className="body-light mt-1 cursor-pointer">
-                        Add Another option +
+                      <p
+                        className="body-light mt-1 cursor-pointer"
+                        onClick={handleOpeLabeln}
+                      >
+                        Add Another label +
                       </p>
                     </div>
                   </div>
-                  <div className="flex justify-between align-top  w-full  md:w-[49%] gap-2">
-                    <div className="w-full md:w-[49%] ">
-                      <NumberInput
-                        label="Evaluation Page Layout"
-                        name="evaluationPageLayout1"
-                      />
+
+                  <div className="w-full flex-between  align-middle">
+                    <div className="flex justify-between align-top  w-full  md:w-[49%] gap-2">
+                      <div className="w-full md:w-[49%] ">
+                        <NumberInput
+                          label="Evaluation Page Layout"
+                          name="rows"
+                        />
+                      </div>
+                      <div className=" md:w-[49%] w-full ">
+                        <NumberInput name="columns" />
+                      </div>
                     </div>
-                    <div className=" md:w-[49%] w-full ">
-                      <NumberInput name="evaluationPageLayout2" />
-                    </div>
+
+                    {/* <div className="flex justify-between align-top  w-full  md:w-[49%] gap-2 mt-8">
+                      <div className="w-full md:w-[49%] ">
+                        <Button
+                          btnText="Generate Grid"
+                          onClick={generateGrid}
+                        />
+                      </div>
+                    </div> */}
                   </div>
                 </div>
 
-                <div className="flex gap-10 px-5  w-1/2">
+                {/* <div className="flex gap-10 px-5  w-1/2">
                   <div className="w-1/3"></div>
                   <div className="w-2/3 flex gap-2 ">
                     <div className="w-1/2">
@@ -148,9 +168,9 @@ const Taxonomy = () => {
                       />
                     </div>
                   </div>
-                </div>
+                </div> */}
 
-                <div className="flex gap-10 px-5 w-1/2 mt-4">
+                {/* <div className="flex gap-10 px-5 w-1/2 mt-4">
                   <div className="w-1/3 ">
                     <div className="w-full">
                       <DropDown
@@ -211,6 +231,65 @@ const Taxonomy = () => {
                     </div>
                   </div>
                   <div className="w-2/3 flex gap-2 "></div>
+                </div> */}
+              </div>
+
+              <div className="w-full p-5">
+                <div className="overflow-x-auto">
+                  <table className="min-w-full border border-collapse border-gray-200">
+                    <thead>
+                      <tr>
+                        <th className="py-2 px-4 border body-light border-gray-200">
+                          {/* Empty header for the first column */}
+                        </th>
+                        {/* Header cells for other columns */}
+                        {Array.from(
+                          { length: data.values.columns },
+                          (_, colIndex) => (
+                            <th
+                              key={colIndex}
+                              className="py-2 px-4 border body-light border-gray-200"
+                            >
+                              <DropDown
+                                name={`headerItem${colIndex}`}
+                                options={drpItems}
+                              />
+                            </th>
+                          )
+                        )}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {Array.from(
+                        { length: data.values.rows },
+                        (_, rowIndex) => (
+                          <tr key={rowIndex}>
+                            {/* First cell with dropdown in the first column */}
+                            <td className="py-1 px-4 border body-light border-gray-200">
+                              <DropDown
+                                name={`item${rowIndex + 1}`}
+                                options={drpItems}
+                              />
+                            </td>
+                            {/* Data cells for other columns */}
+                            {Array.from(
+                              { length: data.values.columns },
+                              (_, colIndex) => (
+                                <td
+                                  key={colIndex}
+                                  className={`py-1 px-4 border primary-background body-light border-gray-200 ${
+                                    colIndex === 0 ? "empty-cell" : "" // Apply a class for empty cells in the first column
+                                  }`}
+                                >
+                                  {/* Input field for data cells */}
+                                </td>
+                              )
+                            )}
+                          </tr>
+                        )
+                      )}
+                    </tbody>
+                  </table>
                 </div>
               </div>
 

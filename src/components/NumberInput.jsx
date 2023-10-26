@@ -1,17 +1,30 @@
 import React from "react";
+import { useDispatch } from "react-redux";
 import { Field, useField, useFormikContext } from "formik";
+import { laoyoutRows, layoutCols } from "../store/slice/layoutSlice";
 
 const NumberInput = ({ label, name }) => {
+  const dispatch = useDispatch();
   const [field, meta, helpers] = useField(name);
 
   console.log(field, "hghg");
   const incrementNumber = (e) => {
     e.preventDefault();
+    if (field.name === "rows") {
+      dispatch(laoyoutRows(field.value + 1));
+    } else {
+      dispatch(layoutCols(field.value + 1));
+    }
     helpers.setValue(field?.value + 1);
   };
 
   const decrementNumber = (e) => {
     e.preventDefault();
+    if (field.name === "rows") {
+      dispatch(laoyoutRows(field.value - 1));
+    } else {
+      dispatch(layoutCols(field.value - 1));
+    }
     helpers.setValue(field?.value - 1);
   };
 

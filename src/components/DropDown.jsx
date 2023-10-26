@@ -4,7 +4,7 @@ import React, { Fragment, useState } from "react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { AiTwotoneDelete } from "react-icons/ai";
 
-const DropDown = ({ options, label, placeholder, name }) => {
+const DropDown = ({ options, label, placeholder, name, showBlackBorder }) => {
   const [field, meta, helpers] = useField(name);
   const [optionsData, setOptionsData] = useState(options);
 
@@ -15,7 +15,7 @@ const DropDown = ({ options, label, placeholder, name }) => {
   const handleRemoveItem = (e, selected) => {
     e.stopPropagation();
     console.log(selected, "899");
-    setOptionsData(optionsData.filter((item) => item.id !== selected.id));
+    setOptionsData(optionsData?.filter((item) => item.id !== selected.id));
   };
 
   return (
@@ -29,8 +29,14 @@ const DropDown = ({ options, label, placeholder, name }) => {
         {({ open }) => (
           <>
             <div className="relative mt-1">
-              <Listbox.Button className="w-full cursor-default appearance-none primary-border-color rounded-[8px] h-[42px] py-2 pl-3 pr-10 text-left focus:outline-none">
-                <span className="block truncate body-light ">
+              <Listbox.Button
+                className={`w-full cursor-default appearance-none ${
+                  showBlackBorder
+                    ? "secondary-border-color"
+                    : "primary-border-color"
+                } rounded-[8px] h-[42px] py-2 pl-3 pr-10 text-left focus:outline-none`}
+              >
+                <span className="block truncate body-light">
                   {field.value || placeholder}
                 </span>
                 <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
