@@ -37,13 +37,19 @@ const CategoryCard = ({
   images,
   elementId1,
   elementId2,
+  isSynced,
+  // setZoomActive,
 }) => {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [imageIds, setImageIds] = useState([]);
   const [isFullscreen, setIsFullscreen] = useState(false);
   let element;
-  let elementId = `dicomImag${cat}`;
+  let elementId = `dicomImage${cat}`;
+
   // ... (other functions remain unchanged)
+
+  const elementIds = [elementId, elementId1, elementId2];
+  console.log(elementIds, "90898");
 
   const handleFullscreenToggle = () => {
     const element = document.getElementById(`${elementId}`);
@@ -89,21 +95,6 @@ const CategoryCard = ({
       // Update the state to indicate that fullscreen mode is not active
       setIsFullscreen(false);
     }
-  };
-
-  const loadAndViewImage = (imageId) => {
-    const element = document.getElementById(`${elementId}`);
-    const start = new Date().getTime();
-    cornerstone.loadImage(imageId).then(
-      function (image) {
-        console.log(image);
-        const viewport = cornerstone.getDefaultViewportForImage(element, image);
-        cornerstone.displayImage(element, image, viewport);
-      },
-      function (err) {
-        alert(err);
-      }
-    );
   };
 
   const handleReset = () => {
@@ -212,15 +203,33 @@ const CategoryCard = ({
     cornerstoneTools.setToolActive("StackScrollMouseWheel", {});
   };
 
-  const setZoomActive = () => {
+  const setZoomActive = (element, elementId1, elementId2) => {
     const ZoomMouseWheelTool = cornerstoneTools.ZoomMouseWheelTool;
-
-    cornerstoneTools.addTool(ZoomMouseWheelTool);
-    cornerstoneTools.setToolActive("ZoomMouseWheel", { mouseButtonMask: 1 });
     const PanTool = cornerstoneTools.PanTool;
 
-    cornerstoneTools.addTool(PanTool);
-    cornerstoneTools.setToolActive("Pan", { mouseButtonMask: 1 });
+    if (isSynced && elementId1 && elementId2) {
+      cornerstoneTools.setToolActive(
+        ZoomMouseWheelTool,
+        { mouseButtonMask: 1 },
+        elementId1
+      );
+      cornerstoneTools.setToolActive(
+        ZoomMouseWheelTool,
+        { mouseButtonMask: 1 },
+        elementId2
+      );
+      cornerstone.enable(elementId1);
+      cornerstone.enable(elementId2);
+    } else {
+      const ZoomMouseWheelTool = cornerstoneTools.ZoomMouseWheelTool;
+
+      cornerstoneTools.addTool(ZoomMouseWheelTool);
+      cornerstoneTools.setToolActive("ZoomMouseWheel", { mouseButtonMask: 1 });
+      const PanTool = cornerstoneTools.PanTool;
+
+      cornerstoneTools.addTool(PanTool);
+      cornerstoneTools.setToolActive("Pan", { mouseButtonMask: 1 });
+    }
   };
 
   const setMouseWheelActive = (e) => {
@@ -255,29 +264,6 @@ const CategoryCard = ({
       {!hideTitle && <p className="body-light mt-2">Type {type}</p>}
 
       <div className="flex flex-col overflow-scroll custom-scrollbar ">
-        <div className="" id="thumbnail-list">
-          {imageIds.map((imageId) => {
-            return (
-              // eslint-disable-next-line jsx-a11y/anchor-is-valid
-              <a
-                onContextMenu={() => false}
-                unselectable="on"
-                onMouseDown={() => false}
-                onSelect={() => false}
-              >
-                <div
-                  id={imageId}
-                  className="rounded-[8px]"
-                  onContextMenu={() => false}
-                  unselectable="on"
-                  onMouseDown={() => false}
-                  onSelect={() => false}
-                />
-              </a>
-            );
-          })}
-        </div>
-
         <div onContextMenu={() => false} unselectable="on">
           <div id={elementId} />
         </div>
@@ -291,7 +277,7 @@ const CategoryCard = ({
           </button>
           <button
             className="p-1 custom-shadow rounded-[8px] h-6 w-6  "
-            onClick={setZoomActive}
+            onClick={() => setZoomActive(elementId, elementId1, elementId2)}
           >
             <img src={zoomIcon} alt="rest" />
           </button>

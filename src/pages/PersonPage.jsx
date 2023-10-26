@@ -16,6 +16,13 @@ import image4 from "../assets/dicom data/case1/AI_ABC/4.dcm";
 import image5 from "../assets/dicom data/case1/AI_ABC/5.dcm";
 import image6 from "../assets/dicom data/case1/AI_ABC/6.dcm";
 
+import cornerstone from "cornerstone-core";
+import cornerstoneMath from "cornerstone-math";
+import cornerstoneTools from "cornerstone-tools";
+import Hammer from "hammerjs";
+import cornerstoneWADOImageLoader from "cornerstone-wado-image-loader";
+import dicomParser from "dicom-parser";
+
 const imageUrls = [image1, image2, image3, image4, image5, image6];
 
 const categories = [
@@ -52,6 +59,46 @@ const PersonPage = () => {
       ] = `repeat(2, minmax(0, 1fr))`;
     }
   }, []);
+
+  cornerstoneTools.external.cornerstone = cornerstone;
+  cornerstoneTools.external.Hammer = Hammer;
+  cornerstoneTools.external.cornerstoneMath = cornerstoneMath;
+  cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
+  cornerstoneWADOImageLoader.external.dicomParser = dicomParser;
+
+  cornerstoneTools.init();
+  cornerstoneWADOImageLoader.webWorkerManager.initialize();
+
+  const setZoomActive = (elementId1, elementId2) => {
+    debugger;
+    const ZoomMouseWheelTool = cornerstoneTools.ZoomMouseWheelTool;
+    const PanTool = cornerstoneTools.PanTool;
+    if (isSynced && elementId1 && elementId2) {
+      cornerstoneTools.setToolActive(
+        ZoomMouseWheelTool,
+        { mouseButtonMask: 1 },
+        elementId1
+      );
+      cornerstoneTools.setToolActive(
+        ZoomMouseWheelTool,
+        { mouseButtonMask: 1 },
+        elementId2
+      );
+      cornerstoneTools.addTool(ZoomMouseWheelTool);
+      cornerstoneTools.setToolActive("ZoomMouseWheel", {
+        mouseButtonMask: 1,
+      });
+
+      cornerstoneTools.addTool(PanTool);
+      cornerstoneTools.setToolActive("Pan", { mouseButtonMask: 1 });
+    } else {
+      cornerstoneTools.addTool(ZoomMouseWheelTool);
+      cornerstoneTools.setToolActive("ZoomMouseWheel", { mouseButtonMask: 1 });
+
+      cornerstoneTools.addTool(PanTool);
+      cornerstoneTools.setToolActive("Pan", { mouseButtonMask: 1 });
+    }
+  };
 
   return (
     <>
@@ -111,6 +158,7 @@ const PersonPage = () => {
                             elementId1={nextElement1Id}
                             elementId2={nextElement2Id}
                             isSynced={isSynced}
+                            // setZoomActive={setZoomActive}
                           />
                           <div className="flex flex-col gap-6 mt-2">
                             <Checkbox name="option1" text="Option 1" />
@@ -118,15 +166,13 @@ const PersonPage = () => {
                           </div>
 
                           {(index + 1) % 2 === 0 && (
-                            <div className="w-full">
-                              <div className="col-span-2 flex items-center justify-center w-full mt-8 mb-8 ">
-                                <div className="w-[80%] absolute left-20 ">
-                                  <Button
-                                    btnText="Sync"
-                                    nobg
-                                    onClick={handleSync}
-                                  />
-                                </div>
+                            <div className="col-span-2 flex items-center justify-center w-full mt-8 mb-8 ">
+                              <div className="w-[100%] absolute left-0 p-32 ">
+                                <Button
+                                  btnText="Sync"
+                                  nobg
+                                  onClick={handleSync}
+                                />
                               </div>
                             </div>
                           )}
@@ -136,7 +182,7 @@ const PersonPage = () => {
 
                     {/* Centered button spanning full width */}
                   </div>
-                  <div className="w-full flex m-auto p-5">
+                  <div className="w-full flex m-auto px-32 py-5">
                     <div className="w-[100%]">
                       <Button btnText="Submit" />
                     </div>
