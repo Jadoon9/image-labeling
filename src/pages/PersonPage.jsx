@@ -108,7 +108,7 @@ const PersonPage = () => {
                     {/* Centered button spanning full width */}
                   </div>
                   <div className="w-full flex m-auto p-5">
-                    <div className="w-[80%]">
+                    <div className="w-[100%]">
                       <Button btnText="Submit" />
                     </div>
                   </div>
