@@ -278,7 +278,7 @@ const Taxonomy = () => {
                                 <td
                                   key={colIndex}
                                   className={`py-1 px-4 border primary-background body-light border-gray-200 ${
-                                    colIndex === 0 ? "empty-cell" : "" // Apply a class for empty cells in the first column
+                                    colIndex === 0 ? "empty-cell" : "" // Apply a class for empty
                                   }`}
                                 >
                                   {/* Input field for data cells */}
