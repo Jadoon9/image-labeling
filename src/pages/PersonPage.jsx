@@ -31,6 +31,11 @@ const PersonPage = () => {
   const { rows, columns } = useSelector((state) => state.layout);
   const imageRefs = useRef([]);
   const [zoomLevel, setZoomLevel] = useState(1);
+  const [isSynced, setIsSynced] = useState(false);
+
+  const handleSync = () => {
+    setIsSynced(!isSynced);
+  };
 
   const handleZoomChange = (newZoomLevel) => {
     setZoomLevel(newZoomLevel); // Update zoom level state
@@ -105,6 +110,7 @@ const PersonPage = () => {
                             images={item.images}
                             elementId1={nextElement1Id}
                             elementId2={nextElement2Id}
+                            isSynced={isSynced}
                           />
                           <div className="flex flex-col gap-6 mt-2">
                             <Checkbox name="option1" text="Option 1" />
@@ -115,7 +121,11 @@ const PersonPage = () => {
                             <div className="w-full">
                               <div className="col-span-2 flex items-center justify-center w-full mt-8 mb-8 ">
                                 <div className="w-[80%] absolute left-20 ">
-                                  <Button btnText="Sync" nobg />
+                                  <Button
+                                    btnText="Sync"
+                                    nobg
+                                    onClick={handleSync}
+                                  />
                                 </div>
                               </div>
                             </div>
