@@ -88,6 +88,14 @@ const PersonPage = () => {
 
                   <div id="dynamicGrid" className={`grid w-full relative `}>
                     {categories.map((item, index) => {
+                      // Calculate the IDs for the next two elements
+                      const nextElement1Id = categories[index + 1]
+                        ? `dicomImage${categories[index + 1].cat}`
+                        : null;
+                      const nextElement2Id = categories[index + 2]
+                        ? `dicomImage${categories[index + 2].cat}`
+                        : null;
+
                       return (
                         <div key={item.cat} className="flex flex-col gap-4 p-1">
                           <CategoryCard
@@ -95,6 +103,8 @@ const PersonPage = () => {
                             type={item.type}
                             elementId={`dicomImage${item.cat}`}
                             images={item.images}
+                            elementId1={nextElement1Id}
+                            elementId2={nextElement2Id}
                           />
                           <div className="flex flex-col gap-6 mt-2">
                             <Checkbox name="option1" text="Option 1" />
