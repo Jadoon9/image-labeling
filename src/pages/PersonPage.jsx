@@ -29,7 +29,16 @@ const categories = [
 
 const PersonPage = () => {
   const { rows, columns } = useSelector((state) => state.layout);
-  console.log(columns, "chhecc");
+  console.log(typeof columns, "chhecc");
+
+  const className = `grid-cols-${columns}`;
+
+  useEffect(() => {
+    document.querySelector("#dynamicGrid").style[
+      "grid-template-columns"
+    ] = `repeat(${columns}, minmax(0, 1fr))`;
+  }, []);
+
   return (
     <>
       <Formik
@@ -68,11 +77,7 @@ const PersonPage = () => {
                     </div>
                   </div>
 
-                  <div
-                    className={`grid ${
-                      columns ? `grid-cols-${columns}` : "grid-cols-2"
-                    } w-full relative `}
-                  >
+                  <div id="dynamicGrid" className={`grid w-full relative `}>
                     {categories.map((item, index) => {
                       return (
                         <div key={item.cat} className="flex flex-col gap-4 p-1">
@@ -86,7 +91,7 @@ const PersonPage = () => {
                             <Checkbox name="option1" text="Option 1" />
                             <Checkbox name="option2" text="Option 2" />
                           </div>
-                          {/* Display button under every 2 items */}
+
                           {(index + 1) % 2 === 0 && (
                             <div className="w-full">
                               <div className="col-span-2 flex items-center justify-center w-full mt-8 mb-8 ">
@@ -96,19 +101,16 @@ const PersonPage = () => {
                               </div>
                             </div>
                           )}
-                          {/* Empty div for spacing */}
-                          <div className="w-full">
-                            <div className="col-span-2 flex items-center justify-center w-full mt-8 mb-8 ">
-                              <div className="w-[80%] ">
-                                <Button btnText="Submit" />
-                              </div>
-                            </div>
-                          </div>
                         </div>
                       );
                     })}
 
                     {/* Centered button spanning full width */}
+                  </div>
+                  <div className="w-full flex m-auto p-5">
+                    <div className="w-[80%]">
+                      <Button btnText="Submit" />
+                    </div>
                   </div>
                 </div>
 
