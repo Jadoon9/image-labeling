@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import BackButton from "../components/BackButton";
 import Button from "../components/Button";
 import { Form, Formik } from "formik";
@@ -29,14 +29,23 @@ const categories = [
 
 const PersonPage = () => {
   const { rows, columns } = useSelector((state) => state.layout);
-  console.log(typeof columns, "chhecc");
+  const imageRefs = useRef([]);
+  const [zoomLevel, setZoomLevel] = useState(1);
 
-  const className = `grid-cols-${columns}`;
+  const handleZoomChange = (newZoomLevel) => {
+    setZoomLevel(newZoomLevel); // Update zoom level state
+  };
 
   useEffect(() => {
-    document.querySelector("#dynamicGrid").style[
-      "grid-template-columns"
-    ] = `repeat(${columns}, minmax(0, 1fr))`;
+    if (columns) {
+      document.querySelector("#dynamicGrid").style[
+        "grid-template-columns"
+      ] = `repeat(${columns}, minmax(0, 1fr))`;
+    } else {
+      document.querySelector("#dynamicGrid").style[
+        "grid-template-columns"
+      ] = `repeat(2, minmax(0, 1fr))`;
+    }
   }, []);
 
   return (
