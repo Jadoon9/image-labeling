@@ -295,9 +295,9 @@ const Taxonomy = () => {
 
               <div className="flex-between relative bottom-0 mt-auto p-5">
                 <BackButton />
-                <div className="w-32">
+                {/* <div className="w-32">
                   <Button type="button" btnText="Next" icon />
-                </div>
+                </div> */}
               </div>
             </div>
           </Form>
