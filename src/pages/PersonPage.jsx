@@ -97,6 +97,13 @@ const PersonPage = () => {
                             </div>
                           )}
                           {/* Empty div for spacing */}
+                          <div className="w-full">
+                            <div className="col-span-2 flex items-center justify-center w-full mt-8 mb-8 ">
+                              <div className="w-[80%] ">
+                                <Button btnText="Submit" />
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       );
                     })}
