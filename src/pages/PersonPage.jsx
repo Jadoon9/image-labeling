@@ -16,13 +16,6 @@ import image4 from "../assets/dicom data/case1/AI_ABC/4.dcm";
 import image5 from "../assets/dicom data/case1/AI_ABC/5.dcm";
 import image6 from "../assets/dicom data/case1/AI_ABC/6.dcm";
 
-import cornerstone from "cornerstone-core";
-import cornerstoneMath from "cornerstone-math";
-import cornerstoneTools from "cornerstone-tools";
-import Hammer from "hammerjs";
-import cornerstoneWADOImageLoader from "cornerstone-wado-image-loader";
-import dicomParser from "dicom-parser";
-
 const imageUrls = [image1, image2, image3, image4, image5, image6];
 
 const categories = [
@@ -36,16 +29,11 @@ const categories = [
 
 const PersonPage = () => {
   const { rows, columns } = useSelector((state) => state.layout);
-  const imageRefs = useRef([]);
-  const [zoomLevel, setZoomLevel] = useState(1);
+
   const [isSynced, setIsSynced] = useState(false);
 
   const handleSync = () => {
     setIsSynced(!isSynced);
-  };
-
-  const handleZoomChange = (newZoomLevel) => {
-    setZoomLevel(newZoomLevel); // Update zoom level state
   };
 
   useEffect(() => {
@@ -59,46 +47,6 @@ const PersonPage = () => {
       ] = `repeat(2, minmax(0, 1fr))`;
     }
   }, []);
-
-  cornerstoneTools.external.cornerstone = cornerstone;
-  cornerstoneTools.external.Hammer = Hammer;
-  cornerstoneTools.external.cornerstoneMath = cornerstoneMath;
-  cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
-  cornerstoneWADOImageLoader.external.dicomParser = dicomParser;
-
-  cornerstoneTools.init();
-  cornerstoneWADOImageLoader.webWorkerManager.initialize();
-
-  const setZoomActive = (elementId1, elementId2) => {
-    debugger;
-    const ZoomMouseWheelTool = cornerstoneTools.ZoomMouseWheelTool;
-    const PanTool = cornerstoneTools.PanTool;
-    if (isSynced && elementId1 && elementId2) {
-      cornerstoneTools.setToolActive(
-        ZoomMouseWheelTool,
-        { mouseButtonMask: 1 },
-        elementId1
-      );
-      cornerstoneTools.setToolActive(
-        ZoomMouseWheelTool,
-        { mouseButtonMask: 1 },
-        elementId2
-      );
-      cornerstoneTools.addTool(ZoomMouseWheelTool);
-      cornerstoneTools.setToolActive("ZoomMouseWheel", {
-        mouseButtonMask: 1,
-      });
-
-      cornerstoneTools.addTool(PanTool);
-      cornerstoneTools.setToolActive("Pan", { mouseButtonMask: 1 });
-    } else {
-      cornerstoneTools.addTool(ZoomMouseWheelTool);
-      cornerstoneTools.setToolActive("ZoomMouseWheel", { mouseButtonMask: 1 });
-
-      cornerstoneTools.addTool(PanTool);
-      cornerstoneTools.setToolActive("Pan", { mouseButtonMask: 1 });
-    }
-  };
 
   return (
     <>

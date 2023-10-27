@@ -28,8 +28,6 @@ cornerstoneTools.init({
   showSVGCursors: false,
 });
 
-const StackScrollSynchronizer = cornerstoneTools.StackScrollSynchronizer;
-
 const CategoryCard = ({
   hideTitle,
   cat,
@@ -40,9 +38,7 @@ const CategoryCard = ({
   isSynced,
   // setZoomActive,
 }) => {
-  const [uploadedFiles, setUploadedFiles] = useState([]);
   const [imageIds, setImageIds] = useState([]);
-  const [isFullscreen, setIsFullscreen] = useState(false);
   let element;
   let elementId = `dicomImage${cat}`;
 
@@ -50,52 +46,6 @@ const CategoryCard = ({
 
   const elementIds = [elementId, elementId1, elementId2];
   console.log(elementIds, "90898");
-
-  const handleFullscreenToggle = () => {
-    const element = document.getElementById(`${elementId}`);
-
-    if (!isFullscreen) {
-      if (element.requestFullscreen) {
-        element.requestFullscreen();
-      } else if (element.mozRequestFullScreen) {
-        element.mozRequestFullScreen();
-      } else if (element.webkitRequestFullscreen) {
-        element.webkitRequestFullscreen();
-      } else if (element.msRequestFullscreen) {
-        element.msRequestFullscreen();
-      }
-    } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen();
-      } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-      } else if (document.msExitFullscreen) {
-        document.msExitFullscreen();
-      }
-    }
-
-    setIsFullscreen(!isFullscreen);
-  };
-
-  const handleExitFullscreen = () => {
-    // Exit fullscreen mode
-    if (document.fullscreenElement) {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen();
-      } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-      } else if (document.msExitFullscreen) {
-        document.msExitFullscreen();
-      }
-
-      // Update the state to indicate that fullscreen mode is not active
-      setIsFullscreen(false);
-    }
-  };
 
   const handleReset = () => {
     const element = document.getElementById(`${elementId}`);
@@ -173,36 +123,6 @@ const CategoryCard = ({
     loadImages();
   }, []);
 
-  const handleFileChange = (imageUrls) => {
-    debugger;
-    const files = Array.from(imageUrls.target.files);
-    setUploadedFiles(files);
-
-    const imageIds = files.map((file) => {
-      return cornerstoneWADOImageLoader.wadouri.fileManager.add(file);
-    });
-
-    setImageIds(imageIds);
-
-    const stack = {
-      currentImageIdIndex: 0,
-      imageIds: imageIds,
-    };
-
-    cornerstone.loadAndCacheImage(imageIds[0]).then((image) => {
-      const element = document.getElementById(`${elementId}`);
-      cornerstone.displayImage(element, image);
-      cornerstoneTools.addStackStateManager(element, ["stack"]);
-      cornerstoneTools.addToolState(element, "stack", stack);
-    });
-
-    // Add the Stack Scroll tool and make it active
-    const StackScrollMouseWheelTool =
-      cornerstoneTools.StackScrollMouseWheelTool;
-    cornerstoneTools.addTool(StackScrollMouseWheelTool);
-    cornerstoneTools.setToolActive("StackScrollMouseWheel", {});
-  };
-
   const setZoomActive = (element, elementId1, elementId2) => {
     const ZoomMouseWheelTool = cornerstoneTools.ZoomMouseWheelTool;
     const PanTool = cornerstoneTools.PanTool;
@@ -231,19 +151,6 @@ const CategoryCard = ({
       cornerstoneTools.addTool(PanTool);
       cornerstoneTools.setToolActive("Pan", { mouseButtonMask: 1 });
     }
-  };
-
-  const setMouseWheelActive = (e) => {
-    const StackScrollMouseWheelTool =
-      cornerstoneTools.StackScrollMouseWheelTool;
-    cornerstoneTools.addTool(StackScrollMouseWheelTool);
-    cornerstoneTools.setToolActive("StackScrollMouseWheel", {});
-  };
-
-  const setLengthActive = (e) => {
-    const LengthTool = cornerstoneTools.LengthTool;
-    cornerstoneTools.addTool(LengthTool);
-    cornerstoneTools.setToolActive("Length", { mouseButtonMask: 1 });
   };
 
   const setWwwcActive = (e) => {
