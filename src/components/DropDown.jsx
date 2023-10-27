@@ -65,7 +65,7 @@ const DropDown = ({ options, label, placeholder, name, showBlackBorder }) => {
                             active
                               ? "bg-amber-100 text-amber-900"
                               : "text-gray-900"
-                          } cursor-pointer select-none relative px-4 py-2 flex align-middle gap-3 items-start`}
+                          } cursor-pointer select-none relative px-4 py-2 flex  z-50 align-middle gap-3 items-start`}
                         >
                           {selected ? (
                             <span className="flex items-center">

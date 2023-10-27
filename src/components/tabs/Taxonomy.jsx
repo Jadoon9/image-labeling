@@ -16,7 +16,7 @@ import { useSelector } from "react-redux";
 const Taxonomy = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenLabelModal, setIsOpenLabelModal] = useState(false);
-  const { columns, rows } = useSelector((item) => item.layout);
+  const { columns: columnsNumber, rows } = useSelector((item) => item.layout);
 
   const handleOpen = () => {
     setIsOpen(!isOpen);
@@ -234,64 +234,71 @@ const Taxonomy = () => {
                 </div> */}
               </div>
 
-              <div className="w-full p-5">
-                <div className="overflow-x-auto">
-                  <table className="min-w-full border border-collapse border-gray-200">
-                    <thead>
-                      <tr>
-                        <th className="py-2 px-4 border body-light border-gray-200">
-                          {/* Empty header for the first column */}
-                        </th>
-                        {/* Header cells for other columns */}
+              {columnsNumber > 0 && (
+                <div className="w-full  p-5">
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full mb-20 border border-collapse border-gray-200">
+                      <colgroup>
+                        <col className="w-40" />{" "}
+                        {/* Set a fixed width for the first column */}
+                        {/* You can add more <col> elements for other columns with fixed widths */}
+                      </colgroup>
+                      <thead>
+                        <tr>
+                          <th className="py-2 px-4 border body-light border-gray-200">
+                            {/* Empty header for the first column */}
+                          </th>
+                          {/* Header cells for other columns */}
+                          {Array.from(
+                            { length: data.values.columns },
+                            (_, colIndex) => (
+                              <th
+                                key={colIndex}
+                                className="py-2 px-4 border body-light border-gray-200"
+                              >
+                                <DropDown
+                                  name={`headerItem${colIndex}`}
+                                  options={drpItems}
+                                />
+                              </th>
+                            )
+                          )}
+                        </tr>
+                      </thead>
+                      <tbody>
                         {Array.from(
-                          { length: data.values.columns },
-                          (_, colIndex) => (
-                            <th
-                              key={colIndex}
-                              className="py-2 px-4 border body-light border-gray-200"
-                            >
-                              <DropDown
-                                name={`headerItem${colIndex}`}
-                                options={drpItems}
-                              />
-                            </th>
+                          { length: data.values.rows },
+                          (_, rowIndex) => (
+                            <tr key={rowIndex}>
+                              {/* First cell with dropdown in the first column */}
+                              <td className="py-1 px-4 border body-light border-gray-200">
+                                <DropDown
+                                  name={`item${rowIndex + 1}`}
+                                  options={drpItems}
+                                />
+                              </td>
+                              {/* Data cells for other columns */}
+                              {Array.from(
+                                { length: data.values.columns },
+                                (_, colIndex) => (
+                                  <td
+                                    key={colIndex}
+                                    className={`py-1 px-4 border primary-background body-light border-gray-200 ${
+                                      colIndex === 0 ? "empty-cell" : "" // Apply a class for empty
+                                    }`}
+                                  >
+                                    {/* Input field for data cells */}
+                                  </td>
+                                )
+                              )}
+                            </tr>
                           )
                         )}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {Array.from(
-                        { length: data.values.rows },
-                        (_, rowIndex) => (
-                          <tr key={rowIndex}>
-                            {/* First cell with dropdown in the first column */}
-                            <td className="py-1 px-4 border body-light border-gray-200">
-                              <DropDown
-                                name={`item${rowIndex + 1}`}
-                                options={drpItems}
-                              />
-                            </td>
-                            {/* Data cells for other columns */}
-                            {Array.from(
-                              { length: data.values.columns },
-                              (_, colIndex) => (
-                                <td
-                                  key={colIndex}
-                                  className={`py-1 px-4 border primary-background body-light border-gray-200 ${
-                                    colIndex === 0 ? "empty-cell" : "" // Apply a class for empty
-                                  }`}
-                                >
-                                  {/* Input field for data cells */}
-                                </td>
-                              )
-                            )}
-                          </tr>
-                        )
-                      )}
-                    </tbody>
-                  </table>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              </div>
+              )}
 
               <div className="flex-between relative bottom-0 mt-auto p-5">
                 <BackButton />

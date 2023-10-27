@@ -206,7 +206,6 @@ const CategoryCard = ({
   const setZoomActive = (element, elementId1, elementId2) => {
     const ZoomMouseWheelTool = cornerstoneTools.ZoomMouseWheelTool;
     const PanTool = cornerstoneTools.PanTool;
-
     if (isSynced && elementId1 && elementId2) {
       cornerstoneTools.setToolActive(
         ZoomMouseWheelTool,
@@ -218,14 +217,16 @@ const CategoryCard = ({
         { mouseButtonMask: 1 },
         elementId2
       );
-      cornerstone.enable(elementId1);
-      cornerstone.enable(elementId2);
-    } else {
-      const ZoomMouseWheelTool = cornerstoneTools.ZoomMouseWheelTool;
+      cornerstoneTools.addTool(ZoomMouseWheelTool);
+      cornerstoneTools.setToolActive("ZoomMouseWheel", {
+        mouseButtonMask: 1,
+      });
 
+      cornerstoneTools.addTool(PanTool);
+      cornerstoneTools.setToolActive("Pan", { mouseButtonMask: 1 });
+    } else {
       cornerstoneTools.addTool(ZoomMouseWheelTool);
       cornerstoneTools.setToolActive("ZoomMouseWheel", { mouseButtonMask: 1 });
-      const PanTool = cornerstoneTools.PanTool;
 
       cornerstoneTools.addTool(PanTool);
       cornerstoneTools.setToolActive("Pan", { mouseButtonMask: 1 });
