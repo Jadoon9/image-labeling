@@ -176,7 +176,6 @@ const CategoryCard = ({ hideTitle, cat, type, images }) => {
   // }, []);
 
   const handleFileChange = (imageUrls) => {
-    debugger;
     const files = Array.from(imageUrls.target.files);
     setUploadedFiles(files);
 

@@ -111,10 +111,7 @@ const CategoryCard = ({
         cornerstoneTools.addToolState(element, "stack", stack);
 
         // Enable the StackScrollMouseWheelTool to enable scrolling through the stack
-        const StackScrollMouseWheelTool =
-          cornerstoneTools.StackScrollMouseWheelTool;
-        cornerstoneTools.addTool(StackScrollMouseWheelTool);
-        cornerstoneTools.setToolActive("StackScrollMouseWheel", {});
+        setScrollActive();
       } catch (error) {
         console.error("Error loading images:", error);
       }
@@ -123,34 +120,15 @@ const CategoryCard = ({
     loadImages();
   }, []);
 
-  const setZoomActive = (element, elementId1, elementId2) => {
+  const setZoomActive = (event) => {
     const ZoomMouseWheelTool = cornerstoneTools.ZoomMouseWheelTool;
     const PanTool = cornerstoneTools.PanTool;
-    if (isSynced && elementId1 && elementId2) {
-      cornerstoneTools.setToolActive(
-        ZoomMouseWheelTool,
-        { mouseButtonMask: 1 },
-        elementId1
-      );
-      cornerstoneTools.setToolActive(
-        ZoomMouseWheelTool,
-        { mouseButtonMask: 1 },
-        elementId2
-      );
-      cornerstoneTools.addTool(ZoomMouseWheelTool);
-      cornerstoneTools.setToolActive("ZoomMouseWheel", {
-        mouseButtonMask: 1,
-      });
 
-      cornerstoneTools.addTool(PanTool);
-      cornerstoneTools.setToolActive("Pan", { mouseButtonMask: 1 });
-    } else {
-      cornerstoneTools.addTool(ZoomMouseWheelTool);
-      cornerstoneTools.setToolActive("ZoomMouseWheel", { mouseButtonMask: 1 });
+    cornerstoneTools.addTool(ZoomMouseWheelTool);
+    cornerstoneTools.setToolActive("ZoomMouseWheel", { mouseButtonMask: 1 });
 
-      cornerstoneTools.addTool(PanTool);
-      cornerstoneTools.setToolActive("Pan", { mouseButtonMask: 1 });
-    }
+    cornerstoneTools.addTool(PanTool);
+    cornerstoneTools.setToolActive("Pan", { mouseButtonMask: 1 });
   };
 
   const setWwwcActive = (e) => {
@@ -185,7 +163,7 @@ const CategoryCard = ({
           </button>
           <button
             className="p-1 custom-shadow rounded-[8px] h-6 w-6  "
-            onClick={() => setZoomActive(elementId, elementId1, elementId2)}
+            onClick={setZoomActive}
           >
             <img src={zoomIcon} alt="rest" />
           </button>
