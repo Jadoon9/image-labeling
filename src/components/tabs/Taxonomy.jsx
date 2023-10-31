@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Input from "../Input";
 import NumberInput from "../NumberInput";
 import DropDown from "../DropDown";
@@ -11,12 +11,24 @@ import { taxonomySchema } from "../../utils/validations";
 import CreateOption from "../models/CreateOption";
 import CreateLabel from "../models/CreateLabel";
 import DynamicTable from "../DynamicTable";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+
+import {
+  addLabels,
+  addName,
+  addOptions,
+  deletLabel,
+} from "../../store/slice/layoutSlice";
 
 const Taxonomy = () => {
+  const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenLabelModal, setIsOpenLabelModal] = useState(false);
-  const { columns: columnsNumber, rows } = useSelector((item) => item.layout);
+
+  const { taxonomy } = useSelector((item) => item.layout);
+
+  const { foldersList } = useSelector((state) => state.folders);
+  const mergedTypes = foldersList.result_lists.categories_types;
 
   const handleOpen = () => {
     setIsOpen(!isOpen);
@@ -25,10 +37,39 @@ const Taxonomy = () => {
     setIsOpenLabelModal(!isOpenLabelModal);
   };
 
+  const handleOptions = (option) => {
+    dispatch(addOptions(option.option));
+  };
+
+  const handleLabels = (label) => {
+    dispatch(addLabels(label));
+  };
+
+  const handleDeleteLabel = (id) => {
+    dispatch(deletLabel(id));
+  };
+
+  const handleChange = (e) => {
+    debugger;
+    dispatch(addName(e.target.value));
+  };
+
+  useEffect(() => {
+    console.log("hrerre");
+  }, [taxonomy]);
+
   return (
     <>
-      <CreateOption isOpen={isOpen} handleOpen={handleOpen} />
-      <CreateLabel isOpen={isOpenLabelModal} handleOpen={handleOpeLabeln} />
+      <CreateOption
+        isOpen={isOpen}
+        handleOpen={handleOpen}
+        handleOptions={handleOptions}
+      />
+      <CreateLabel
+        isOpen={isOpenLabelModal}
+        handleOpen={handleOpeLabeln}
+        handleLabels={handleLabels}
+      />
       <Formik
         initialValues={{
           projectName: "",
@@ -56,11 +97,15 @@ const Taxonomy = () => {
                 <div className="p-5 flex-between flex-wrap gap-5 w-full">
                   <div className="flex justify-between align-top  flex-wrap w-full ">
                     <div className="w-full md:w-[49%]">
-                      <Input label="Project Name" name="projectName" />
+                      <Input
+                        label="Project Name"
+                        name="projectName"
+                        onChange={handleChange}
+                      />
                     </div>
                     <div className=" flex flex-col align-center justify-center w-full md:w-[49%]">
                       <DropDown
-                        options={drpItems}
+                        options={taxonomy.options}
                         label="Options"
                         name="options"
                       />
@@ -79,7 +124,7 @@ const Taxonomy = () => {
                     </div>
                     <div className="w-full md:w-[49%]">
                       <DropDown
-                        options={drpItems}
+                        options={foldersList?.result_lists?.list_folders || []}
                         label="Reference Class"
                         name="referenceClass"
                         icon={
@@ -95,7 +140,7 @@ const Taxonomy = () => {
                   <div className="flex justify-between align-top  flex-wrap  w-full">
                     <div className="w-full md:w-[49%] ">
                       <DropDown
-                        options={drpItems}
+                        options={taxonomy.labels}
                         label="Labels"
                         name="label"
                         icon={
@@ -108,6 +153,7 @@ const Taxonomy = () => {
                       <p
                         className="body-light mt-1 cursor-pointer"
                         onClick={handleOpeLabeln}
+                        handleRemoveItem={handleDeleteLabel}
                       >
                         Add Another label +
                       </p>
@@ -126,115 +172,11 @@ const Taxonomy = () => {
                         <NumberInput name="columns" />
                       </div>
                     </div>
-
-                    {/* <div className="flex justify-between align-top  w-full  md:w-[49%] gap-2 mt-8">
-                      <div className="w-full md:w-[49%] ">
-                        <Button
-                          btnText="Generate Grid"
-                          onClick={generateGrid}
-                        />
-                      </div>
-                    </div> */}
                   </div>
                 </div>
-
-                {/* <div className="flex gap-10 px-5  w-1/2">
-                  <div className="w-1/3"></div>
-                  <div className="w-2/3 flex gap-2 ">
-                    <div className="w-1/2">
-                      <DropDown
-                        options={drpItems}
-                        name="cat1"
-                        placeholder="Cat 1"
-                        icon={
-                          <HiOutlineFolder
-                            className=" h-5 w-5 text-right text-secondary-500 "
-                            aria-hidden="true"
-                          />
-                        }
-                      />
-                    </div>
-                    <div className="w-1/2">
-                      <DropDown
-                        options={drpItems}
-                        name="cat2"
-                        placeholder="Cat 2"
-                        icon={
-                          <HiOutlineFolder
-                            className=" h-5 w-5 text-right text-secondary-500 "
-                            aria-hidden="true"
-                          />
-                        }
-                      />
-                    </div>
-                  </div>
-                </div> */}
-
-                {/* <div className="flex gap-10 px-5 w-1/2 mt-4">
-                  <div className="w-1/3 ">
-                    <div className="w-full">
-                      <DropDown
-                        options={drpItems}
-                        name="type1"
-                        placeholder="Type 1"
-                        icon={
-                          <HiOutlineFolder
-                            className=" h-5 w-5 text-right text-secondary-500 "
-                            aria-hidden="true"
-                          />
-                        }
-                      />
-                    </div>
-                  </div>
-                  <div className="w-2/3 flex gap-2 ">
-                    <Checkbox />
-                    <Checkbox />
-                  </div>
-                </div>
-
-                <div className="flex gap-10 px-5 w-1/2 mt-4">
-                  <div className="w-1/3">
-                    <div className="w-full">
-                      <DropDown
-                        options={drpItems}
-                        name="type2"
-                        placeholder="Type 2"
-                        icon={
-                          <HiOutlineFolder
-                            className=" h-5 w-5 text-right text-secondary-500 "
-                            aria-hidden="true"
-                          />
-                        }
-                      />
-                    </div>
-                  </div>
-                  <div className="w-2/3 flex gap-2 ">
-                    <Checkbox />
-                    <Checkbox />
-                  </div>
-                </div>
-
-                <div className="flex gap-10 px-5 w-1/2 mt-4">
-                  <div className="w-1/3 ">
-                    <div className="w-full">
-                      <DropDown
-                        options={drpItems}
-                        name="type3"
-                        placeholder="Type 3"
-                        icon={
-                          <HiOutlineFolder
-                            className=" h-5 w-5 text-right text-secondary-500 "
-                            aria-hidden="true"
-                          />
-                        }
-                      />
-                    </div>
-                  </div>
-                  <div className="w-2/3 flex gap-2 "></div>
-                </div> */}
               </div>
 
-              {columnsNumber > 0 && (
+              {taxonomy.columns > 0 && (
                 <div className="w-full  p-5">
                   <div className="overflow-x-auto">
                     <table className="min-w-full mb-20 border border-collapse border-gray-200">
@@ -258,7 +200,7 @@ const Taxonomy = () => {
                               >
                                 <DropDown
                                   name={`headerItem${colIndex}`}
-                                  options={drpItems}
+                                  options={mergedTypes || []}
                                 />
                               </th>
                             )
@@ -274,7 +216,7 @@ const Taxonomy = () => {
                               <td className="py-1 px-4 border body-light border-gray-200">
                                 <DropDown
                                   name={`item${rowIndex + 1}`}
-                                  options={drpItems}
+                                  options={mergedTypes || []}
                                 />
                               </td>
                               {/* Data cells for other columns */}

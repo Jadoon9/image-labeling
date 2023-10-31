@@ -8,7 +8,7 @@ import DropDown from "../DropDown";
 import { drpItems } from "../../constants/index";
 import Textarea from "../Textarea";
 
-export default function CreateLabel({ isOpen, handleOpen }) {
+export default function CreateLabel({ isOpen, handleOpen, handleLabels }) {
   return (
     <>
       <Transition appear show={isOpen} as={Fragment}>
@@ -54,7 +54,8 @@ export default function CreateLabel({ isOpen, handleOpen }) {
                     }}
                     // validationSchema={taxonomySchema}
                     onSubmit={(values) => {
-                      console.log(values, "valuess");
+                      handleLabels(values.labelName);
+                      handleOpen();
                     }}
                   >
                     {(values) => (

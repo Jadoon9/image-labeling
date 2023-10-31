@@ -1,7 +1,7 @@
 import { useField } from "formik";
 import React from "react";
 
-const Input = ({ type, placeholder, label, name }) => {
+const Input = ({ type, placeholder, label, name, onChange }) => {
   const [field, meta, helpers] = useField(name);
   return (
     <div className="w-full">
@@ -12,6 +12,7 @@ const Input = ({ type, placeholder, label, name }) => {
         className="primary-border-color  focus:outline-none focus:ring-1 focus:border-[primary-border-color]  text-secondary-500 body-regular w-full h-[42px] mt-2 rounded-[8px] p-2  mb-2"
         type={type}
         placeholder={placeholder}
+        onChange={onChange}
         name={name}
         {...field}
       />

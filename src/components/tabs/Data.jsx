@@ -1,15 +1,37 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import UploadFiles from "../UploadFiles";
 import uploadImg from "../../assets/uploadimg.svg";
 import uploadDoc from "../../assets/uploaddoc.svg";
+import { useAddPojectFilesMutation } from "../../store/services/folderUpload";
+import { useDispatch } from "react-redux";
+import { addFolders } from "../../store/slice/foldersSlice";
 
 const Data = () => {
-  const handleFileUpload = (event) => {
-    const selectedFiles = event.target.files;
+  const dispatch = useDispatch();
+  const [createPlatform, { isLoading, isSuccess, isError, error, data }] =
+    useAddPojectFilesMutation();
 
-    console.log(selectedFiles, "selectedFiles");
+  const handleFileUpload = (event) => {
+    const selectedFiles = event.target.files[0];
+    createPlatform(selectedFiles);
+
     //  setFiles(Array.from(selectedFiles));
   };
+  useEffect(() => {
+    console.log(data);
+    if (data) {
+      dispatch(addFolders(data));
+    }
+  }, [isSuccess]);
+
+  if (isLoading) {
+    return <h1>Loading</h1>;
+  }
+
+  if (isSuccess) {
+    return <h1>Uploaded</h1>;
+  }
+
   return (
     <div className="flex flex-col items-center justify-center h-screen p-4">
       <div className="flex-center flex-wrap gap-10">

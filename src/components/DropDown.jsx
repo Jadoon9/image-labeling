@@ -4,18 +4,18 @@ import React, { Fragment, useState } from "react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { AiTwotoneDelete } from "react-icons/ai";
 
-const DropDown = ({ options, label, placeholder, name, showBlackBorder }) => {
+const DropDown = ({
+  options,
+  label,
+  placeholder,
+  name,
+  showBlackBorder,
+  handleRemoveItem,
+}) => {
   const [field, meta, helpers] = useField(name);
-  const [optionsData, setOptionsData] = useState(options);
 
   const handleChange = (selectedOption) => {
     helpers.setValue(selectedOption);
-  };
-
-  const handleRemoveItem = (e, selected) => {
-    e.stopPropagation();
-    console.log(selected, "899");
-    setOptionsData(optionsData?.filter((item) => item.id !== selected.id));
   };
 
   return (
@@ -56,8 +56,8 @@ const DropDown = ({ options, label, placeholder, name, showBlackBorder }) => {
                 leaveFrom="transform opacity-100 scale-100"
                 leaveTo="transform opacity-0 scale-95"
               >
-                <Listbox.Options className="absolute mt-1 w-full py-2 z-30 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                  {optionsData.map((item, idx) => (
+                <Listbox.Options className="absolute mt-1 w-full py-2 z-30 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 h-48  overflow-scroll focus:outline-none sm:text-sm">
+                  {options.map((item, idx) => (
                     <Listbox.Option key={idx} value={item.value}>
                       {({ active, selected }) => (
                         <div

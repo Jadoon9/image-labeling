@@ -4,7 +4,7 @@ import Input from "../Input";
 import Button from "../Button";
 import { Form, Formik } from "formik";
 
-export default function CreateOption({ isOpen, handleOpen }) {
+export default function CreateOption({ isOpen, handleOpen, handleOptions }) {
   return (
     <>
       <Transition appear show={isOpen} as={Fragment}>
@@ -42,20 +42,19 @@ export default function CreateOption({ isOpen, handleOpen }) {
 
                   <Formik
                     initialValues={{
-                      sessionName: "",
+                      option: "",
                     }}
                     // validationSchema={taxonomySchema}
                     onSubmit={(values) => {
+                      handleOptions(values);
                       console.log(values, "valuess");
+                      handleOpen();
                     }}
                   >
                     {() => (
                       <Form>
                         <div className="flex flex-col gap-6 justify-center items-center mt-2">
-                          <Input
-                            label="Enter Name of Option"
-                            name="sessionName"
-                          />
+                          <Input label="Enter Name of Option" name="option" />
                           <div className="w-1/2 ">
                             <Button btnText="Create Option" />
                           </div>

@@ -1,8 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  rows: 0,
-  columns: 0,
+  taxonomy: {
+    projectName: "",
+    options: [],
+    question: "",
+    referenceClass: "",
+    labels: [],
+    columns: 0,
+    rows: 0,
+  },
 };
 
 export const layoutSlice = createSlice({
@@ -10,14 +17,54 @@ export const layoutSlice = createSlice({
   initialState,
   reducers: {
     laoyoutRows: (state, action) => {
-      state.rows = action.payload;
+      state.taxonomy.rows = action.payload;
     },
     layoutCols: (state, action) => {
-      state.columns = action.payload;
+      state.taxonomy.columns = action.payload;
+    },
+    addName: (state, action) => {
+      state.taxonomy.projectName = action.payload;
+    },
+    addOptions: (state, action) => {
+      const newId =
+        state.taxonomy.options.length > 0
+          ? state.taxonomy.options[state.taxonomy.options.length - 1].id + 1
+          : 1;
+      const newItem = { id: newId, value: action.payload };
+      state.taxonomy.options = [...state.taxonomy.options, newItem];
+    },
+    addLabels: (state, action) => {
+      const newId =
+        state.taxonomy.labels.length > 0
+          ? state.taxonomy.labels[state.taxonomy.labels.length - 1].id + 1
+          : 1;
+      const newItem = { id: newId, value: action.payload };
+      state.taxonomy.labels = [...state.taxonomy.labels, newItem];
+    },
+    deleteOption: (state, action) => {
+      const idToDelete = action.payload;
+      state.taxonomy.options = state.taxonomy.options.filter(
+        (option) => option.id !== idToDelete
+      );
+    },
+
+    deletLabel: (state, action) => {
+      const idToDelete = action.payload;
+      state.taxonomy.labels = state.taxonomy.labels.filter(
+        (label) => label.id !== idToDelete
+      );
     },
   },
 });
 
-export const { laoyoutRows, layoutCols } = layoutSlice.actions;
+export const {
+  addName,
+  laoyoutRows,
+  layoutCols,
+  addOptions,
+  addLabels,
+  deleteOption,
+  deletLabel,
+} = layoutSlice.actions;
 
 export default layoutSlice.reducer;
