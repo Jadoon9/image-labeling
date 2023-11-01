@@ -1,8 +1,12 @@
 import { useField } from "formik";
 import React from "react";
 
-const Textarea = ({ name, rows, cols }) => {
+const Textarea = ({ name, rows, cols , valueHandler}) => {
   const [field, meta, helpers] = useField(name);
+  const handleChange = (e) => {
+    field.onChange(e); // Update the formik field value
+    valueHandler && valueHandler(e.target.name, e.target.value);
+  };
   return (
     <>
       <textarea
@@ -13,6 +17,7 @@ const Textarea = ({ name, rows, cols }) => {
         placeholder="Write note here"
         name={name}
         {...field}
+        onChange={handleChange}
       ></textarea>
 
       {meta.touched && meta.error && (

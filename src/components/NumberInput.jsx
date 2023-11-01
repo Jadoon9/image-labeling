@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { Field, useField, useFormikContext } from "formik";
 import { laoyoutRows, layoutCols } from "../store/slice/layoutSlice";
 
-const NumberInput = ({ label, name }) => {
+const NumberInput = ({ label, name, valueHandler }) => {
   const dispatch = useDispatch();
   const [field, meta, helpers] = useField(name);
 
@@ -15,6 +15,7 @@ const NumberInput = ({ label, name }) => {
       dispatch(layoutCols(field.value + 1));
     }
     helpers.setValue(field?.value + 1);
+    valueHandler && valueHandler(field?.name, field?.value + 1)
   };
 
   const decrementNumber = (e) => {
@@ -25,6 +26,13 @@ const NumberInput = ({ label, name }) => {
       dispatch(layoutCols(field.value - 1));
     }
     helpers.setValue(field?.value - 1);
+    valueHandler && valueHandler(field?.name, field?.value - 1)
+  };
+
+  const handleChange = (e) => {
+    console.log("eeee", e.target.value, e.target.name);
+    field.onChange(e); // Update the formik field value
+    valueHandler && valueHandler(e.target.name, e.target.value);
   };
 
   return (
@@ -45,6 +53,7 @@ const NumberInput = ({ label, name }) => {
           type="number"
           className="primary-border-color body-light w-full rounded-[8px] p-2 focus:outline-none h-[42px] focus:ring-1 focus:border-[primary-border-color] appearance-none  -moz-appearance: textfield; "
           {...field}
+          onChange={handleChange}
         />
         <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
           <button

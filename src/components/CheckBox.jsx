@@ -1,14 +1,17 @@
 import { useField } from "formik";
 import React, { useState } from "react";
 
-const Checkbox = ({ id, text, name }) => {
+const Checkbox = ({ id, text, name, valueHandler }) => {
   const [field, meta, helpers] = useField(name);
   // let field;
   // let meta;
-
+  const handleChange = (e) => {
+    field.onChange(e); // Update the formik field value
+    valueHandler && valueHandler(e.target.name, e.target.checked);
+  };
   return (
     <div className=" w-full flex items-center gap-24">
-      <input type="checkbox" id={id} className="hidden" {...field} />
+      <input type="checkbox" id={id} className="hidden" {...field}  onChange={handleChange} />
       <label htmlFor={id} className="flex items-center cursor-pointer">
         <div className="w-6 h-6 primary-border-color rounded-md flex items-center justify-center mr-2 transition duration-300 ease-in-out">
           {field?.value && (
