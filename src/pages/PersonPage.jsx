@@ -9,6 +9,7 @@ import RangeSelector from "../components/RangeSelector";
 import Checkbox from "../components/CheckBox";
 import CategoryCard from "../components/CategoryCard";
 import CreateSubject from "../components/models/CreateSubject";
+import cornerstoneTools from "cornerstone-tools";
 import image1 from "../assets/dicom data/case1/AI_ABC/1.dcm";
 import image2 from "../assets/dicom data/case1/AI_ABC/2.dcm";
 import image3 from "../assets/dicom data/case1/AI_ABC/3.dcm";
@@ -29,6 +30,10 @@ const categories = [
 
 const PersonPage = () => {
   const { taxonomy } = useSelector((state) => state.layout);
+  const synchronizer = new cornerstoneTools.Synchronizer(
+    "CornerstoneNewImage",
+    cornerstoneTools.updateImageSynchronizer
+  );
 
   const [isSynced, setIsSynced] = useState(false);
 
@@ -106,6 +111,7 @@ const PersonPage = () => {
                             elementId1={nextElement1Id}
                             elementId2={nextElement2Id}
                             isSynced={isSynced}
+                            synchronizer={synchronizer}
                             // setZoomActive={setZoomActive}
                           />
                           <div className="flex flex-col gap-6 mt-2">
