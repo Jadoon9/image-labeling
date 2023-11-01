@@ -4,27 +4,16 @@ import { Field, useField, useFormikContext } from "formik";
 import { laoyoutRows, layoutCols } from "../store/slice/layoutSlice";
 
 const NumberInput = ({ label, name, valueHandler }) => {
-  const dispatch = useDispatch();
   const [field, meta, helpers] = useField(name);
 
   const incrementNumber = (e) => {
     e.preventDefault();
-    if (field.name === "rows") {
-      dispatch(laoyoutRows(field.value + 1));
-    } else {
-      dispatch(layoutCols(field.value + 1));
-    }
     helpers.setValue(field?.value + 1);
     valueHandler && valueHandler(field?.name, field?.value + 1)
   };
 
   const decrementNumber = (e) => {
     e.preventDefault();
-    if (field.name === "rows") {
-      dispatch(laoyoutRows(field.value - 1));
-    } else {
-      dispatch(layoutCols(field.value - 1));
-    }
     helpers.setValue(field?.value - 1);
     valueHandler && valueHandler(field?.name, field?.value - 1)
   };

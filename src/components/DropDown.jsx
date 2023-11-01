@@ -1,6 +1,6 @@
 import { Listbox, Transition } from "@headlessui/react";
-import { Field, useField, useFormikContext } from "formik";
-import React, { Fragment, useState } from "react";
+import { useField } from "formik";
+import React, { Fragment } from "react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { AiTwotoneDelete } from "react-icons/ai";
 
@@ -11,11 +11,22 @@ const DropDown = ({
   name,
   showBlackBorder,
   handleRemoveItem,
+  valueHandler,
+  value,
+  gridIndex,
+  reduxName,
 }) => {
   const [field, meta, helpers] = useField(name);
 
   const handleChange = (selectedOption) => {
+    console.log("selectedOption", selectedOption);
     helpers.setValue(selectedOption);
+    valueHandler &&
+      valueHandler(
+        reduxName ? reduxName : field.name,
+        selectedOption,
+        gridIndex
+      );
   };
 
   return (
@@ -23,7 +34,7 @@ const DropDown = ({
       <label className="body-regular text-[#4F4F4F]">{label}</label>
 
       <Listbox
-        value={field.value}
+        value={reduxName ? value : field.value}
         onChange={(selectedOption) => handleChange(selectedOption)}
       >
         {({ open }) => (
@@ -37,7 +48,7 @@ const DropDown = ({
                 } rounded-[8px] h-[42px] py-2 pl-3 pr-10 text-left focus:outline-none`}
               >
                 <span className="block truncate body-light">
-                  {field.value || placeholder}
+                  {reduxName ? value : field.value || placeholder}
                 </span>
                 <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                   <ChevronUpDownIcon
@@ -79,7 +90,11 @@ const DropDown = ({
                           )}
                           <p className="body-light flex-1 ">{item.value}</p>
 
-                          <div onClick={(e) => handleRemoveItem(e, item)}>
+                          <div
+                            onClick={(e) =>
+                              handleRemoveItem && handleRemoveItem(e, item)
+                            }
+                          >
                             <AiTwotoneDelete className="text-red-400" />
                           </div>
                         </div>

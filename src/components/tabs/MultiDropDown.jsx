@@ -13,7 +13,6 @@ const MultiDropDown = ({
   handleRemoveItem,
 }) => {
   const [field, meta, helpers] = useField(name);
-  console.log("field.value", field.value);
   const handleChange = (selectedOption) => {
     helpers.setValue(selectedOption);
   };

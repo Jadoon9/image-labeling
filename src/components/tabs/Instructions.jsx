@@ -7,7 +7,7 @@ import { Form, Formik } from "formik";
 import { instructionsSchema } from "../../utils/validations";
 import Textarea from "../Textarea";
 import { useDispatch, useSelector } from "react-redux";
-import { addTaxonomyName } from "../../store/slice/layoutSlice";
+import { addTaxonomyData } from "../../store/slice/layoutSlice";
 
 const Instructions = () => {
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ const Instructions = () => {
   const { taxonomy } = useSelector((item) => item.layout);
 
   const handleChange = (name, value) => {
-    dispatch(addTaxonomyName({ name, value }));
+    dispatch(addTaxonomyData({ name, value }));
   };
 
   return (
