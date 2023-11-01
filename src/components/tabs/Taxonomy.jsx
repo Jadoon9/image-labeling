@@ -15,10 +15,12 @@ import { useDispatch, useSelector } from "react-redux";
 
 import {
   addLabels,
-  addName,
+  addTaxonomyName,
   addOptions,
-  deletLabel,
+  deleteLabel,
+  deleteOption,
 } from "../../store/slice/layoutSlice";
+import MultiDropDown from "./MultiDropDown";
 
 const Taxonomy = () => {
   const dispatch = useDispatch();
@@ -46,16 +48,19 @@ const Taxonomy = () => {
   };
 
   const handleDeleteLabel = (id) => {
-    dispatch(deletLabel(id));
+    dispatch(deleteLabel(id));
+  };
+
+  const handleDeleteOption = (id) => {
+    dispatch(deleteOption(id));
   };
 
   const handleChange = (name, value) => {
-    console.log("uuuuu");
-    dispatch(addName({ name, value }));
+    dispatch(addTaxonomyName({ name, value }));
   };
 
   useEffect(() => {
-    console.log("hrerre");
+    console.log("hrerre", taxonomy);
   }, [taxonomy]);
 
   return (
@@ -71,14 +76,15 @@ const Taxonomy = () => {
         handleLabels={handleLabels}
       />
       <Formik
+        enableReinitialize={true}
         initialValues={{
           projectName: taxonomy.projectName,
-          options: "",
+          options: taxonomy.options,
           question: "",
           referenceClass: "",
-          label: "",
-          rows: 0,
-          columns: 0,
+          label: taxonomy.label,
+          rows: taxonomy.rows,
+          columns: taxonomy.columns,
           cat1: "",
           cat2: "",
           type1: "",
@@ -104,10 +110,11 @@ const Taxonomy = () => {
                       />
                     </div>
                     <div className=" flex flex-col align-center justify-center w-full md:w-[49%]">
-                      <DropDown
+                      <MultiDropDown
                         options={taxonomy.options}
                         label="Options"
                         name="options"
+                        handleRemoveItem={handleDeleteOption}
                       />
                       <p
                         className="body-light mt-1 cursor-pointer"
@@ -143,10 +150,11 @@ const Taxonomy = () => {
 
                   <div className="flex justify-between align-top  flex-wrap  w-full">
                     <div className="w-full md:w-[49%] ">
-                      <DropDown
-                        options={taxonomy.labels}
+                      <MultiDropDown
+                        options={taxonomy.label}
                         label="Labels"
                         name="label"
+                        handleRemoveItem={handleDeleteLabel}
                         icon={
                           <HiOutlineFolder
                             className=" h-5 w-5 text-right text-secondary-500 "
@@ -170,10 +178,14 @@ const Taxonomy = () => {
                         <NumberInput
                           label="Evaluation Page Layout"
                           name="rows"
+                          valueHandler={handleChange}
                         />
                       </div>
                       <div className=" md:w-[49%] w-full ">
-                        <NumberInput name="columns" />
+                        <NumberInput
+                          name="columns"
+                          valueHandler={handleChange}
+                        />
                       </div>
                     </div>
                   </div>

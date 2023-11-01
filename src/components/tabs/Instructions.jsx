@@ -6,17 +6,26 @@ import { useNavigate } from "react-router-dom";
 import { Form, Formik } from "formik";
 import { instructionsSchema } from "../../utils/validations";
 import Textarea from "../Textarea";
+import { useDispatch, useSelector } from "react-redux";
+import { addTaxonomyName } from "../../store/slice/layoutSlice";
 
 const Instructions = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { taxonomy } = useSelector((item) => item.layout);
+
+  const handleChange = (name, value) => {
+    dispatch(addTaxonomyName({ name, value }));
+  };
 
   return (
     <>
       <Formik
+      enableReinitialize={true}
         initialValues={{
-          notes: "",
-          randomizeCases: false,
-          randomizeCat: false,
+          notes: taxonomy?.notes,
+          randomizeCases: taxonomy?.randomizeCases,
+          randomizeCat: taxonomy?.randomizeCat,
         }}
         validationSchema={instructionsSchema}
         onSubmit={(values) => {
@@ -29,17 +38,24 @@ const Instructions = () => {
               <label htmlFor="" className="body-light text-[#4F4F4F]">
                 Instruction notes
               </label>
-              <Textarea name="notes" rows={20} cols={40} />
+              <Textarea
+                name="notes"
+                rows={20}
+                cols={40}
+                valueHandler={handleChange}
+              />
               <div className="mt-10 flex flex-col gap-4 ">
                 <CheckBox
                   text="Randomize Cases"
                   id="randomCase"
                   name="randomizeCases"
+                  valueHandler={handleChange}
                 />
                 <CheckBox
                   text="Randomize Categories"
                   id="randomCategory"
                   name="randomizeCat"
+                  valueHandler={handleChange}
                 />
               </div>
 
