@@ -6,6 +6,8 @@ const synchronizer = new cornerstoneTools.Synchronizer(
   "cornerstonenewimage",
   cornerstoneTools.updateImageSynchronizer
 );
+const scheme = "wadouri";
+const baseUrl = "https://mypacs.com/dicoms";
 
 const CategoryCard = ({ images }) => {
   const elementRef = useRef(null);
@@ -22,7 +24,7 @@ const CategoryCard = ({ images }) => {
       // Enable the Cornerstone element
       cornerstone.enable(element);
 
-      const imageIds = images.map((imagePath) => `wadouri:${imagePath}`);
+      const imageIds = images.map((imagePath) => `${scheme}:${imagePath}`);
 
       try {
         const images = await Promise.all(
