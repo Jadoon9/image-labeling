@@ -5,7 +5,7 @@ const createProjectService = authApiService.injectEndpoints({
     createProject: build.mutation({
       query: (data) => {
         return {
-          url: "unzip/",
+          url: "/project/",
           method: "POST",
           body: data,
         };

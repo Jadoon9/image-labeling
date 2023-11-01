@@ -2,11 +2,10 @@ import React from "react";
 import creatImage from "../assets/createproject.svg";
 import Button from "../components/Button";
 import { useNavigate } from "react-router-dom";
-import DWVImage from "../components/DWVImage";
-import img from "../assets/download (1).png";
 
 const CreateProject = () => {
   const navigate = useNavigate();
+
   const handleCreate = () => {
     navigate("/tabs-page");
   };

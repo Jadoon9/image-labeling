@@ -8,20 +8,39 @@ import { instructionsSchema } from "../../utils/validations";
 import Textarea from "../Textarea";
 import { useDispatch, useSelector } from "react-redux";
 import { addTaxonomyData } from "../../store/slice/layoutSlice";
+import { useCreateProjectMutation } from "../../store/services/projectService";
 
 const Instructions = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [createProject, { isLoading, isSuccess, isError, error, data }] =
+    useCreateProjectMutation();
   const { taxonomy } = useSelector((item) => item.layout);
 
   const handleChange = (name, value) => {
     dispatch(addTaxonomyData({ name, value }));
   };
 
+  const uploadData = {
+    folderNames: {
+      row_list: taxonomy.rowlist,
+      column_list: taxonomy.columnlist,
+    },
+    session: [
+      {
+        case: [
+          {
+            labels: taxonomy.label,
+          },
+        ],
+      },
+    ],
+  };
+
   return (
     <>
       <Formik
-      enableReinitialize={true}
+        enableReinitialize={true}
         initialValues={{
           notes: taxonomy?.notes,
           randomizeCases: taxonomy?.randomizeCases,
@@ -66,7 +85,9 @@ const Instructions = () => {
                     type="button"
                     btnText="Finish"
                     icon
-                    onClick={() => navigate("/person")}
+                    onClick={() => {
+                      navigate("/person");
+                    }}
                   />
                 </div>
               </div>

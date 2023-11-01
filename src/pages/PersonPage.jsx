@@ -28,7 +28,7 @@ const categories = [
 ];
 
 const PersonPage = () => {
-  const { rows, columns } = useSelector((state) => state.layout);
+  const { taxonomy } = useSelector((state) => state.layout);
 
   const [isSynced, setIsSynced] = useState(false);
 
@@ -37,10 +37,10 @@ const PersonPage = () => {
   };
 
   useEffect(() => {
-    if (columns) {
+    if (taxonomy.columns) {
       document.querySelector("#dynamicGrid").style[
         "grid-template-columns"
-      ] = `repeat(${columns}, minmax(0, 1fr))`;
+      ] = `repeat(${taxonomy.columns}, minmax(0, 1fr))`;
     } else {
       document.querySelector("#dynamicGrid").style[
         "grid-template-columns"
