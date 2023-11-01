@@ -95,27 +95,25 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
                         </div>
                         {sidebarItems.map((item, idx) => {
                           return (
-                            <>
-                              <Disclosure key={idx}>
-                                {({ open }) => (
-                                  <>
-                                    <Disclosure.Button className="flex flex-between w-full justify-between rounded-[16px]  secondary-background px-4 py-2 text-left text-sm font-medium focus:outline-none h-[56px]">
-                                      <span className="body-medium">
-                                        {item.text}
-                                      </span>
-                                      <BsChevronDown
-                                        className={`${
-                                          open ? "rotate-180 transform" : ""
-                                        } h-4 w-4 `}
-                                      />
-                                    </Disclosure.Button>
-                                    <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500">
-                                      Section1
-                                    </Disclosure.Panel>
-                                  </>
-                                )}
-                              </Disclosure>
-                            </>
+                            <Disclosure key={idx}>
+                              {({ open }) => (
+                                <>
+                                  <Disclosure.Button className="flex flex-between w-full justify-between rounded-[16px]  secondary-background px-4 py-2 text-left text-sm font-medium focus:outline-none h-[56px]">
+                                    <span className="body-medium">
+                                      {item.text}
+                                    </span>
+                                    <BsChevronDown
+                                      className={`${
+                                        open ? "rotate-180 transform" : ""
+                                      } h-4 w-4 `}
+                                    />
+                                  </Disclosure.Button>
+                                  <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500">
+                                    Section1
+                                  </Disclosure.Panel>
+                                </>
+                              )}
+                            </Disclosure>
                           );
                         })}
                       </div>
@@ -169,10 +167,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
               <p className="body-light">Username</p>
             </div>
           </div>
-          <div class="flex gap-1 rounded-[16px] items-center border secondary-background p-2">
+          <div className="flex gap-1 rounded-[16px] items-center border secondary-background p-2">
             <CiSearch />
             <input
-              class="outline-none py-2 body-regular focus:outline-none secondary-background"
+              className="outline-none py-2 body-regular focus:outline-none secondary-background"
               type="text"
               placeholder="Search..."
             />
@@ -190,32 +188,30 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
             </div>
             {sidebarItems.map((item, idx) => {
               return (
-                <>
-                  <Disclosure key={idx}>
-                    {({ open }) => (
-                      <>
-                        <Disclosure.Button className="flex flex-between w-full justify-between rounded-[16px]  secondary-background px-4 py-2 text-left text-sm font-medium focus:outline-none h-[56px]">
-                          <span className="body-medium">{item.text}</span>
-                          <BsChevronDown
-                            className={`${
-                              open ? "rotate-180 transform" : ""
-                            } h-4 w-4 `}
-                          />
-                        </Disclosure.Button>
+                <Disclosure key={idx}>
+                  {({ open }) => (
+                    <>
+                      <Disclosure.Button className="flex flex-between w-full justify-between rounded-[16px]  secondary-background px-4 py-2 text-left text-sm font-medium focus:outline-none h-[56px]">
+                        <span className="body-medium">{item.text}</span>
+                        <BsChevronDown
+                          className={`${
+                            open ? "rotate-180 transform" : ""
+                          } h-4 w-4 `}
+                        />
+                      </Disclosure.Button>
 
-                        <Disclosure.Panel className="px-4 pt-4 pb-2 body-regular">
-                          <p
-                            className="body-light mb-1 text-[#4444F4] cursor-pointer"
-                            onClick={() => setIsOpen(true)}
-                          >
-                            Create a session +
-                          </p>
-                          Session 1
-                        </Disclosure.Panel>
-                      </>
-                    )}
-                  </Disclosure>
-                </>
+                      <Disclosure.Panel className="px-4 pt-4 pb-2 body-regular">
+                        <p
+                          className="body-light mb-1 text-[#4444F4] cursor-pointer"
+                          onClick={() => setIsOpen(true)}
+                        >
+                          Create a session +
+                        </p>
+                        Session 1
+                      </Disclosure.Panel>
+                    </>
+                  )}
+                </Disclosure>
               );
             })}
           </div>
