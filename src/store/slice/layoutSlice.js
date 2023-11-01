@@ -6,9 +6,12 @@ const initialState = {
     options: [],
     question: "",
     referenceClass: "",
-    labels: [],
+    label: [],
     columns: 0,
     rows: 0,
+    notes: "",
+    randomizeCases: false,
+    randomizeCat: false,
   },
 };
 
@@ -22,7 +25,7 @@ export const layoutSlice = createSlice({
     layoutCols: (state, action) => {
       state.taxonomy.columns = action.payload;
     },
-    addName: (state, action) => {
+    addTaxonomyName: (state, action) => {
       console.log("action data", action.payload);
       state.taxonomy[action.payload.name] = action.payload.value;
     },
@@ -37,11 +40,11 @@ export const layoutSlice = createSlice({
     },
     addLabels: (state, action) => {
       const newId =
-        state.taxonomy.labels.length > 0
-          ? state.taxonomy.labels[state.taxonomy.labels.length - 1].id + 1
+        state.taxonomy.label.length > 0
+          ? state.taxonomy.label[state.taxonomy.label.length - 1].id + 1
           : 1;
       const newItem = { id: newId, value: action.payload };
-      state.taxonomy.labels = [...state.taxonomy.labels, newItem];
+      state.taxonomy.label = [...state.taxonomy.label, newItem];
     },
     deleteOption: (state, action) => {
       const idToDelete = action.payload;
@@ -50,9 +53,9 @@ export const layoutSlice = createSlice({
       );
     },
 
-    deletLabel: (state, action) => {
+    deleteLabel: (state, action) => {
       const idToDelete = action.payload;
-      state.taxonomy.labels = state.taxonomy.labels.filter(
+      state.taxonomy.label = state.taxonomy.label.filter(
         (label) => label.id !== idToDelete
       );
     },
@@ -60,13 +63,13 @@ export const layoutSlice = createSlice({
 });
 
 export const {
-  addName,
+  addTaxonomyName,
   laoyoutRows,
   layoutCols,
   addOptions,
   addLabels,
   deleteOption,
-  deletLabel,
+  deleteLabel,
 } = layoutSlice.actions;
 
 export default layoutSlice.reducer;
