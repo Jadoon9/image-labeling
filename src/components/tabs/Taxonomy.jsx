@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import {
   addLabels,
-  addTaxonomyName,
+  addTaxonomyData,
   addOptions,
   deleteLabel,
   deleteOption,
@@ -55,12 +55,17 @@ const Taxonomy = () => {
     dispatch(deleteOption(id));
   };
 
-  const handleChange = (name, value) => {
-    dispatch(addTaxonomyName({ name, value }));
+  const handleChange = (name, value, index = "") => {
+    let data = { name, value };
+    if (index || index === 0) {
+      data = { ...data, index: index };
+    }
+    dispatch(addTaxonomyData(data));
   };
 
   useEffect(() => {
     console.log("hrerre", taxonomy);
+    console.log("hrerre 2", taxonomy.columnlist, taxonomy.columnlist?.length);
   }, [taxonomy]);
 
   return (
@@ -80,16 +85,11 @@ const Taxonomy = () => {
         initialValues={{
           projectName: taxonomy.projectName,
           options: taxonomy.options,
-          question: "",
-          referenceClass: "",
+          question: taxonomy.question,
+          referenceClass: taxonomy.referenceClass,
           label: taxonomy.label,
           rows: taxonomy.rows,
           columns: taxonomy.columns,
-          cat1: "",
-          cat2: "",
-          type1: "",
-          type2: "",
-          type3: "",
         }}
         validationSchema={taxonomySchema}
         onSubmit={(values) => {
@@ -144,6 +144,7 @@ const Taxonomy = () => {
                             aria-hidden="true"
                           />
                         }
+                        valueHandler={handleChange}
                       />
                     </div>
                   </div>
@@ -215,8 +216,12 @@ const Taxonomy = () => {
                                 className="py-2 px-4 border body-light border-gray-200"
                               >
                                 <DropDown
-                                  name={`headerItem${colIndex}`}
+                                  name={`columnlist${colIndex}`}
                                   options={mergedTypes || []}
+                                  value={taxonomy.columnlist?.[colIndex]}
+                                  gridIndex={colIndex}
+                                  valueHandler={handleChange}
+                                  reduxName="columnlist"
                                 />
                               </th>
                             )
@@ -231,8 +236,12 @@ const Taxonomy = () => {
                               {/* First cell with dropdown in the first column */}
                               <td className="py-1 px-4 border body-light border-gray-200">
                                 <DropDown
-                                  name={`item${rowIndex + 1}`}
+                                  name={`rowlist${rowIndex}`}
                                   options={mergedTypes || []}
+                                  value={taxonomy.rowlist?.[rowIndex]}
+                                  gridIndex={rowIndex}
+                                  valueHandler={handleChange}
+                                  reduxName="rowlist"
                                 />
                               </td>
                               {/* Data cells for other columns */}
