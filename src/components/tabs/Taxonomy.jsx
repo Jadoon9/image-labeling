@@ -49,9 +49,9 @@ const Taxonomy = () => {
     dispatch(deletLabel(id));
   };
 
-  const handleChange = (e) => {
-    debugger;
-    dispatch(addName(e.target.value));
+  const handleChange = (name, value) => {
+    console.log("uuuuu");
+    dispatch(addName({ name, value }));
   };
 
   useEffect(() => {
@@ -72,7 +72,7 @@ const Taxonomy = () => {
       />
       <Formik
         initialValues={{
-          projectName: "",
+          projectName: taxonomy.projectName,
           options: "",
           question: "",
           referenceClass: "",
@@ -100,7 +100,7 @@ const Taxonomy = () => {
                       <Input
                         label="Project Name"
                         name="projectName"
-                        onChange={handleChange}
+                        valueHandler={handleChange}
                       />
                     </div>
                     <div className=" flex flex-col align-center justify-center w-full md:w-[49%]">
@@ -120,7 +120,11 @@ const Taxonomy = () => {
 
                   <div className="flex justify-between align-top flex-wrap w-full">
                     <div className="w-full   md:w-[49%]">
-                      <Input label="Question" name="question" />
+                      <Input
+                        label="Question"
+                        name="question"
+                        valueHandler={handleChange}
+                      />
                     </div>
                     <div className="w-full md:w-[49%]">
                       <DropDown

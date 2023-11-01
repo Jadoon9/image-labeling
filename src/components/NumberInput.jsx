@@ -7,7 +7,6 @@ const NumberInput = ({ label, name }) => {
   const dispatch = useDispatch();
   const [field, meta, helpers] = useField(name);
 
-  console.log(field, "hghg");
   const incrementNumber = (e) => {
     e.preventDefault();
     if (field.name === "rows") {

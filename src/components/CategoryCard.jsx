@@ -33,14 +33,15 @@ const CategoryCard = ({
   cat,
   type,
   images,
-  elementId1,
-  elementId2,
+
   isSynced,
   // setZoomActive,
 }) => {
   const [imageIds, setImageIds] = useState([]);
   let element;
   let elementId = `dicomImage${cat}`;
+  let elementId1 = `dicomImage${cat + 1}`;
+  let elementId2 = `dicomImage${cat + 2}`;
 
   // ... (other functions remain unchanged)
 
@@ -80,6 +81,11 @@ const CategoryCard = ({
     cornerstone.enable(element);
   });
 
+  const synchronizer = new cornerstoneTools.Synchronizer(
+    "CornerstoneNewImage",
+    cornerstoneTools.updateImageSynchronizer
+  );
+
   useEffect(() => {
     const loadImages = async () => {
       try {
@@ -112,6 +118,7 @@ const CategoryCard = ({
 
         // Enable the StackScrollMouseWheelTool to enable scrolling through the stack
         setScrollActive();
+        synchronizer.add(element);
       } catch (error) {
         console.error("Error loading images:", error);
       }
@@ -121,6 +128,13 @@ const CategoryCard = ({
   }, []);
 
   const setZoomActive = (event) => {
+    // Load and display the first image
+    const element = document.getElementById(elementId);
+    const element2 = document.getElementById(elementId1);
+    const element3 = document.getElementById(elementId2);
+    cornerstone.enable(element);
+    cornerstone.enable(element2);
+    cornerstone.enable(element3);
     const ZoomMouseWheelTool = cornerstoneTools.ZoomMouseWheelTool;
     const PanTool = cornerstoneTools.PanTool;
 

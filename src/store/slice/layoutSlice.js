@@ -23,8 +23,10 @@ export const layoutSlice = createSlice({
       state.taxonomy.columns = action.payload;
     },
     addName: (state, action) => {
-      state.taxonomy.projectName = action.payload;
+      console.log("action data", action.payload);
+      state.taxonomy[action.payload.name] = action.payload.value;
     },
+
     addOptions: (state, action) => {
       const newId =
         state.taxonomy.options.length > 0
