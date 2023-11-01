@@ -12,6 +12,8 @@ const initialState = {
     notes: "",
     randomizeCases: false,
     randomizeCat: false,
+    rowlist: [],
+    columnlist: [],
   },
 };
 
@@ -19,15 +21,25 @@ export const layoutSlice = createSlice({
   name: "layout",
   initialState,
   reducers: {
-    laoyoutRows: (state, action) => {
-      state.taxonomy.rows = action.payload;
-    },
-    layoutCols: (state, action) => {
-      state.taxonomy.columns = action.payload;
-    },
-    addTaxonomyName: (state, action) => {
+    addTaxonomyData: (state, action) => {
+      const { name, value, index } = action.payload;
       console.log("action data", action.payload);
-      state.taxonomy[action.payload.name] = action.payload.value;
+      if (name === "columns" || name === "rows") {
+        const field = name === "columns" ? "columnlist" : "rowlist";
+        if (
+          Array.isArray(state.taxonomy[field]) &&
+          state.taxonomy[field]?.length
+        ) {
+          state.taxonomy[field].length = value;
+        } else {
+          state.taxonomy[field] = Array.from({ length: value }, () => "");
+        }
+      }
+      if (name === "columnlist" || name === "rowlist") {
+        state.taxonomy[name][index] = value;
+      } else {
+        state.taxonomy[name] = value;
+      }
     },
 
     addOptions: (state, action) => {
@@ -63,9 +75,7 @@ export const layoutSlice = createSlice({
 });
 
 export const {
-  addTaxonomyName,
-  laoyoutRows,
-  layoutCols,
+  addTaxonomyData,
   addOptions,
   addLabels,
   deleteOption,
