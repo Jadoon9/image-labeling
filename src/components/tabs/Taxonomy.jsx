@@ -30,7 +30,7 @@ const Taxonomy = () => {
   const { taxonomy } = useSelector((item) => item.layout);
 
   const { foldersList } = useSelector((state) => state.folders);
-  const mergedTypes = foldersList.result_lists.categories_types;
+  const mergedTypes = foldersList?.result_lists?.categories_types;
 
   const handleOpen = () => {
     setIsOpen(!isOpen);

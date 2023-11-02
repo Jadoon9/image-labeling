@@ -13,28 +13,31 @@ import { useCreateProjectMutation } from "../../store/services/projectService";
 const Instructions = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const [createProject, { isLoading, isSuccess, isError, error, data }] =
     useCreateProjectMutation();
   const { taxonomy } = useSelector((item) => item.layout);
+  const { foldersList } = useSelector((item) => item.folders);
 
   const handleChange = (name, value) => {
     dispatch(addTaxonomyData({ name, value }));
   };
 
   const uploadData = {
-    folderNames: {
-      row_list: taxonomy.rowlist,
-      column_list: taxonomy.columnlist,
-    },
-    session: [
-      {
-        case: [
-          {
-            labels: taxonomy.label,
-          },
-        ],
-      },
+    row_list: taxonomy?.rowlist,
+    column_list: taxonomy?.columnlist,
+    case: [
+      { labels: taxonomy?.label },
+      { options: taxonomy?.options },
+      { referennceName: taxonomy?.referenceClass },
+      { caseName: "test" },
+      { notes: taxonomy?.notes },
+      { randomizeCases: taxonomy?.randomizeCases },
+      { randomize_categories: taxonomy?.randomizeCat },
     ],
+    zip_folder: foldersList?.result_lists?.zip_folder,
+    projectName: taxonomy?.projectName,
+    question: taxonomy?.question,
   };
 
   return (

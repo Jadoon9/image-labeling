@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 // const url = "https://tahir727.pythonanywhere.com/";
-const url = "https://5258-119-155-3-247.ngrok-free.app/api";
+const url = "https://1b95-45-117-104-111.ngrok-free.app/api";
 
 const token = localStorage.getItem("token");
 
