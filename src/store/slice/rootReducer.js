@@ -4,6 +4,7 @@ import { noAuthApiService } from "../services/noAuthService";
 import authSlice from "./authSlice";
 import layoutSlice from "./layoutSlice";
 import folderSlice from "./foldersSlice";
+import projectSlice from "./projectSlice";
 
 //Import  Reducers
 
@@ -13,6 +14,7 @@ export const appReducers = combineReducers({
   auth: authSlice,
   layout: layoutSlice,
   folders: folderSlice,
+  project: projectSlice,
 });
 
 export const rootReducer = (state, action) => {

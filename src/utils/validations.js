@@ -10,14 +10,14 @@ export const loginValSchema = yup.object({
 
 export const instructionsSchema = yup.object({
   notes: yup.string().required("Please enter some notes"),
-  randomizeCases: yup
-    .boolean()
-    .oneOf([true], "You must accept the terms and conditions") // Ensures the checkbox is checked
-    .required("You must accept the terms and conditions"), // Ensures the checkbox is checked
-  randomizeCat: yup
-    .boolean()
-    .oneOf([true], "You must accept the terms and conditions") // Ensures the checkbox is checked
-    .required("You must accept the terms and conditions"), // Ensures the checkbox is checked
+  // randomizeCases: yup
+  //   .boolean()
+  //   .oneOf([true], "You must accept the terms and conditions") // Ensures the checkbox is checked
+  //   .required("You must accept the terms and conditions"), // Ensures the checkbox is checked
+  // randomizeCat: yup
+  //   .boolean()
+  //   .oneOf([true], "You must accept the terms and conditions") // Ensures the checkbox is checked
+  //   .required("You must accept the terms and conditions"), // Ensures the checkbox is checked
 });
 
 export const taxonomySchema = yup.object({

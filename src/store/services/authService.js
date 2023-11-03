@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 // const url = "https://tahir727.pythonanywhere.com/";
-const url = "https://1b95-45-117-104-111.ngrok-free.app/api";
+const url = "http://127.0.0.1:8000/api";
 
 const token = localStorage.getItem("token");
 
@@ -12,6 +12,7 @@ const baseQuery = fetchBaseQuery({
       "Authorization",
       `Token ${localStorage.getItem("token")}` || token
     );
+    // headers.set("ngrok-skip-browser-warning", "false");
     return headers;
   },
 });

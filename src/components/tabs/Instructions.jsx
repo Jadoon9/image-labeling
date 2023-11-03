@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import CheckBox from "../CheckBox";
 import BackButton from "../BackButton";
 import Button from "../Button";
@@ -9,6 +9,7 @@ import Textarea from "../Textarea";
 import { useDispatch, useSelector } from "react-redux";
 import { addTaxonomyData } from "../../store/slice/layoutSlice";
 import { useCreateProjectMutation } from "../../store/services/projectService";
+import { addProject } from "../../store/slice/projectSlice";
 
 const Instructions = () => {
   const navigate = useNavigate();
@@ -23,21 +24,47 @@ const Instructions = () => {
     dispatch(addTaxonomyData({ name, value }));
   };
 
+  const transformedLabels = taxonomy?.label.map((item) => {
+    return { value: item.value };
+  });
+  const transformedOptions = taxonomy?.options.map((item) => {
+    return { value: item.value };
+  });
+
+  console.log(data, isSuccess, "chehce");
+
+  useEffect(() => {
+    if (isSuccess) {
+      dispatch(addProject(data));
+      navigate(`/person/${data.id}`);
+    }
+  }, [isSuccess, data]);
+
+  if (isLoading) {
+    return <h1>Loading</h1>;
+  }
+
   const uploadData = {
-    row_list: taxonomy?.rowlist,
-    column_list: taxonomy?.columnlist,
+    rows_list: taxonomy?.rowlist,
+    columns_list: taxonomy?.columnlist,
     case: [
-      { labels: taxonomy?.label },
-      { options: taxonomy?.options },
-      { referennceName: taxonomy?.referenceClass },
-      { caseName: "test" },
-      { notes: taxonomy?.notes },
-      { randomizeCases: taxonomy?.randomizeCases },
-      { randomize_categories: taxonomy?.randomizeCat },
+      {
+        labels: transformedLabels,
+        options: transformedOptions,
+        reference_folder: {
+          reference_name: taxonomy?.referenceClass,
+        },
+        case_name: "test",
+        notes: taxonomy?.notes,
+        randomize_cases: taxonomy?.randomizeCases,
+        randomize_categories: taxonomy?.randomizeCat,
+      },
     ],
     zip_folder: foldersList?.result_lists?.zip_folder,
-    projectName: taxonomy?.projectName,
+    project_name: taxonomy?.projectName,
     question: taxonomy?.question,
+    cols_number: taxonomy?.columns,
+    rows_number: taxonomy?.rows,
   };
 
   return (
@@ -51,6 +78,7 @@ const Instructions = () => {
         }}
         validationSchema={instructionsSchema}
         onSubmit={(values) => {
+          createProject(uploadData);
           console.log(values, "valuess");
         }}
       >
@@ -84,14 +112,7 @@ const Instructions = () => {
               <div className="flex-between relative bottom-0 mt-40">
                 <BackButton />
                 <div className="w-32">
-                  <Button
-                    type="button"
-                    btnText="Finish"
-                    icon
-                    onClick={() => {
-                      navigate("/person");
-                    }}
-                  />
+                  <Button type="submit" btnText="Finish" icon />
                 </div>
               </div>
             </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import restartIon from "../assets/mdi_restart.svg";
 import zoomIcon from "../assets/tabler_zoom-in-filled.svg";
@@ -35,80 +35,51 @@ const CategoryCard = ({
   images,
   synchronizer,
   isSynced,
+  setCurrentSlice,
+  // elementRef,
   // setZoomActive,
 }) => {
-  const [imageIds, setImageIds] = useState([]);
-  let element;
-  let elementId = `dicomImage${cat}`;
-
-  // ... (other functions remain unchanged)
-
-  const handleReset = () => {
-    const element = document.getElementById(`${elementId}`);
-
-    // Reset zoom and pan
-    cornerstone.reset(element);
-
-    // Reset other tools if needed
-    const stack = cornerstoneTools.getToolState(element, "stack");
-    if (stack && stack.data && stack.data.length > 0) {
-      stack.data[0].currentImageIdIndex = 0;
-    }
-
-    // Reset other tools as necessary (example: length tool)
-    const lengthToolData = cornerstoneTools.getToolState(element, "Length");
-    if (
-      lengthToolData &&
-      lengthToolData.data &&
-      lengthToolData.data.length > 0
-    ) {
-      lengthToolData.data[0].measurementData.measurementValue = 0;
-    }
-
-    // Call updateImage to redraw the image after reset
-    cornerstone.updateImage(element);
-  };
-
-  // loadAndViewImage`${elementId}`;
-
-  useEffect(() => {
-    element = document.getElementById(`${elementId}`);
-    cornerstone.enable(element);
-  });
-
+  const elementRef = useRef(null);
+  const baseUrl = "http://127.0.0.1:8000/media/";
+  const scheme = "wadouri";
   useEffect(() => {
     const loadImages = async () => {
       try {
-        const imageIds = await Promise.all(
-          images.map(async (imagePath) => {
-            const imageId = `wadouri:${imagePath}`;
+        // Check if elementRef.current is truthy before accessing its properties
+        if (elementRef.current) {
+          const imageIds = images.map((imagePath) => {
+            const imageId = `${scheme}:${baseUrl}${imagePath?.image}`;
             return imageId;
-          })
-        );
+          });
 
-        setImageIds(imageIds);
+          // Load and display the first image
+          const element = elementRef.current;
+          cornerstone.enable(element);
+          const image = await cornerstone.loadImage(imageIds[0]);
+          const viewport = cornerstone.getDefaultViewportForImage(
+            element,
+            image
+          );
 
-        // Load and display the first image
-        const element = document.getElementById(elementId);
-        cornerstone.enable(element);
-        const image = await cornerstone.loadImage(imageIds[0]);
-        const viewport = cornerstone.getDefaultViewportForImage(element, image);
+          cornerstone.displayImage(element, image, viewport);
 
-        cornerstone.displayImage(element, image, viewport);
+          // Create a stack object and assign imageIds to it
+          const stack = {
+            currentImageIdIndex: 0,
+            imageIds: imageIds,
+          };
 
-        // Create a stack object and assign imageIds to it
-        const stack = {
-          currentImageIdIndex: 0,
-          imageIds: imageIds,
-        };
+          // Add the stack to the cornerstone tools
+          cornerstoneTools.addStackStateManager(element, ["stack"]);
+          cornerstoneTools.addToolState(element, "stack", stack);
+          // setCurrentSlice(0);
 
-        // Add the stack to the cornerstone tools
-        cornerstoneTools.addStackStateManager(element, ["stack"]);
-        cornerstoneTools.addToolState(element, "stack", stack);
-
-        // Enable the StackScrollMouseWheelTool to enable scrolling through the stack
-        setScrollActive();
-        synchronizer.add(element);
+          // Enable the StackScrollMouseWheelTool to enable scrolling through the stack
+          setScrollActive();
+          synchronizer.add(element);
+        } else {
+          console.error("elementRef is null or undefined.");
+        }
       } catch (error) {
         console.error("Error loading images:", error);
       }
@@ -118,42 +89,116 @@ const CategoryCard = ({
   }, []);
 
   const setZoomActive = (event) => {
-    // Load and display the first image
-    const element = document.getElementById(elementId);
+    // Check if elementRef.current is truthy before enabling zoom functionality
+    if (elementRef.current) {
+      // Load and display the first image
+      const element = elementRef.current;
+      cornerstone.enable(element);
 
-    cornerstone.enable(element);
+      const ZoomMouseWheelTool = cornerstoneTools.ZoomMouseWheelTool;
+      const PanTool = cornerstoneTools.PanTool;
 
-    const ZoomMouseWheelTool = cornerstoneTools.ZoomMouseWheelTool;
-    const PanTool = cornerstoneTools.PanTool;
+      cornerstoneTools.addTool(ZoomMouseWheelTool);
+      cornerstoneTools.setToolActive("ZoomMouseWheel", { mouseButtonMask: 1 });
 
-    cornerstoneTools.addTool(ZoomMouseWheelTool);
-    cornerstoneTools.setToolActive("ZoomMouseWheel", { mouseButtonMask: 1 });
-
-    cornerstoneTools.addTool(PanTool);
-    cornerstoneTools.setToolActive("Pan", { mouseButtonMask: 1 });
+      cornerstoneTools.addTool(PanTool);
+      cornerstoneTools.setToolActive("Pan", { mouseButtonMask: 1 });
+    } else {
+      console.error(
+        "elementRef is null or undefined. Cannot enable zoom functionality."
+      );
+    }
   };
 
   const setWwwcActive = (e) => {
-    const WwwcTool = cornerstoneTools.WwwcTool;
-    cornerstoneTools.addTool(WwwcTool);
-    cornerstoneTools.setToolActive("Wwwc", { mouseButtonMask: 1 });
+    // Check if elementRef.current is truthy before enabling Wwwc tool functionality
+    if (elementRef.current) {
+      const WwwcTool = cornerstoneTools.WwwcTool;
+      cornerstoneTools.addTool(WwwcTool);
+      cornerstoneTools.setToolActive("Wwwc", { mouseButtonMask: 1 });
+    } else {
+      console.error(
+        "elementRef is null or undefined. Cannot enable Wwwc tool functionality."
+      );
+    }
   };
 
-  const setScrollActive = (elementId1, elementId2) => {
-    const StackScrollMouseWheelTool =
-      cornerstoneTools.StackScrollMouseWheelTool;
-    cornerstoneTools.addTool(StackScrollMouseWheelTool);
-    cornerstoneTools.setToolActive("StackScrollMouseWheel", {});
+  const setScrollActive = () => {
+    // Check if elementRef.current is truthy before enabling StackScrollMouseWheelTool functionality
+    if (elementRef.current) {
+      const StackScrollMouseWheelTool =
+        cornerstoneTools.StackScrollMouseWheelTool;
+      cornerstoneTools.addTool(StackScrollMouseWheelTool);
+      cornerstoneTools.setToolActive("StackScrollMouseWheel", {
+        mouseWheelCallback: (e) => {
+          // Get the current stack data
+          const stackToolData = cornerstoneTools.getToolState(
+            elementRef.current,
+            "stack"
+          );
+          if (
+            stackToolData &&
+            stackToolData.data &&
+            stackToolData.data.length > 0
+          ) {
+            const stack = stackToolData.data[0];
+
+            // Update the current slice number
+            // setCurrentSlice(stack.currentImageIdIndex);
+          }
+
+          // Call the default behavior of StackScrollMouseWheelTool
+          return StackScrollMouseWheelTool.mouseWheelCallback(e);
+        },
+      });
+    } else {
+      console.error(
+        "elementRef is null or undefined. Cannot enable Scroll functionality."
+      );
+    }
+  };
+
+  const handleReset = () => {
+    // Check if elementRef.current is truthy before resetting the Cornerstone element
+    if (elementRef.current) {
+      const element = elementRef.current;
+
+      // Reset zoom and pan
+      cornerstone.reset(element);
+
+      // Reset other tools if needed
+      const stack = cornerstoneTools.getToolState(element, "stack");
+      if (stack && stack.data && stack.data.length > 0) {
+        stack.data[0].currentImageIdIndex = 0;
+      }
+
+      // Reset other tools as necessary (example: length tool)
+      const lengthToolData = cornerstoneTools.getToolState(element, "Length");
+      if (
+        lengthToolData &&
+        lengthToolData.data &&
+        lengthToolData.data.length > 0
+      ) {
+        lengthToolData.data[0].measurementData.measurementValue = 0;
+      }
+
+      // Call updateImage to redraw the image after reset
+      cornerstone.updateImage(element);
+    } else {
+      console.error(
+        "elementRef is null or undefined. Cannot reset the Cornerstone element."
+      );
+    }
   };
 
   return (
     <div className="w-full custom-shadow  p-1 rounded-[22px] ">
-      {!hideTitle && <h3 className="h3-bold">Category {cat}</h3>}
-      {!hideTitle && <p className="body-light mt-2">Type {type}</p>}
+      {!hideTitle && <h3 className="h3-bold">Category : {cat}</h3>}
+      {!hideTitle && <p className="body-light mt-2">Type : {type}</p>}
 
       <div className="flex flex-col overflow-scroll custom-scrollbar ">
         <div onContextMenu={() => false} unselectable="on">
-          <div id={elementId} />
+          <div ref={elementRef} />
         </div>
 
         <div className="flex-center gap-1 mb-1 ">

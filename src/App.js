@@ -26,7 +26,8 @@ function App() {
           <Route element={<VerticalLayout setIsOpen={setIsOpen} />}>
             <Route path="/" element={<CreateProject />} />
             <Route path="/tabs-page" element={<TabsPage />} />
-            <Route path="/person" element={<PersonPage />} />
+            <Route path="/person/:id" element={<PersonPage />} />
+            <Route path="/person/" element={<PersonPage />} />
           </Route>
         </Route>
 

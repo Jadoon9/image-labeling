@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { sidebarItems } from "../constants";
 import Avatar from "../assets/avatar.jpg";
 import { Dialog, Disclosure, Switch, Transition } from "@headlessui/react";
@@ -9,10 +9,26 @@ import { BsSun } from "react-icons/bs";
 import { TbLogout } from "react-icons/tb";
 import { MdCancel } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import { useGetProjectsListQuery } from "../store/services/projectService";
+import { useDispatch, useSelector } from "react-redux";
+import { addProjectsList } from "../store/slice/projectSlice";
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { isLoading, isSuccess, isError, refetch, error, data } =
+    useGetProjectsListQuery();
   const [enabled, setEnabled] = useState(false);
+  const { projectList } = useSelector((state) => state.project);
+  useEffect(() => {
+    refetch();
+  }, []);
+
+  useEffect(() => {
+    dispatch(addProjectsList(data));
+  }, [isSuccess]);
+
+  console.log(projectList, "hgjhgg");
   return (
     <>
       {/* Mobile Sidebar */}
@@ -188,14 +204,16 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
                 Create New Project +
               </p>
             </div>
-            {sidebarItems.map((item, idx) => {
+            {projectList?.map?.((item, idx) => {
               return (
                 <>
                   <Disclosure key={idx}>
                     {({ open }) => (
                       <>
                         <Disclosure.Button className="flex flex-between w-full justify-between rounded-[16px]  secondary-background px-4 py-2 text-left text-sm font-medium focus:outline-none h-[56px]">
-                          <span className="body-medium">{item.text}</span>
+                          <span className="body-medium">
+                            {item?.project_name}
+                          </span>
                           <BsChevronDown
                             className={`${
                               open ? "rotate-180 transform" : ""
@@ -210,7 +228,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
                           >
                             Create a session +
                           </p>
-                          Session 1
+                          <p
+                            className="cursor-pointer"
+                            onClick={() => navigate(`/person/${item?.id}`)}
+                          >
+                            {item?.project_name}
+                          </p>
                         </Disclosure.Panel>
                       </>
                     )}

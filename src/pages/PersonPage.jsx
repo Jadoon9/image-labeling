@@ -16,6 +16,9 @@ import image3 from "../assets/dicom data/case1/AI_ABC/3.dcm";
 import image4 from "../assets/dicom data/case1/AI_ABC/4.dcm";
 import image5 from "../assets/dicom data/case1/AI_ABC/5.dcm";
 import image6 from "../assets/dicom data/case1/AI_ABC/6.dcm";
+import { useGetProjectQuery } from "../store/services/projectService";
+import { useParams } from "react-router-dom";
+import { projData } from "../constants";
 
 const imageUrls = [image1, image2, image3, image4, image5, image6];
 
@@ -29,11 +32,25 @@ const categories = [
 ];
 
 const PersonPage = () => {
+  const { id } = useParams();
+  const { isLoading, isSuccess, isError, refetch, error, data } =
+    useGetProjectQuery(id);
+
+  const { projectData } = useSelector((state) => state.project);
+
+  const [currentSlice, setCurrentSlice] = useState();
+  const elementRef = useRef(null);
+
   const { taxonomy } = useSelector((state) => state.layout);
   const synchronizer = new cornerstoneTools.Synchronizer(
     "CornerstoneNewImage",
     cornerstoneTools.updateImageSynchronizer
   );
+
+  const index = 0;
+
+  const dataCopy = projectData?.session[0]?.case[index];
+  const [caseData, setCasedata] = useState(dataCopy);
 
   const [isSynced, setIsSynced] = useState(false);
 
@@ -42,6 +59,7 @@ const PersonPage = () => {
   };
 
   useEffect(() => {
+    refetch();
     if (taxonomy.columns) {
       document.querySelector("#dynamicGrid").style[
         "grid-template-columns"
@@ -52,6 +70,8 @@ const PersonPage = () => {
       ] = `repeat(2, minmax(0, 1fr))`;
     }
   }, []);
+
+  console.log(caseData, "caseData");
 
   return (
     <>
@@ -82,42 +102,30 @@ const PersonPage = () => {
                 <div className="flex-1 px-4 ">
                   <div className=" grid grid-cols-1 p-4 primary-border-color">
                     <h3 className="h3-bold mb-2">Reference</h3>
-                    <div className="flex ">
+                    <div className="flex " id="">
                       <CategoryCard
-                        elemntId={`dicomImage-0`}
-                        images={imageUrls}
+                        images={caseData?.reference_folder?.image_list}
+                        isSynced={isSynced}
+                        synchronizer={synchronizer}
+                        // setCurrentSlice={setCurrentSlice}
                         hideTitle
                       />
                     </div>
                   </div>
 
                   <div id="dynamicGrid" className={`grid w-full relative `}>
-                    {categories.map((item, index) => {
-                      // Calculate the IDs for the next two elements
-                      const nextElement1Id = categories[index + 1]
-                        ? `dicomImage${categories[index + 1].cat}`
-                        : null;
-                      const nextElement2Id = categories[index + 2]
-                        ? `dicomImage${categories[index + 2].cat}`
-                        : null;
-
+                    {caseData?.category_type?.map((item, index) => {
                       return (
                         <div key={item.cat} className="flex flex-col gap-4 p-1">
                           <CategoryCard
-                            cat={item.cat}
+                            images={item.image_list}
+                            cat={item.category}
                             type={item.type}
-                            elementId={`dicomImage${item.cat}`}
-                            images={item.images}
-                            elementId1={nextElement1Id}
-                            elementId2={nextElement2Id}
                             isSynced={isSynced}
                             synchronizer={synchronizer}
-                            // setZoomActive={setZoomActive}
+                            setCurrentSlice={setCurrentSlice}
+                            elementRef={elementRef}
                           />
-                          <div className="flex flex-col gap-6 mt-2">
-                            <Checkbox name="option1" text="Option 1" />
-                            <Checkbox name="option2" text="Option 2" />
-                          </div>
 
                           {(index + 1) % 2 === 0 && (
                             <div className="col-span-2 flex items-center justify-center w-full mt-8 mb-8 ">
@@ -133,9 +141,8 @@ const PersonPage = () => {
                         </div>
                       );
                     })}
-
-                    {/* Centered button spanning full width */}
                   </div>
+
                   <div className="w-full flex m-auto px-32 py-5">
                     <div className="w-[100%]">
                       <Button btnText="Submit" />

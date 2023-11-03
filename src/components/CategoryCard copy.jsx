@@ -145,35 +145,35 @@ const CategoryCard = ({ hideTitle, cat, type, images }) => {
     cornerstone.enable(element);
   });
 
-  // useEffect(() => {
-  //   debugger;
-  //   const files = imagesData;
-  //   setUploadedFiles(files);
+  useEffect(() => {
+    debugger;
+    const files = imagesData;
+    setUploadedFiles(files);
 
-  //   const imageIds = files.map((file) => {
-  //     return cornerstoneWADOImageLoader.wadouri.fileManager.add(file);
-  //   });
+    const imageIds = files.map((file) => {
+      return cornerstoneWADOImageLoader.wadouri.fileManager.add(file);
+    });
 
-  //   setImageIds(imageIds);
+    setImageIds(imageIds);
 
-  //   const stack = {
-  //     currentImageIdIndex: 0,
-  //     imageIds: imageIds,
-  //   };
+    const stack = {
+      currentImageIdIndex: 0,
+      imageIds: imageIds,
+    };
 
-  //   cornerstone.loadAndCacheImage(imageIds[0]).then((image) => {
-  //     const element = document.getElementById(`${elementId}`);
-  //     cornerstone.displayImage(element, image);
-  //     cornerstoneTools.addStackStateManager(element, ["stack"]);
-  //     cornerstoneTools.addToolState(element, "stack", stack);
-  //   });
+    cornerstone.loadAndCacheImage(imageIds[0]).then((image) => {
+      const element = document.getElementById(`${elementId}`);
+      cornerstone.displayImage(element, image);
+      cornerstoneTools.addStackStateManager(element, ["stack"]);
+      cornerstoneTools.addToolState(element, "stack", stack);
+    });
 
-  //   // Add the Stack Scroll tool and make it active
-  //   const StackScrollMouseWheelTool =
-  //     cornerstoneTools.StackScrollMouseWheelTool;
-  //   cornerstoneTools.addTool(StackScrollMouseWheelTool);
-  //   cornerstoneTools.setToolActive("StackScrollMouseWheel", {});
-  // }, []);
+    // Add the Stack Scroll tool and make it active
+    const StackScrollMouseWheelTool =
+      cornerstoneTools.StackScrollMouseWheelTool;
+    cornerstoneTools.addTool(StackScrollMouseWheelTool);
+    cornerstoneTools.setToolActive("StackScrollMouseWheel", {});
+  }, []);
 
   const handleFileChange = (imageUrls) => {
     const files = Array.from(imageUrls.target.files);
