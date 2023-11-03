@@ -44,7 +44,7 @@ const CategoryCard = ({
   const baseUrl = "http://127.0.0.1:8000/";
   const scheme = "wadouri";
   let element;
-  let elementId = `dicomImag${idx}`;
+  let elementId = `dicomImage${idx}`;
 
   useEffect(() => {
     element = document.getElementById(`${elementId}`);
@@ -58,7 +58,7 @@ const CategoryCard = ({
         });
 
         // Load and display the first image
-
+        const element = document.getElementById(elementId);
         cornerstone.enable(element);
         const image = await cornerstone.loadImage(imageIds[0]);
         const viewport = cornerstone.getDefaultViewportForImage(element, image);
@@ -74,7 +74,6 @@ const CategoryCard = ({
         // Add the stack to the cornerstone tools
         cornerstoneTools.addStackStateManager(element, ["stack"]);
         cornerstoneTools.addToolState(element, "stack", stack);
-        // setCurrentSlice(0);
 
         // Enable the StackScrollMouseWheelTool to enable scrolling through the stack
         setScrollActive();
@@ -87,10 +86,10 @@ const CategoryCard = ({
     loadImages();
   }, []);
 
-  const setZoomActive = (elementId) => {
+  const setZoomActive = (event) => {
+    // Load and display the first image
     const element = document.getElementById(elementId);
     cornerstone.enable(element);
-
     const ZoomMouseWheelTool = cornerstoneTools.ZoomMouseWheelTool;
     const PanTool = cornerstoneTools.PanTool;
 
@@ -102,38 +101,16 @@ const CategoryCard = ({
   };
 
   const setWwwcActive = (e) => {
-    const element = document.getElementById(`${elementId}`);
-    cornerstone.enable(element);
     const WwwcTool = cornerstoneTools.WwwcTool;
     cornerstoneTools.addTool(WwwcTool);
     cornerstoneTools.setToolActive("Wwwc", { mouseButtonMask: 1 });
   };
 
-  const setScrollActive = () => {
-    const element = document.getElementById(`${elementId}`);
-    cornerstone.enable(element);
+  const setScrollActive = (elementId1, elementId2) => {
     const StackScrollMouseWheelTool =
       cornerstoneTools.StackScrollMouseWheelTool;
     cornerstoneTools.addTool(StackScrollMouseWheelTool);
-    cornerstoneTools.setToolActive("StackScrollMouseWheel", {
-      mouseWheelCallback: (e) => {
-        // Get the current stack data
-        const stackToolData = cornerstoneTools.getToolState(element, "stack");
-        if (
-          stackToolData &&
-          stackToolData.data &&
-          stackToolData.data.length > 0
-        ) {
-          const stack = stackToolData.data[0];
-
-          // Update the current slice number
-          // setCurrentSlice(stack.currentImageIdIndex);
-        }
-
-        // Call the default behavior of StackScrollMouseWheelTool
-        return StackScrollMouseWheelTool.mouseWheelCallback(e);
-      },
-    });
+    cornerstoneTools.setToolActive("StackScrollMouseWheel", {});
   };
 
   const handleReset = () => {
@@ -141,6 +118,7 @@ const CategoryCard = ({
 
     // Reset zoom and pan
     cornerstone.reset(element);
+
     // Reset other tools if needed
     const stack = cornerstoneTools.getToolState(element, "stack");
     if (stack && stack.data && stack.data.length > 0) {
