@@ -118,13 +118,13 @@ const PersonPage = () => {
                               // setZoomActive={setZoomActive}
                             />
                             <div className="flex flex-col gap-6 mt-2">
-                              <Checkbox name="option1" text="Option 1" />
-                              <Checkbox name="option2" text="Option 2" />
+                              {/* <Checkbox name="option1" text="Option 1" />
+                              <Checkbox name="option2" text="Option 2" /> */}
                             </div>
 
                             {(index + 1) % 2 === 0 && (
                               <div className="col-span-2 flex items-center justify-center w-full mt-8 mb-8 ">
-                                <div className="w-[100%] absolute left-0 p-32 ">
+                                <div className="w-[100%] absolute left-0 px-32 ">
                                   <Button
                                     btnText="Sync"
                                     nobg
