@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import restartIon from "../assets/mdi_restart.svg";
 import zoomIcon from "../assets/tabler_zoom-in-filled.svg";
@@ -28,38 +28,67 @@ cornerstoneTools.init({
   showSVGCursors: false,
 });
 
-const CategoryCard = ({
-  hideTitle,
-  cat,
-  type,
-  images,
-  synchronizer,
-  isSynced,
-  idx,
-  setCurrentSlice,
-
-  // setZoomActive,
-}) => {
-  // const elementRef = useRef(null);
-  const baseUrl = "http://127.0.0.1:8000/";
-  const scheme = "wadouri";
+const CategoryCard = ({ hideTitle, cat, type, images, idx }) => {
+  const [imageIds, setImageIds] = useState([]);
   let element;
   let elementId = `dicomImage${idx}`;
+
+  const handleReset = () => {
+    const element = document.getElementById(`${elementId}`);
+
+    // Reset zoom and pan
+    cornerstone.reset(element);
+
+    // Reset other tools if needed
+    const stack = cornerstoneTools.getToolState(element, "stack");
+    if (stack && stack.data && stack.data.length > 0) {
+      stack.data[0].currentImageIdIndex = 0;
+    }
+
+    // Reset other tools as necessary (example: length tool)
+    const lengthToolData = cornerstoneTools.getToolState(element, "Length");
+    if (
+      lengthToolData &&
+      lengthToolData.data &&
+      lengthToolData.data.length > 0
+    ) {
+      lengthToolData.data[0].measurementData.measurementValue = 0;
+    }
+
+    // Call updateImage to redraw the image after reset
+    cornerstone.updateImage(element);
+  };
+  const baseUrl = "http://127.0.0.1:8000/";
+  const scheme = "wadouri";
+
+  // loadAndViewImage`${elementId}`;
 
   useEffect(() => {
     element = document.getElementById(`${elementId}`);
     cornerstone.enable(element);
+  });
 
+  const synchronizer = new cornerstoneTools.Synchronizer(
+    "CornerstoneNewImage",
+    cornerstoneTools.updateImageSynchronizer
+  );
+
+  useEffect(() => {
     const loadImages = async () => {
       try {
-        const imageIds = images.map((imagePath) => {
-          const imageId = `${scheme}:${baseUrl}${imagePath?.image}`;
-          return imageId;
-        });
+        const imageIds = await Promise.all(
+          images.map(async (imagePath) => {
+            const imageId = `${scheme}:${baseUrl}${imagePath?.image}`;
+            return imageId;
+          })
+        );
+
+        setImageIds(imageIds);
 
         // Load and display the first image
         const element = document.getElementById(elementId);
         cornerstone.enable(element);
+
         const image = await cornerstone.loadImage(imageIds[0]);
         const viewport = cornerstone.getDefaultViewportForImage(element, image);
 
@@ -90,6 +119,7 @@ const CategoryCard = ({
     // Load and display the first image
     const element = document.getElementById(elementId);
     cornerstone.enable(element);
+
     const ZoomMouseWheelTool = cornerstoneTools.ZoomMouseWheelTool;
     const PanTool = cornerstoneTools.PanTool;
 
@@ -113,72 +143,42 @@ const CategoryCard = ({
     cornerstoneTools.setToolActive("StackScrollMouseWheel", {});
   };
 
-  const handleReset = () => {
-    const element = document.getElementById(`${elementId}`);
-
-    // Reset zoom and pan
-    cornerstone.reset(element);
-
-    // Reset other tools if needed
-    const stack = cornerstoneTools.getToolState(element, "stack");
-    if (stack && stack.data && stack.data.length > 0) {
-      stack.data[0].currentImageIdIndex = 0;
-    }
-
-    // Reset other tools as necessary (example: length tool)
-    const lengthToolData = cornerstoneTools.getToolState(element, "Length");
-    if (
-      lengthToolData &&
-      lengthToolData.data &&
-      lengthToolData.data.length > 0
-    ) {
-      lengthToolData.data[0].measurementData.measurementValue = 0;
-    }
-
-    // Call updateImage to redraw the image after reset
-    cornerstone.updateImage(element);
-  };
-
   return (
-    <div className="w-full custom-shadow p-1 rounded-[22px] h-[350px] flex flex-col justify-between overflow-hidden">
-      <div>
-        {!hideTitle && <h3 className="h3-bold">Category : {cat}</h3>}
-        {!hideTitle && <p className="body-light mt-2">Type : {type}</p>}
-      </div>
+    <div className="w-full custom-shadow  p-1 rounded-[22px] ">
+      {!hideTitle && <h3 className="h3-bold">Category : {cat}</h3>}
+      {!hideTitle && <p className="body-light mt-2">Type : {type}</p>}
 
-      <div
-        onContextMenu={() => false}
-        unselectable="on"
-        className="overflow-hidden"
-      >
-        <div className="overflow-hidden" id={elementId} />
-      </div>
+      <div className="flex flex-col overflow-scroll custom-scrollbar ">
+        <div onContextMenu={() => false} unselectable="on">
+          <div id={elementId} />
+        </div>
 
-      <div className="flex items-center justify-center gap-8 mb-1 mt-1">
-        <button
-          className="p-1 custom-shadow rounded-[8px] h-6 w-6"
-          onClick={handleReset}
-        >
-          <img src={restartIon} alt="rest" className="" />
-        </button>
-        <button
-          className="p-1 custom-shadow rounded-[8px] h-6 w-6"
-          onClick={setZoomActive}
-        >
-          <img src={zoomIcon} alt="rest" />
-        </button>
-        <button
-          className="p-1 custom-shadow rounded-[8px] h-6 w-6"
-          onClick={setWwwcActive}
-        >
-          <img src={dropIcon} alt="rest" />
-        </button>
-        <button
-          className="p-1 custom-shadow rounded-[8px] h-6 w-6"
-          onClick={() => setZoomActive(`dicomImag${idx}`)}
-        >
-          <img src={gameIcon} alt="rest" />
-        </button>
+        <div className="flex-center gap-1 mb-1 ">
+          <button
+            className="p-1 custom-shadow  cursor-pointer rounded-[8px] h-6 w-6 "
+            onClick={handleReset}
+          >
+            <img src={restartIon} alt="rest" className="" />
+          </button>
+          <button
+            className="p-1 custom-shadow  cursor-pointer rounded-[8px] h-6 w-6  "
+            onClick={setZoomActive}
+          >
+            <img src={zoomIcon} alt="rest" />
+          </button>
+          <button
+            className="p-1 custom-shadow cursor-pointer rounded-[8px]h-6 w-6  "
+            onClick={setWwwcActive}
+          >
+            <img src={dropIcon} alt="rest" />
+          </button>
+          <button
+            className="p-1 custom-shadow cursor-pointer rounded-[8px]  h-6 w-6   "
+            onClick={setScrollActive}
+          >
+            <img src={gameIcon} alt="rest" />
+          </button>
+        </div>
       </div>
     </div>
   );

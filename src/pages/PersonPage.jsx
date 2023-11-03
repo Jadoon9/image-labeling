@@ -2,23 +2,21 @@ import React, { useEffect, useRef, useState } from "react";
 import BackButton from "../components/BackButton";
 import Button from "../components/Button";
 import { Form, Formik } from "formik";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import CategoryCardItem from "../components/CategoryCardItem";
 import RangeSelector from "../components/RangeSelector";
 import Checkbox from "../components/CheckBox";
 import CategoryCard from "../components/CategoryCard";
 import CreateSubject from "../components/models/CreateSubject";
-import cornerstoneTools from "cornerstone-tools";
 import image1 from "../assets/dicom data/case1/AI_ABC/1.dcm";
 import image2 from "../assets/dicom data/case1/AI_ABC/2.dcm";
 import image3 from "../assets/dicom data/case1/AI_ABC/3.dcm";
 import image4 from "../assets/dicom data/case1/AI_ABC/4.dcm";
 import image5 from "../assets/dicom data/case1/AI_ABC/5.dcm";
 import image6 from "../assets/dicom data/case1/AI_ABC/6.dcm";
-import { useGetProjectQuery } from "../store/services/projectService";
 import { useParams } from "react-router-dom";
-import { projData } from "../constants";
+import { useGetProjectQuery } from "../store/services/projectService";
 
 const imageUrls = [image1, image2, image3, image4, image5, image6];
 
@@ -32,48 +30,40 @@ const categories = [
 ];
 
 const PersonPage = () => {
+  const { rows, columns } = useSelector((state) => state.layout);
   const { id } = useParams();
   const { isLoading, isSuccess, isError, refetch, error, data } =
     useGetProjectQuery(id);
   const index = 0;
+  const dispatch = useDispatch();
+  const [isSynced, setIsSynced] = useState(false);
 
   const { projectData } = useSelector((state) => state.project);
 
-  const [currentSlice, setCurrentSlice] = useState();
+  const [currentSlice, setCurrentSlice] = useState(0);
 
   const { taxonomy } = useSelector((state) => state.layout);
-  const synchronizer = new cornerstoneTools.Synchronizer(
-    "CornerstoneNewImage",
-    cornerstoneTools.updateImageSynchronizer
-  );
-  const elementRef = useRef(null);
+
   const dataCopy = projectData?.session[0]?.case[index];
   const [caseData, setCasedata] = useState(dataCopy);
 
-  const [isSynced, setIsSynced] = useState(false);
+  console.log(dataCopy, "dataCopr");
 
-  console.log(dataCopy?.cols_number, "dataCopr");
   const handleSync = () => {
     setIsSynced(!isSynced);
   };
 
   useEffect(() => {
-    refetch();
-  }, []);
-
-  useEffect(() => {
-    if (dataCopy?.cols_number) {
+    if (columns) {
       document.querySelector("#dynamicGrid").style[
         "grid-template-columns"
-      ] = `repeat(${dataCopy?.cols_number}, minmax(0, 1fr))`;
+      ] = `repeat(${columns}, minmax(0, 1fr))`;
     } else {
       document.querySelector("#dynamicGrid").style[
         "grid-template-columns"
       ] = `repeat(2, minmax(0, 1fr))`;
     }
   }, []);
-
-  console.log(caseData, "caseData");
 
   return (
     <>
@@ -104,53 +94,51 @@ const PersonPage = () => {
                 <div className="flex-1 px-4 ">
                   <div className=" grid grid-cols-1 p-4 primary-border-color">
                     <h3 className="h3-bold mb-2">Reference</h3>
-                    <div className="flex  " id="">
+                    <div className="flex ">
                       <CategoryCard
-                        images={caseData?.reference_folder?.image_list}
-                        isSynced={isSynced}
-                        synchronizer={synchronizer}
-                        // elementRef={elementRef}
-                        idx="idx"
-                        // setCurrentSlice={setCurrentSlice}
+                        elemntId={`dicomImage-0`}
+                        images={dataCopy?.reference_folder?.image_list}
                         hideTitle
                       />
                     </div>
                   </div>
 
                   <div id="dynamicGrid" className={`grid w-full relative `}>
-                    {caseData?.category_type?.map((item, index) => {
-                      return (
-                        <div
-                          key={item.cat}
-                          className="flex flex-col gap-4 p-1 "
-                        >
-                          <CategoryCard
-                            images={item.image_list}
-                            cat={item.category}
-                            type={item.type}
-                            // elementid={elementRef}
-                            isSynced={isSynced}
-                            synchronizer={synchronizer}
-                            setCurrentSlice={setCurrentSlice}
-                            idx={index}
-                          />
-
-                          {(index + 1) % 2 === 0 && (
-                            <div className="col-span-2 flex items-center justify-center w-full mt-8 mb-8 ">
-                              <div className="w-[100%] absolute left-0 p-32 ">
-                                <Button
-                                  btnText="Sync"
-                                  nobg
-                                  onClick={handleSync}
-                                />
-                              </div>
+                    {dataCopy?.category_type.length &&
+                      dataCopy?.category_type?.map((item, index) => {
+                        return (
+                          <div key={index} className="flex flex-col gap-4 p-1">
+                            <CategoryCard
+                              cat={item.category}
+                              idx={index}
+                              type={item.type}
+                              elementId={`dicomImage${item.cat}`}
+                              images={item.image_list}
+                              isSynced={isSynced}
+                              // setZoomActive={setZoomActive}
+                            />
+                            <div className="flex flex-col gap-6 mt-2">
+                              <Checkbox name="option1" text="Option 1" />
+                              <Checkbox name="option2" text="Option 2" />
                             </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
 
+                            {(index + 1) % 2 === 0 && (
+                              <div className="col-span-2 flex items-center justify-center w-full mt-8 mb-8 ">
+                                <div className="w-[100%] absolute left-0 p-32 ">
+                                  <Button
+                                    btnText="Sync"
+                                    nobg
+                                    onClick={handleSync}
+                                  />
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+
+                    {/* Centered button spanning full width */}
+                  </div>
                   <div className="w-full flex m-auto px-32 py-5">
                     <div className="w-[100%]">
                       <Button btnText="Submit" />

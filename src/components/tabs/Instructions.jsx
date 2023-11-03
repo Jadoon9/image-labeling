@@ -35,7 +35,6 @@ const Instructions = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      dispatch(addProject(data));
       navigate(`/person/${data.id}`);
     }
   }, [isSuccess, data]);
