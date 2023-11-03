@@ -35,35 +35,37 @@ const PersonPage = () => {
   const { id } = useParams();
   const { isLoading, isSuccess, isError, refetch, error, data } =
     useGetProjectQuery(id);
+  const index = 0;
 
   const { projectData } = useSelector((state) => state.project);
 
   const [currentSlice, setCurrentSlice] = useState();
-  const elementRef = useRef(null);
 
   const { taxonomy } = useSelector((state) => state.layout);
   const synchronizer = new cornerstoneTools.Synchronizer(
     "CornerstoneNewImage",
     cornerstoneTools.updateImageSynchronizer
   );
-
-  const index = 0;
-
+  const elementRef = useRef(null);
   const dataCopy = projectData?.session[0]?.case[index];
   const [caseData, setCasedata] = useState(dataCopy);
 
   const [isSynced, setIsSynced] = useState(false);
 
+  console.log(dataCopy?.cols_number, "dataCopr");
   const handleSync = () => {
     setIsSynced(!isSynced);
   };
 
   useEffect(() => {
     refetch();
-    if (taxonomy.columns) {
+  }, []);
+
+  useEffect(() => {
+    if (dataCopy?.cols_number) {
       document.querySelector("#dynamicGrid").style[
         "grid-template-columns"
-      ] = `repeat(${taxonomy.columns}, minmax(0, 1fr))`;
+      ] = `repeat(${dataCopy?.cols_number}, minmax(0, 1fr))`;
     } else {
       document.querySelector("#dynamicGrid").style[
         "grid-template-columns"
@@ -102,11 +104,13 @@ const PersonPage = () => {
                 <div className="flex-1 px-4 ">
                   <div className=" grid grid-cols-1 p-4 primary-border-color">
                     <h3 className="h3-bold mb-2">Reference</h3>
-                    <div className="flex " id="">
+                    <div className="flex  " id="">
                       <CategoryCard
                         images={caseData?.reference_folder?.image_list}
                         isSynced={isSynced}
                         synchronizer={synchronizer}
+                        // elementRef={elementRef}
+                        idx="idx"
                         // setCurrentSlice={setCurrentSlice}
                         hideTitle
                       />
@@ -116,15 +120,19 @@ const PersonPage = () => {
                   <div id="dynamicGrid" className={`grid w-full relative `}>
                     {caseData?.category_type?.map((item, index) => {
                       return (
-                        <div key={item.cat} className="flex flex-col gap-4 p-1">
+                        <div
+                          key={item.cat}
+                          className="flex flex-col gap-4 p-1 "
+                        >
                           <CategoryCard
                             images={item.image_list}
                             cat={item.category}
                             type={item.type}
+                            // elementid={elementRef}
                             isSynced={isSynced}
                             synchronizer={synchronizer}
                             setCurrentSlice={setCurrentSlice}
-                            elementRef={elementRef}
+                            idx={index}
                           />
 
                           {(index + 1) % 2 === 0 && (
