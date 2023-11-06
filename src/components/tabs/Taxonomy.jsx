@@ -68,6 +68,8 @@ const Taxonomy = () => {
     console.log("hrerre 2", taxonomy.columnlist, taxonomy.columnlist?.length);
   }, [taxonomy]);
 
+  console.log(foldersList, "checkfoldersList");
+
   return (
     <>
       <CreateOption

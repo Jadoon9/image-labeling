@@ -28,7 +28,7 @@ cornerstoneTools.init({
   showSVGCursors: false,
 });
 
-const CategoryCard = ({ hideTitle, cat, type, images, idx }) => {
+const CategoryCard = ({ hideTitle, cat, type, images, idx, id }) => {
   const [imageIds, setImageIds] = useState([]);
   let element;
   let elementId = `dicomImage${idx}`;
@@ -113,7 +113,7 @@ const CategoryCard = ({ hideTitle, cat, type, images, idx }) => {
     };
 
     loadImages();
-  }, []);
+  }, [id]);
 
   const setZoomActive = (event) => {
     // Load and display the first image

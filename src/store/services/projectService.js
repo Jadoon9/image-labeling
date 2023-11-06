@@ -1,7 +1,7 @@
 import { authApiService } from "./authService";
 
 const apiWithTag = authApiService.enhanceEndpoints({
-  addTagTypes: ["Employee"],
+  addTagTypes: ["Project"],
 });
 
 const createProjectService = apiWithTag.injectEndpoints({
@@ -34,6 +34,15 @@ const createProjectService = apiWithTag.injectEndpoints({
       },
       providesTags: ["Project"],
     }),
+    getFromDb: build.query({
+      query: () => {
+        return {
+          url: `/read_local/`,
+          method: "GET",
+        };
+      },
+      providesTags: ["Project"],
+    }),
   }),
 });
 
@@ -41,5 +50,6 @@ export const {
   useCreateProjectMutation,
   useGetProjectQuery,
   useGetProjectsListQuery,
+  useGetFromDbQuery,
 } = createProjectService;
 export default createProjectService;

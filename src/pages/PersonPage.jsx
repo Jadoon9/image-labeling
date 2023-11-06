@@ -67,7 +67,7 @@ const PersonPage = () => {
         "grid-template-columns"
       ] = `repeat(2, minmax(0, 1fr))`;
     }
-  }, []);
+  }, [id]);
   const handleSync = () => {
     setIsSynced(!isSynced);
   };
@@ -84,7 +84,7 @@ const PersonPage = () => {
   const hasMoreCases =
     currentCaseIndex < (data?.session[0]?.case.length || 0) - 1;
 
-  console.log(hasMoreCases, "aq332");
+  console.log(projectData?.session[0]?.case[currentCaseIndex]?.labels, "aq332");
   return (
     <>
       <Formik
@@ -127,6 +127,7 @@ const PersonPage = () => {
                     <h3 className="h3-bold mb-2">Reference</h3>
                     <div className="flex ">
                       <CategoryCard
+                        id={id}
                         elemntId={`dicomImage-0`}
                         images={
                           projectData?.session[0]?.case[currentCaseIndex]
@@ -146,6 +147,7 @@ const PersonPage = () => {
                         return (
                           <div key={index} className="flex flex-col gap-4 p-1">
                             <CategoryCard
+                              id={id}
                               cat={item.category}
                               idx={index}
                               type={item.type}
@@ -155,8 +157,11 @@ const PersonPage = () => {
                               // setZoomActive={setZoomActive}
                             />
                             <div className="flex flex-col gap-6 mt-2">
-                              {/* <Checkbox name="option1" text="Option 1" />
-                              <Checkbox name="option2" text="Option 2" /> */}
+                              {projectData?.session[0]?.case[
+                                currentCaseIndex
+                              ]?.options?.map((item) => (
+                                <Checkbox name={item.value} text={item.value} />
+                              ))}
                             </div>
 
                             {(index + 1) % 2 === 0 && (
@@ -184,33 +189,22 @@ const PersonPage = () => {
                 </div>
 
                 <div className="w-[200px] flex flex-col  max-md:hidden primary-border-color p-2 h-auto">
-                  <div className="flex flex-col mb-4  justify-center h-[400px] bg-red">
-                    <RangeSelector />
-                    <div className="flex flex-col gap-5">
-                      <Checkbox id="option1" name="option1" text="Label 1" />
-                      <Checkbox id="option2" name="option2" text="Label 2" />
-                    </div>
+                  <div className="h-[400px]"></div>
+                  <div className="flex flex-col gap-6">
+                    {projectData?.session[0]?.case[
+                      currentCaseIndex
+                    ]?.labels?.map((item) => (
+                      <Checkbox
+                        id={item.value}
+                        name={item.value}
+                        text={item.value}
+                      />
+                    ))}
                   </div>
-                  <div className="flex flex-col mb-4  justify-center h-[600px] bg-red">
-                    <RangeSelector />
-                    <div className="flex flex-col gap-5">
-                      <Checkbox id="option3" name="option1" text="Label 1" />
-                      <Checkbox id="option4" name="option 2" text="Label 2" />
-                    </div>
-                  </div>
-                  <div className="flex flex-col mb-4  justify-center h-[600px] bg-red">
-                    <RangeSelector />
-                    <div className="flex flex-col gap-5">
-                      <Checkbox id="option1" name="option 2" text="Label 1" />
-                      <Checkbox id="option2" name="option 2" text="Label 2" />
-                    </div>
-                  </div>
-                  <div className="flex flex-col mb-4  justify-center h-[600px] bg-red">
-                    <RangeSelector />
-                    <div className="flex flex-col gap-5">
-                      <Checkbox id="option1" name="option 2" text="Label 1" />
-                      <Checkbox id="option2" name="option 2" text="Label 2" />
-                    </div>
+
+                  <div className="flex flex-col mb-4 mt-10 h-[620px] bg-red">
+                    {/* <RangeSelector /> */}
+                    <div className="flex flex-col gap-5"></div>
                   </div>
                 </div>
               </div>

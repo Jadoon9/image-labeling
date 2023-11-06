@@ -56,7 +56,7 @@ export default function CreateLabel({ isOpen, handleOpen, handleLabels }) {
                     }}
                     // validationSchema={taxonomySchema}
                     onSubmit={(values) => {
-                      console.log('v', values)
+                      console.log("v", values);
                       let data;
                       if (values.stringType) {
                         data = values.labelName;
@@ -74,6 +74,7 @@ export default function CreateLabel({ isOpen, handleOpen, handleLabels }) {
                             <Checkbox
                               id="numericalRange"
                               name="numericalRange"
+                              text="Range"
                               handleHide={(value) => {
                                 setFieldValue("stringType", value);
                               }}
@@ -90,15 +91,18 @@ export default function CreateLabel({ isOpen, handleOpen, handleLabels }) {
 
                           {values.numericalRange && (
                             <>
-                              {" "}
                               {/* <DropDown
                                 name="maxVal"
                                 options={drpItems}
                                 placeholder="Max Value"
                               /> */}
-                              <NumberInput name="minVal"  label="Min Value" />
+                              <div className="w-full">
+                                <NumberInput name="minVal" label="Min Value" />
+                              </div>
 
-                              <NumberInput name="maxVal" label="Max Value" />
+                              <div className="w-full">
+                                <NumberInput name="maxVal" label="Max Value" />
+                              </div>
                               {/* <DropDown
                                 name="minVal"
                                 options={drpItems}

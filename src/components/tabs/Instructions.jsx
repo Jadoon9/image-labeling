@@ -13,6 +13,7 @@ import {
 } from "../../store/slice/layoutSlice";
 import { useCreateProjectMutation } from "../../store/services/projectService";
 import { addProject } from "../../store/slice/projectSlice";
+import Loader from "../Loader";
 
 const Instructions = () => {
   const navigate = useNavigate();
@@ -45,7 +46,7 @@ const Instructions = () => {
   }, [isSuccess, data]);
 
   if (isLoading) {
-    return <h1>Loading</h1>;
+    return <Loader />;
   }
 
   const uploadData = {
@@ -83,7 +84,6 @@ const Instructions = () => {
         validationSchema={instructionsSchema}
         onSubmit={(values) => {
           createProject(uploadData);
-          console.log(values, "valuess");
         }}
       >
         {() => (
