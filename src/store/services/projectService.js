@@ -1,6 +1,10 @@
 import { authApiService } from "./authService";
 
-const createProjectService = authApiService.injectEndpoints({
+const apiWithTag = authApiService.enhanceEndpoints({
+  addTagTypes: ["Employee"],
+});
+
+const createProjectService = apiWithTag.injectEndpoints({
   endpoints: (build) => ({
     createProject: build.mutation({
       query: (data) => {
@@ -10,6 +14,7 @@ const createProjectService = authApiService.injectEndpoints({
           body: data,
         };
       },
+      invalidatesTags: ["Project"],
     }),
     getProject: build.query({
       query: (id) => {
@@ -18,6 +23,7 @@ const createProjectService = authApiService.injectEndpoints({
           method: "GET",
         };
       },
+      providesTags: ["Project"],
     }),
     getProjectsList: build.query({
       query: () => {
@@ -26,6 +32,7 @@ const createProjectService = authApiService.injectEndpoints({
           method: "GET",
         };
       },
+      providesTags: ["Project"],
     }),
   }),
 });

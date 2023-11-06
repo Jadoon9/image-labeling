@@ -14,7 +14,6 @@ import { useDcomImage } from "./hooks/useDcomImage";
 function App() {
   const { isLoggedIn } = useSelector((state) => state.auth);
   const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate();
 
   // const dcom = useDcomImage()
 
@@ -26,8 +25,12 @@ function App() {
           <Route element={<VerticalLayout setIsOpen={setIsOpen} />}>
             <Route path="/" element={<CreateProject />} />
             <Route path="/tabs-page" element={<TabsPage />} />
-            <Route path="/person/:id" element={<PersonPage />} />
-            <Route path="/person/" element={<PersonPage />} />
+            <Route
+              path="/person/:id"
+              onUpdate={() => window.scrollTo(0, 0)}
+              element={<PersonPage />}
+            />
+            {/* <Route path="/person/" element={<PersonPage />} /> */}
           </Route>
         </Route>
 

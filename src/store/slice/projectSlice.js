@@ -2,7 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   projectData: null,
-  projectsList: [],
+  projectList: [],
+  sidebarProjectsList: [],
 };
 
 export const projectSlice = createSlice({
@@ -12,12 +13,16 @@ export const projectSlice = createSlice({
     addProject: (state, action) => {
       state.projectData = action.payload;
     },
-    addProjectsList: (state, action) => {
+    addProjectList: (state, action) => {
       state.projectList = action.payload;
+    },
+    addSidebarProjectList: (state, action) => {
+      state.sidebarProjectsList = action.payload;
     },
   },
 });
 
-export const { addProject, addProjectsList } = projectSlice.actions;
+export const { addProject, addProjectList, addSidebarProjectList } =
+  projectSlice.actions;
 
 export default projectSlice.reducer;

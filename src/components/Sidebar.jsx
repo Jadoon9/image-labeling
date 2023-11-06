@@ -11,24 +11,28 @@ import { MdCancel } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { useGetProjectsListQuery } from "../store/services/projectService";
 import { useDispatch, useSelector } from "react-redux";
-import { addProjectsList } from "../store/slice/projectSlice";
+import { addSidebarProjectList } from "../store/slice/projectSlice";
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isLoading, isSuccess, isError, refetch, error, data } =
     useGetProjectsListQuery();
+
   const [enabled, setEnabled] = useState(false);
-  const { projectList } = useSelector((state) => state.project);
+  const { sidebarProjectsList } = useSelector((state) => state.project);
+
   useEffect(() => {
     refetch();
   }, []);
 
   useEffect(() => {
-    dispatch(addProjectsList(data));
+    if (isSuccess && data) {
+      dispatch(addSidebarProjectList(data));
+    }
   }, [isSuccess]);
 
-  console.log(projectList, "hgjhgg");
+  console.log(addSidebarProjectList, "hgjhgg");
   return (
     <>
       {/* Mobile Sidebar */}
@@ -204,7 +208,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
                 Create New Project +
               </p>
             </div>
-            {projectList?.map?.((item, idx) => {
+            {sidebarProjectsList?.map?.((item, idx) => {
               return (
                 <>
                   <Disclosure key={idx}>

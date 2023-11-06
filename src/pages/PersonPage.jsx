@@ -17,6 +17,7 @@ import image5 from "../assets/dicom data/case1/AI_ABC/5.dcm";
 import image6 from "../assets/dicom data/case1/AI_ABC/6.dcm";
 import { useParams } from "react-router-dom";
 import { useGetProjectQuery } from "../store/services/projectService";
+import { addProject } from "../store/slice/projectSlice";
 
 const imageUrls = [image1, image2, image3, image4, image5, image6];
 
@@ -32,39 +33,58 @@ const categories = [
 const PersonPage = () => {
   const { rows, columns } = useSelector((state) => state.layout);
   const { id } = useParams();
-  const { isLoading, isSuccess, isError, refetch, error, data } =
+  const { isLoading, isSuccess, isFetching, isError, refetch, error, data } =
     useGetProjectQuery(id);
-  const index = 0;
+
   const dispatch = useDispatch();
-  const [isSynced, setIsSynced] = useState(false);
-
   const { projectData } = useSelector((state) => state.project);
-
+  const { taxonomy } = useSelector((state) => state.layout);
+  const [currentCaseIndex, setCurrentCaseIndex] = useState(0);
+  const [isSynced, setIsSynced] = useState(false);
   const [currentSlice, setCurrentSlice] = useState(0);
 
-  const { taxonomy } = useSelector((state) => state.layout);
-
-  const dataCopy = projectData?.session[0]?.case[index];
-  const [caseData, setCasedata] = useState(dataCopy);
-
-  console.log(dataCopy, "dataCopr");
-
-  const handleSync = () => {
-    setIsSynced(!isSynced);
-  };
+  useEffect(() => {
+    if (data) {
+      dispatch(addProject(data));
+    }
+  }, [isSuccess]);
 
   useEffect(() => {
-    if (columns) {
+    refetch();
+    dispatch(addProject(data));
+    return () => {
+      console.log("jkjhkjh");
+    };
+  }, [id]);
+
+  useEffect(() => {
+    if (projectData?.session[0]?.case[currentCaseIndex]?.cols_number) {
       document.querySelector("#dynamicGrid").style[
         "grid-template-columns"
-      ] = `repeat(${columns}, minmax(0, 1fr))`;
+      ] = `repeat(${projectData?.session[0]?.case[currentCaseIndex]?.cols_number}, minmax(0, 1fr))`;
     } else {
       document.querySelector("#dynamicGrid").style[
         "grid-template-columns"
       ] = `repeat(2, minmax(0, 1fr))`;
     }
   }, []);
+  const handleSync = () => {
+    setIsSynced(!isSynced);
+  };
 
+  const handleNextCase = () => {
+    // Increment the case index to switch to the next case
+    setCurrentCaseIndex((prevIndex) => prevIndex + 1);
+  };
+  const handleBackCase = () => {
+    // Increment the case index to switch to the next case
+    setCurrentCaseIndex((prevIndex) => prevIndex - 1);
+  };
+  // Check if there are more cases to display
+  const hasMoreCases =
+    currentCaseIndex < (data?.session[0]?.case.length || 0) - 1;
+
+  console.log(hasMoreCases, "aq332");
   return (
     <>
       <Formik
@@ -83,10 +103,21 @@ const PersonPage = () => {
           <Form>
             <div className="">
               <div className="flex-between py-10 ">
-                <BackButton />
-                <h3 className="h3-bold">Person 1</h3>
+                <BackButton
+                  onClick={handleBackCase}
+                  disabled={currentCaseIndex === 0}
+                />
+                <h3 className="h3-bold">
+                  {projectData?.session[0]?.case[currentCaseIndex]?.case_name}
+                </h3>
                 <div className="w-48">
-                  <Button btnText="Next" showIcon />
+                  <Button
+                    type="button"
+                    btnText="Next"
+                    showIconhasMoreCases
+                    disabled={!hasMoreCases}
+                    onClick={handleNextCase}
+                  />
                 </div>
               </div>
 
@@ -97,15 +128,21 @@ const PersonPage = () => {
                     <div className="flex ">
                       <CategoryCard
                         elemntId={`dicomImage-0`}
-                        images={dataCopy?.reference_folder?.image_list}
+                        images={
+                          projectData?.session[0]?.case[currentCaseIndex]
+                            ?.reference_folder?.image_list
+                        }
                         hideTitle
                       />
                     </div>
                   </div>
 
                   <div id="dynamicGrid" className={`grid w-full relative `}>
-                    {dataCopy?.category_type.length &&
-                      dataCopy?.category_type?.map((item, index) => {
+                    {projectData?.session[0]?.case[currentCaseIndex]
+                      ?.category_type.length &&
+                      projectData?.session[0]?.case[
+                        currentCaseIndex
+                      ]?.category_type?.map((item, index) => {
                         return (
                           <div key={index} className="flex flex-col gap-4 p-1">
                             <CategoryCard

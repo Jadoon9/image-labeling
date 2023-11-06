@@ -136,7 +136,7 @@ const CategoryCard = ({ hideTitle, cat, type, images, idx }) => {
     cornerstoneTools.setToolActive("Wwwc", { mouseButtonMask: 1 });
   };
 
-  const setScrollActive = (elementId1, elementId2) => {
+  const setScrollActive = () => {
     const StackScrollMouseWheelTool =
       cornerstoneTools.StackScrollMouseWheelTool;
     cornerstoneTools.addTool(StackScrollMouseWheelTool);
@@ -144,13 +144,23 @@ const CategoryCard = ({ hideTitle, cat, type, images, idx }) => {
   };
 
   return (
-    <div className="w-full custom-shadow  p-1 rounded-[22px] ">
+    <div className="w-full custom-shadow  p-1 rounded-[22px] min-h-[300px] flex flex-col justify-between">
       {!hideTitle && <h3 className="h3-bold">Category : {cat}</h3>}
       {!hideTitle && <p className="body-light mt-2">Type : {type}</p>}
 
-      <div className="flex flex-col overflow-scroll custom-scrollbar ">
-        <div onContextMenu={() => false} unselectable="on">
-          <div id={elementId} />
+      <div className="">
+        <div
+          onContextMenu={() => false}
+          unselectable="on"
+          className="overflow-hidden"
+        >
+          <div id={elementId} className="overflow-hidden relative">
+            {!images?.length && (
+              <div className="absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center">
+                <p className="body-light">No Images Found</p>
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="flex-center gap-1 mb-1 ">

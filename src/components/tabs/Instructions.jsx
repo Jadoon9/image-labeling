@@ -36,6 +36,8 @@ const Instructions = () => {
   useEffect(() => {
     if (isSuccess) {
       navigate(`/person/${data.id}`);
+      localStorage.clear();
+      dispatch({ type: "RESET" });
     }
   }, [isSuccess, data]);
 
