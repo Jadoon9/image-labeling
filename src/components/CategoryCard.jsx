@@ -145,8 +145,10 @@ const CategoryCard = ({ hideTitle, cat, type, images, idx }) => {
 
   return (
     <div className="w-full custom-shadow  p-1 rounded-[22px] min-h-[300px] flex flex-col justify-between">
-      {!hideTitle && <h3 className="h3-bold">Category : {cat}</h3>}
-      {!hideTitle && <p className="body-light mt-2">Type : {type}</p>}
+      <div className="px-4 pt-4">
+        {!hideTitle && <h3 className="h3-bold">Category : {cat}</h3>}
+        {!hideTitle && <p className="body-light mt-2">Type : {type}</p>}
+      </div>
 
       <div className="">
         <div
