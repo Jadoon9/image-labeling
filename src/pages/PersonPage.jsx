@@ -31,7 +31,6 @@ const categories = [
 ];
 
 const PersonPage = () => {
-  const { rows, columns } = useSelector((state) => state.layout);
   const { id } = useParams();
   const { isLoading, isSuccess, isFetching, isError, refetch, error, data } =
     useGetProjectQuery(id);
@@ -84,7 +83,17 @@ const PersonPage = () => {
   const hasMoreCases =
     currentCaseIndex < (data?.session[0]?.case.length || 0) - 1;
 
-  console.log(projectData?.session[0]?.case[currentCaseIndex]?.labels, "aq332");
+  function distributeArrayElements(labels, numRows) {
+    const duplicatedArray = Array.from({ length: numRows }, () => [...labels]);
+    return duplicatedArray;
+  }
+
+  const distributedLabels = distributeArrayElements(
+    projectData?.session[0]?.case[currentCaseIndex]?.labels,
+    projectData?.session[0]?.case[currentCaseIndex]?.rows_number
+  );
+
+  console.log(distributedLabels, "jkkjkj");
   return (
     <>
       <Formik
@@ -191,15 +200,35 @@ const PersonPage = () => {
                 <div className="w-[200px] flex flex-col  max-md:hidden primary-border-color p-2 h-auto">
                   <div className="h-[400px]"></div>
                   <div className="flex flex-col gap-6">
-                    {projectData?.session[0]?.case[
-                      currentCaseIndex
-                    ]?.labels?.map((item) => (
-                      <Checkbox
-                        id={item.value}
-                        name={item.value}
-                        text={item.value}
-                      />
-                    ))}
+                    {distributedLabels.length &&
+                      distributedLabels?.map((row, rowIndex) => (
+                        <div
+                          key={rowIndex}
+                          className="flex flex-col gap-4 p-1 h-[600px]"
+                        >
+                          {row.map((item, index) => {
+                            if (item?.value?.includes("-")) {
+                              const [before, after] = item.value.split("-");
+                              return (
+                                <RangeSelector
+                                  key={index}
+                                  before={before}
+                                  after={after}
+                                />
+                              );
+                            } else {
+                              return (
+                                <Checkbox
+                                  key={index}
+                                  id={item.value}
+                                  name={item.value}
+                                  text={item.value}
+                                />
+                              );
+                            }
+                          })}
+                        </div>
+                      ))}
                   </div>
 
                   <div className="flex flex-col mb-4 mt-10 h-[620px] bg-red">
