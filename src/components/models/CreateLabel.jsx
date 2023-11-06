@@ -7,6 +7,7 @@ import Checkbox from "../CheckBox";
 import DropDown from "../DropDown";
 import { drpItems } from "../../constants/index";
 import Textarea from "../Textarea";
+import NumberInput from "../NumberInput";
 
 export default function CreateLabel({ isOpen, handleOpen, handleLabels }) {
   return (
@@ -45,46 +46,67 @@ export default function CreateLabel({ isOpen, handleOpen, handleLabels }) {
                   </Dialog.Title>
 
                   <Formik
+                    enableReinitialize={true}
                     initialValues={{
                       labelName: "",
                       numericalRange: false,
-                      string: false,
+                      stringType: true,
                       maxVal: 0,
                       minVal: 0,
                     }}
                     // validationSchema={taxonomySchema}
                     onSubmit={(values) => {
-                      handleLabels(values.labelName);
+                      console.log('v', values)
+                      let data;
+                      if (values.stringType) {
+                        data = values.labelName;
+                      } else if (values.numericalRange) {
+                        data = `${values.minVal}-${values.maxVal}`;
+                      }
+                      handleLabels(data);
                       handleOpen();
                     }}
                   >
-                    {(values) => (
+                    {({ values, setFieldValue }) => (
                       <Form>
                         <div className="flex flex-col gap-6 justify-center items-center mt-2">
                           <div className="flex w-full mt-2">
                             <Checkbox
                               id="numericalRange"
                               name="numericalRange"
-                              text="Numerical Range"
+                              handleHide={(value) => {
+                                setFieldValue("stringType", value);
+                              }}
                             />
-                            <Checkbox id="string" name="string" text="String" />
+                            <Checkbox
+                              id="stringType"
+                              name="stringType"
+                              text="String"
+                              handleHide={(value) => {
+                                setFieldValue("numericalRange", value);
+                              }}
+                            />
                           </div>
 
-                          {values.values.numericalRange ? (
+                          {values.numericalRange && (
                             <>
                               {" "}
-                              <DropDown
+                              {/* <DropDown
                                 name="maxVal"
                                 options={drpItems}
                                 placeholder="Max Value"
-                              />
-                              <DropDown
+                              /> */}
+                              <NumberInput name="minVal"  label="Min Value" />
+
+                              <NumberInput name="maxVal" label="Max Value" />
+                              {/* <DropDown
                                 name="minVal"
                                 options={drpItems}
                                 placeholder="Min Value"
-                              />
+                              /> */}
                             </>
-                          ) : (
+                          )}
+                          {values.stringType && (
                             <>
                               <Textarea name="labelName" rows={2} cols={40} />
                             </>
