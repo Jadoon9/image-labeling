@@ -71,6 +71,22 @@ export const layoutSlice = createSlice({
         (label) => label.id !== idToDelete
       );
     },
+    resetTaxonomyData: (state, action) => {
+      state.taxonomy = {
+        projectName: "",
+        options: [],
+        question: "",
+        referenceClass: "",
+        label: [],
+        columns: 0,
+        rows: 0,
+        notes: "",
+        randomizeCases: false,
+        randomizeCat: false,
+        rowlist: [],
+        columnlist: [],
+      };
+    },
   },
 });
 
@@ -80,6 +96,7 @@ export const {
   addLabels,
   deleteOption,
   deleteLabel,
+  resetTaxonomyData,
 } = layoutSlice.actions;
 
 export default layoutSlice.reducer;

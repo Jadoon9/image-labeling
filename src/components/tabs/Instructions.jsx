@@ -7,7 +7,10 @@ import { Form, Formik } from "formik";
 import { instructionsSchema } from "../../utils/validations";
 import Textarea from "../Textarea";
 import { useDispatch, useSelector } from "react-redux";
-import { addTaxonomyData } from "../../store/slice/layoutSlice";
+import {
+  addTaxonomyData,
+  resetTaxonomyData,
+} from "../../store/slice/layoutSlice";
 import { useCreateProjectMutation } from "../../store/services/projectService";
 import { addProject } from "../../store/slice/projectSlice";
 
@@ -36,8 +39,8 @@ const Instructions = () => {
   useEffect(() => {
     if (isSuccess) {
       navigate(`/person/${data.id}`);
-      localStorage.clear();
-      dispatch({ type: "RESET" });
+
+      dispatch(resetTaxonomyData());
     }
   }, [isSuccess, data]);
 

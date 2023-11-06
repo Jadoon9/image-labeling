@@ -19,6 +19,9 @@ export const projectSlice = createSlice({
     addSidebarProjectList: (state, action) => {
       state.sidebarProjectsList = action.payload;
     },
+    resetProject: (state, action) => {
+      state.projectData = null;
+    },
   },
 });
 

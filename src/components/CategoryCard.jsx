@@ -159,7 +159,7 @@ const CategoryCard = ({ hideTitle, cat, type, images, idx }) => {
           <div id={elementId} className="overflow-hidden relative">
             {!images?.length && (
               <div className="absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center">
-                <p className="body-light">No Images Found</p>
+                <p className="body-bold">No Images Found</p>
               </div>
             )}
           </div>
