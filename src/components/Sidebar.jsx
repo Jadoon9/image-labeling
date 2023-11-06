@@ -30,7 +30,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
     if (isSuccess && data) {
       dispatch(addSidebarProjectList(data));
     }
-  }, [isSuccess]);
+  }, [isSuccess, data]);
 
   console.log(addSidebarProjectList, "hgjhgg");
   return (

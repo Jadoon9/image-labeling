@@ -3,7 +3,6 @@ import { authApiService } from "./authService";
 const apiWithTag = authApiService.enhanceEndpoints({
   addTagTypes: ["Project"],
 });
-
 const createProjectService = apiWithTag.injectEndpoints({
   endpoints: (build) => ({
     createProject: build.mutation({
@@ -23,7 +22,6 @@ const createProjectService = apiWithTag.injectEndpoints({
           method: "GET",
         };
       },
-      providesTags: ["Project"],
     }),
     getProjectsList: build.query({
       query: () => {
