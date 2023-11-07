@@ -14,6 +14,7 @@ import {
 import { useCreateProjectMutation } from "../../store/services/projectService";
 import { addProject } from "../../store/slice/projectSlice";
 import Loader from "../Loader";
+import { resetFolders } from "../../store/slice/foldersSlice";
 
 const Instructions = () => {
   const navigate = useNavigate();
@@ -42,6 +43,7 @@ const Instructions = () => {
       navigate(`/person/${data.id}`);
 
       dispatch(resetTaxonomyData());
+      dispatch(resetFolders());
     }
   }, [isSuccess, data]);
 

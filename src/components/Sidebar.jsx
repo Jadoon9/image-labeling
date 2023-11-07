@@ -5,32 +5,82 @@ import { Dialog, Disclosure, Switch, Transition } from "@headlessui/react";
 
 import { CiSearch } from "react-icons/ci";
 import { BsChevronDown } from "react-icons/bs";
-import { BsSun } from "react-icons/bs";
+import { BsSun, BsFillCloudDownloadFill } from "react-icons/bs";
 import { TbLogout } from "react-icons/tb";
 import { MdCancel } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import { useGetProjectsListQuery } from "../store/services/projectService";
+import {
+  useGetCsvQuery,
+  useGetProjectsListQuery,
+} from "../store/services/projectService";
 import { useDispatch, useSelector } from "react-redux";
 import { addSidebarProjectList } from "../store/slice/projectSlice";
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { isLoading, isSuccess, isError, refetch, error, data } =
+  const [csvId, setCsvId] = useState(null);
+  const { isLoading, isSuccess, isError, refetch, data } =
     useGetProjectsListQuery();
+
+  // const {
+  //   isLoading: csvIsLoading,
+  //   isSuccess: cvIsSuccess,
+  //   data: csvData,
+  //   status,
+  //   error,
+  // } = useGetCsvQuery(csvId, {
+  //   refetchOnMountOrArgChange: true,
+  //   skip: !csvId,
+  // });
 
   const [enabled, setEnabled] = useState(false);
   const { sidebarProjectsList } = useSelector((state) => state.project);
 
+  // useEffect(() => {
+  //   if (error?.originalStatus === 200) {
+  //     // Handle the CSV data, for example, trigger download
+  //     const blob = new Blob([csvData], { type: "text/csv" });
+  //     const url = window.URL.createObjectURL(blob);
+  //     const a = document.createElement("a");
+  //     a.href = url;
+  //     a.download = "data.csv";
+  //     document.body.appendChild(a);
+  //     a.click();
+  //     window.URL.revokeObjectURL(url);
+  //     document.body.removeChild(a);
+  //   }
+  // }, [cvIsSuccess, error, csvId]);
+
   useEffect(() => {
-    refetch();
-  }, []);
+    // Define a function to fetch data
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          ` http://127.0.0.1:8000/export_data${csvId}/`
+        );
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        const result = await response.json();
+      } catch (error) {}
+    };
+
+    fetchData();
+  }, [csvId]);
 
   useEffect(() => {
     if (isSuccess && data) {
       dispatch(addSidebarProjectList(data));
     }
   }, [isSuccess, data]);
+
+  const handleCsv = (e, id) => {
+    e.stopPropagation();
+    setCsvId(id);
+  };
 
   console.log(addSidebarProjectList, "hgjhgg");
   return (
@@ -233,10 +283,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
                             Create a session +
                           </p>
                           <p
-                            className="cursor-pointer"
+                            className="cursor-pointer flex items-center justify-between gap-2"
                             onClick={() => navigate(`/person/${item?.id}`)}
                           >
-                            {item?.project_name}
+                            {item?.project_name}{" "}
+                            <BsFillCloudDownloadFill
+                              onClick={(e) => handleCsv(e, item?.id)}
+                            />
                           </p>
                         </Disclosure.Panel>
                       </>

@@ -11,9 +11,12 @@ export const folderSlice = createSlice({
     addFolders: (state, action) => {
       state.foldersList = action.payload;
     },
+    resetFolders: (state, action) => {
+      state.foldersList = [];
+    },
   },
 });
 
-export const { addFolders } = folderSlice.actions;
+export const { addFolders, resetFolders } = folderSlice.actions;
 
 export default folderSlice.reducer;

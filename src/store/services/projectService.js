@@ -41,6 +41,15 @@ const createProjectService = apiWithTag.injectEndpoints({
       },
       providesTags: ["Project"],
     }),
+    getCsv: build.query({
+      query: (id) => {
+        return {
+          url: `/export_data/${id}/`,
+          method: "GET",
+        };
+      },
+      providesTags: ["Project"],
+    }),
   }),
 });
 
@@ -49,5 +58,6 @@ export const {
   useGetProjectQuery,
   useGetProjectsListQuery,
   useGetFromDbQuery,
+  useGetCsvQuery,
 } = createProjectService;
 export default createProjectService;

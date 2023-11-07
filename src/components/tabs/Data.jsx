@@ -23,7 +23,7 @@ const Data = () => {
     refetch: refetchDb,
   } = useGetFromDbQuery(null, {
     refetchOnMountOrArgChange: true,
-    skip: !getDbData,
+    skip: getDbData === null,
   });
 
   const handleFileUpload = (event) => {
@@ -34,6 +34,10 @@ const Data = () => {
   const handleReadLocal = () => {
     setGetDbData(true);
   };
+
+  useEffect(() => {
+    refetchDb();
+  }, []);
 
   useEffect(() => {
     if (isSuccess) {
