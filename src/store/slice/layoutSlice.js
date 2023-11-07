@@ -47,7 +47,7 @@ export const layoutSlice = createSlice({
         state.taxonomy.options.length > 0
           ? state.taxonomy.options[state.taxonomy.options.length - 1].id + 1
           : 1;
-      const newItem = { id: newId, value: action.payload };
+      const newItem = { id: newId, value: action.payload, checked: false };
       state.taxonomy.options = [...state.taxonomy.options, newItem];
     },
     addLabels: (state, action) => {
@@ -55,7 +55,7 @@ export const layoutSlice = createSlice({
         state.taxonomy.label.length > 0
           ? state.taxonomy.label[state.taxonomy.label.length - 1].id + 1
           : 1;
-      const newItem = { id: newId, value: action.payload };
+      const newItem = { id: newId, value: action.payload, checked: false };
       state.taxonomy.label = [...state.taxonomy.label, newItem];
     },
     deleteOption: (state, action) => {
