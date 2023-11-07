@@ -15,6 +15,7 @@ import {
 } from "../store/services/projectService";
 import { useDispatch, useSelector } from "react-redux";
 import { addSidebarProjectList } from "../store/slice/projectSlice";
+import Papa from "papaparse";
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
   const navigate = useNavigate();
@@ -23,53 +24,38 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
   const { isLoading, isSuccess, isError, refetch, data } =
     useGetProjectsListQuery();
 
-  // const {
-  //   isLoading: csvIsLoading,
-  //   isSuccess: cvIsSuccess,
-  //   data: csvData,
-  //   status,
-  //   error,
-  // } = useGetCsvQuery(csvId, {
-  //   refetchOnMountOrArgChange: true,
-  //   skip: !csvId,
-  // });
+  const {
+    isLoading: csvIsLoading,
+    isSuccess: cvIsSuccess,
+    data: csvData,
+    status,
+    error,
+  } = useGetCsvQuery(csvId, {
+    refetchOnMountOrArgChange: true,
+    skip: !csvId,
+  });
 
   const [enabled, setEnabled] = useState(false);
   const { sidebarProjectsList } = useSelector((state) => state.project);
 
-  // useEffect(() => {
-  //   if (error?.originalStatus === 200) {
-  //     // Handle the CSV data, for example, trigger download
-  //     const blob = new Blob([csvData], { type: "text/csv" });
-  //     const url = window.URL.createObjectURL(blob);
-  //     const a = document.createElement("a");
-  //     a.href = url;
-  //     a.download = "data.csv";
-  //     document.body.appendChild(a);
-  //     a.click();
-  //     window.URL.revokeObjectURL(url);
-  //     document.body.removeChild(a);
-  //   }
-  // }, [cvIsSuccess, error, csvId]);
-
   useEffect(() => {
-    // Define a function to fetch data
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          ` http://127.0.0.1:8000/export_data${csvId}/`
-        );
+    if (cvIsSuccess) {
+      const parsedData = Papa.parse(csvData.csv_text, {
+        header: true,
+        skipEmptyLines: true,
+      }).data;
 
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-
-        const result = await response.json();
-      } catch (error) {}
-    };
-
-    fetchData();
-  }, [csvId]);
+      const csv = Papa.unparse(parsedData);
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "data.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }, [cvIsSuccess, error, csvId]);
 
   useEffect(() => {
     if (isSuccess && data) {
