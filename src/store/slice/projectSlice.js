@@ -22,10 +22,21 @@ export const projectSlice = createSlice({
     resetProject: (state, action) => {
       state.projectData = null;
     },
+    changeCheckBox: (state, action) => {
+      const { currentCaseIndex, catIdx, optIdx } = action.payload;
+      const categoryType =
+        state.projectData.session[0].case[currentCaseIndex].category_type;
+      const currentOption = categoryType[catIdx].options[optIdx];
+      currentOption.checked = !currentOption.checked; // Toggle the boolean value
+    },
   },
 });
 
-export const { addProject, addProjectList, addSidebarProjectList } =
-  projectSlice.actions;
+export const {
+  addProject,
+  addProjectList,
+  addSidebarProjectList,
+  changeCheckBox,
+} = projectSlice.actions;
 
 export default projectSlice.reducer;

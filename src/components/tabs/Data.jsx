@@ -14,6 +14,7 @@ const Data = () => {
   const [getDbData, setGetDbData] = useState(false);
   const [createPlatform, { isLoading, isSuccess, isError, error, data }] =
     useAddPojectFilesMutation();
+
   const {
     isLoading: dbIsLoading,
     isSuccess: dbIsSuccess,
@@ -23,7 +24,7 @@ const Data = () => {
     refetch: refetchDb,
   } = useGetFromDbQuery(null, {
     refetchOnMountOrArgChange: true,
-    skip: getDbData === null,
+    skip: !getDbData,
   });
 
   const handleFileUpload = (event) => {
@@ -34,10 +35,6 @@ const Data = () => {
   const handleReadLocal = () => {
     setGetDbData(true);
   };
-
-  useEffect(() => {
-    refetchDb();
-  }, []);
 
   useEffect(() => {
     if (isSuccess) {

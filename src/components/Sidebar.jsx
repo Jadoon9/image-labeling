@@ -22,7 +22,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
   const dispatch = useDispatch();
   const [csvId, setCsvId] = useState(null);
   const { isLoading, isSuccess, isError, refetch, data } =
-    useGetProjectsListQuery();
+    useGetProjectsListQuery(null, { refetchOnMountOrArgChange: true });
 
   const {
     isLoading: csvIsLoading,

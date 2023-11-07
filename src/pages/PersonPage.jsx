@@ -17,7 +17,8 @@ import image5 from "../assets/dicom data/case1/AI_ABC/5.dcm";
 import image6 from "../assets/dicom data/case1/AI_ABC/6.dcm";
 import { useParams } from "react-router-dom";
 import { useGetProjectQuery } from "../store/services/projectService";
-import { addProject } from "../store/slice/projectSlice";
+import { addProject, changeCheckBox } from "../store/slice/projectSlice";
+import { distributeArrayElements } from "../constants";
 
 const imageUrls = [image1, image2, image3, image4, image5, image6];
 
@@ -33,14 +34,14 @@ const categories = [
 const PersonPage = () => {
   const { id } = useParams();
   const { isLoading, isSuccess, isFetching, isError, refetch, error, data } =
-    useGetProjectQuery(id);
+    useGetProjectQuery(id, {
+      refetchOnMountOrArgChange: true,
+    });
 
   const dispatch = useDispatch();
   const { projectData } = useSelector((state) => state.project);
-  const { taxonomy } = useSelector((state) => state.layout);
   const [currentCaseIndex, setCurrentCaseIndex] = useState(0);
   const [isSynced, setIsSynced] = useState(false);
-  const [currentSlice, setCurrentSlice] = useState(0);
 
   useEffect(() => {
     if (data) {
@@ -49,11 +50,7 @@ const PersonPage = () => {
   }, [isSuccess]);
 
   useEffect(() => {
-    refetch();
     dispatch(addProject(data));
-    return () => {
-      console.log("jkjhkjh");
-    };
   }, [id]);
 
   useEffect(() => {
@@ -67,42 +64,43 @@ const PersonPage = () => {
       ] = `repeat(2, minmax(0, 1fr))`;
     }
   }, [id]);
+
   const handleSync = () => {
     setIsSynced(!isSynced);
   };
 
   const handleNextCase = () => {
-    // Increment the case index to switch to the next case
     setCurrentCaseIndex((prevIndex) => prevIndex + 1);
   };
   const handleBackCase = () => {
-    // Increment the case index to switch to the next case
     setCurrentCaseIndex((prevIndex) => prevIndex - 1);
   };
   // Check if there are more cases to display
   const hasMoreCases =
     currentCaseIndex < (data?.session[0]?.case.length || 0) - 1;
 
-  function distributeArrayElements(labels, numRows) {
-    const duplicatedArray = Array.from({ length: numRows }, () => [...labels]);
-    return duplicatedArray;
-  }
+  // const distributedLabels = distributeArrayElements(
+  //   projectData?.session[0]?.case[currentCaseIndex]?.labels,
+  //   projectData?.session[0]?.case[currentCaseIndex]?.rows_number
+  // );
 
-  const distributedLabels = distributeArrayElements(
-    projectData?.session[0]?.case[currentCaseIndex]?.labels,
-    projectData?.session[0]?.case[currentCaseIndex]?.rows_number
-  );
+  console.log(projectData, "wad");
 
-  console.log(distributedLabels, "jkkjkj");
+  const handleValueChange = (catIdx, optIdx) => {
+    console.log(catIdx, optIdx, "identifier");
+    dispatch(
+      changeCheckBox({
+        optIdx,
+        currentCaseIndex,
+        catIdx,
+      })
+    );
+  };
+
   return (
     <>
       <Formik
-        initialValues={{
-          option1: false,
-          option2: false,
-          option3: false,
-          option4: false,
-        }}
+        initialValues={{}}
         // validationSchema={taxonomySchema}
         onSubmit={(values) => {
           console.log(values, "valuess");
@@ -111,7 +109,7 @@ const PersonPage = () => {
         {() => (
           <Form>
             <div className="">
-              <div className="flex-between py-10 ">
+              <div className="flex-between py-10">
                 <BackButton
                   onClick={handleBackCase}
                   disabled={currentCaseIndex === 0}
@@ -148,45 +146,42 @@ const PersonPage = () => {
                   </div>
 
                   <div id="dynamicGrid" className={`grid w-full relative `}>
-                    {projectData?.session[0]?.case[currentCaseIndex]
-                      ?.category_type.length &&
-                      projectData?.session[0]?.case[
-                        currentCaseIndex
-                      ]?.category_type?.map((item, index) => {
-                        return (
-                          <div key={index} className="flex flex-col gap-4 p-1">
-                            <CategoryCard
-                              id={id}
-                              cat={item.category}
-                              idx={index}
-                              type={item.type}
-                              elementId={`dicomImage${item.cat}`}
-                              images={item.image_list}
-                              isSynced={isSynced}
-                              // setZoomActive={setZoomActive}
-                            />
-                            <div className="flex flex-col gap-6 mt-2">
-                              {projectData?.session[0]?.case[
-                                currentCaseIndex
-                              ]?.options?.map((item) => (
-                                <Checkbox name={item.value} text={item.value} />
-                              ))}
-                            </div>
+                    {projectData?.session[0]?.case[
+                      currentCaseIndex
+                    ]?.category_type?.map((catItem, catIdx) => {
+                      console.log(catIdx, "catIdx");
+                      return (
+                        <div
+                          key={catItem?.id}
+                          className="flex flex-col gap-4 p-1"
+                        >
+                          <CategoryCard
+                            id={id}
+                            cat={catItem.category}
+                            idx={catIdx}
+                            type={catItem.type}
+                            elementId={`dicomImage${catItem.cat}`}
+                            images={catItem.image_list}
+                            isSynced={isSynced}
+                            catItem={catItem}
+                            handleValueChange={handleValueChange}
+                            // setZoomActive={setZoomActive}
+                          />
 
-                            {(index + 1) % 2 === 0 && (
-                              <div className="col-span-2 flex items-center justify-center w-full mt-8 mb-8 ">
-                                <div className="w-[100%] absolute left-0 px-32 ">
-                                  <Button
-                                    btnText="Sync"
-                                    nobg
-                                    onClick={handleSync}
-                                  />
-                                </div>
+                          {(catIdx + 1) % 2 === 0 && (
+                            <div className="col-span-2 flex items-center justify-center w-full mt-8 mb-8 ">
+                              <div className="w-[100%] absolute left-0 px-32 ">
+                                <Button
+                                  btnText="Sync"
+                                  nobg
+                                  onClick={handleSync}
+                                />
                               </div>
-                            )}
-                          </div>
-                        );
-                      })}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
 
                     {/* Centered button spanning full width */}
                   </div>
@@ -199,7 +194,7 @@ const PersonPage = () => {
 
                 <div className="w-[200px] flex flex-col  max-md:hidden primary-border-color p-2 h-auto">
                   <div className="h-[400px]"></div>
-                  <div className="flex flex-col gap-6">
+                  {/* <div className="flex flex-col gap-6">
                     {distributedLabels.length &&
                       distributedLabels?.map((row, rowIndex) => (
                         <div
@@ -229,7 +224,7 @@ const PersonPage = () => {
                           })}
                         </div>
                       ))}
-                  </div>
+                  </div> */}
 
                   <div className="flex flex-col mb-4 mt-10 h-[620px] bg-red">
                     {/* <RangeSelector /> */}
