@@ -50,6 +50,16 @@ const createProjectService = apiWithTag.injectEndpoints({
       },
       providesTags: ["Project"],
     }),
+    addSession: build.mutation({
+      query: (data) => {
+        return {
+          url: "/slice/",
+          method: "POST",
+          body: data,
+        };
+      },
+      invalidatesTags: ["Project"],
+    }),
   }),
 });
 
@@ -59,5 +69,6 @@ export const {
   useGetProjectsListQuery,
   useGetFromDbQuery,
   useGetCsvQuery,
+  useAddSessionMutation,
 } = createProjectService;
 export default createProjectService;

@@ -16,8 +16,16 @@ import image4 from "../assets/dicom data/case1/AI_ABC/4.dcm";
 import image5 from "../assets/dicom data/case1/AI_ABC/5.dcm";
 import image6 from "../assets/dicom data/case1/AI_ABC/6.dcm";
 import { useParams } from "react-router-dom";
-import { useGetProjectQuery } from "../store/services/projectService";
-import { addProject, changeCheckBox } from "../store/slice/projectSlice";
+import {
+  useAddSessionMutation,
+  useGetProjectQuery,
+} from "../store/services/projectService";
+import {
+  addProject,
+  changeCheckBox,
+  changeLabelCheckBox,
+  replaceLabels,
+} from "../store/slice/projectSlice";
 import { distributeArrayElements } from "../constants";
 
 const imageUrls = [image1, image2, image3, image4, image5, image6];
@@ -38,10 +46,20 @@ const PersonPage = () => {
       refetchOnMountOrArgChange: true,
     });
 
+  const [createProject, { sessionLoading, sessionIsSuccess, sessionData }] =
+    useAddSessionMutation();
+
   const dispatch = useDispatch();
   const { projectData } = useSelector((state) => state.project);
   const [currentCaseIndex, setCurrentCaseIndex] = useState(0);
   const [isSynced, setIsSynced] = useState(false);
+
+  const [distributedLabels, setDistributedLabels] = useState(
+    distributeArrayElements(
+      projectData?.session[0]?.case[currentCaseIndex]?.labels,
+      projectData?.session[0]?.case[currentCaseIndex]?.rows_number
+    )
+  );
 
   useEffect(() => {
     if (data) {
@@ -72,19 +90,50 @@ const PersonPage = () => {
   const handleNextCase = () => {
     setCurrentCaseIndex((prevIndex) => prevIndex + 1);
   };
+
   const handleBackCase = () => {
     setCurrentCaseIndex((prevIndex) => prevIndex - 1);
   };
+
   // Check if there are more cases to display
   const hasMoreCases =
     currentCaseIndex < (data?.session[0]?.case.length || 0) - 1;
 
-  // const distributedLabels = distributeArrayElements(
-  //   projectData?.session[0]?.case[currentCaseIndex]?.labels,
-  //   projectData?.session[0]?.case[currentCaseIndex]?.rows_number
-  // );
+  const getLabels = () => {
+    return projectData?.session?.[0]?.case?.[
+      currentCaseIndex
+    ].newLabels[0].filter((item) => {
+      if (item.checked === true) {
+        return item.name;
+      }
+    });
+  };
 
-  console.log(projectData, "wad");
+  let slices = [];
+  projectData?.session?.[0]?.case?.[currentCaseIndex].category_type.forEach(
+    (category) => {
+      const checkedOptions = category.options.filter(
+        (option) => option.checked
+      );
+      const checkoedOptionsValues = checkedOptions.map(
+        (option) => option.value
+      );
+
+      slices.push({
+        project_id: 1, // You can set the appropriate project_id here
+        case_id: projectData?.session?.[0]?.case?.[currentCaseIndex]?.id,
+        category_type: category.id,
+        image_id: 1,
+        options: checkoedOptionsValues,
+        labels: getLabels(),
+        score: slices.length + 1,
+      });
+    }
+  );
+
+  useEffect(() => {
+    dispatch(replaceLabels({ currentCaseIndex, distributedLabels }));
+  }, []);
 
   const handleValueChange = (catIdx, optIdx) => {
     console.log(catIdx, optIdx, "identifier");
@@ -96,6 +145,13 @@ const PersonPage = () => {
       })
     );
   };
+
+  const handleLabelSelect = (rowIndex, labelIdx) => {
+    console.log(rowIndex, labelIdx, "labelIdx");
+    dispatch(changeLabelCheckBox({ rowIndex, labelIdx, currentCaseIndex }));
+  };
+
+  console.log(slices, "kljljk090");
 
   return (
     <>
@@ -187,44 +243,85 @@ const PersonPage = () => {
                   </div>
                   <div className="w-full flex m-auto px-32 py-5">
                     <div className="w-[100%]">
-                      <Button btnText="Submit" />
+                      <Button
+                        btnText="Submit"
+                        type="button"
+                        onClick={() => createProject({ slices_data: slices })}
+                      />
                     </div>
                   </div>
                 </div>
 
                 <div className="w-[200px] flex flex-col  max-md:hidden primary-border-color p-2 h-auto">
                   <div className="h-[400px]"></div>
-                  {/* <div className="flex flex-col gap-6">
-                    {distributedLabels.length &&
-                      distributedLabels?.map((row, rowIndex) => (
-                        <div
-                          key={rowIndex}
-                          className="flex flex-col gap-4 p-1 h-[600px]"
-                        >
-                          {row.map((item, index) => {
-                            if (item?.value?.includes("-")) {
-                              const [before, after] = item.value.split("-");
-                              return (
-                                <RangeSelector
-                                  key={index}
-                                  before={before}
-                                  after={after}
+                  <div className="flex flex-col gap-6">
+                    {projectData?.session[0]?.case[
+                      currentCaseIndex
+                    ].newLabels?.map((row, rowIndex) => (
+                      <div
+                        key={rowIndex}
+                        className="flex flex-col gap-4 p-1 h-[600px]"
+                      >
+                        {row?.map?.((item, index) => {
+                          if (item?.value?.includes("-")) {
+                            const [before, after] = item.value.split("-");
+                            return (
+                              <RangeSelector
+                                key={index}
+                                before={before}
+                                after={after}
+                              />
+                            );
+                          } else {
+                            return (
+                              <div
+                                className=" w-full flex items-center gap-24"
+                                key={item?.id}
+                              >
+                                <input
+                                  type="checkbox"
+                                  className="hidden"
+                                  id={item.id}
+                                  checked={item.checked}
                                 />
-                              );
-                            } else {
-                              return (
-                                <Checkbox
-                                  key={index}
-                                  id={item.value}
-                                  name={item.value}
-                                  text={item.value}
-                                />
-                              );
-                            }
-                          })}
-                        </div>
-                      ))}
-                  </div> */}
+                                <label
+                                  htmlFor={item.id}
+                                  className="flex items-center cursor-pointer"
+                                >
+                                  <div
+                                    className="w-6 h-6 primary-border-color rounded-md flex items-center justify-center mr-2 transition duration-300 ease-in-out"
+                                    onClick={() => {
+                                      handleLabelSelect(rowIndex, index);
+                                    }}
+                                  >
+                                    {item?.checked && (
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 16 16"
+                                        fill="none"
+                                      >
+                                        <circle
+                                          cx="8"
+                                          cy="8"
+                                          r="8"
+                                          fill="#C8BCF6"
+                                        />
+                                      </svg>
+                                    )}
+                                  </div>
+                                  <span className="text-[#4F4F4F] body-light">
+                                    {item?.value}
+                                  </span>
+                                </label>
+                              </div>
+                            );
+                          }
+                        })}
+                      </div>
+                    ))}
+                  </div>
 
                   <div className="flex flex-col mb-4 mt-10 h-[620px] bg-red">
                     {/* <RangeSelector /> */}

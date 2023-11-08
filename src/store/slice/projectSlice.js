@@ -29,6 +29,27 @@ export const projectSlice = createSlice({
       const currentOption = categoryType[catIdx].options[optIdx];
       currentOption.checked = !currentOption.checked; // Toggle the boolean value
     },
+    replaceLabels: (state, action) => {
+      const { currentCaseIndex, distributedLabels } = action.payload;
+      if (
+        state.projectData.session[0].case[currentCaseIndex]?.newLabels?.length
+      ) {
+        return;
+      } else {
+        state.projectData.session[0].case[currentCaseIndex].newLabels = [];
+        state.projectData.session[0].case[currentCaseIndex].newLabels =
+          distributedLabels;
+      }
+    },
+    changeLabelCheckBox: (state, action) => {
+      const { rowIndex, labelIdx, currentCaseIndex } = action.payload;
+      state.projectData.session[0].case[currentCaseIndex].newLabels[rowIndex][
+        labelIdx
+      ].checked =
+        !state.projectData.session[0].case[currentCaseIndex].newLabels[
+          rowIndex
+        ][labelIdx].checked;
+    },
   },
 });
 
@@ -37,6 +58,8 @@ export const {
   addProjectList,
   addSidebarProjectList,
   changeCheckBox,
+  replaceLabels,
+  changeLabelCheckBox,
 } = projectSlice.actions;
 
 export default projectSlice.reducer;
