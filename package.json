@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@cornerstonejs/core": "^1.27.3",
+    "@cornerstonejs/streaming-image-volume-loader": "^1.27.3",
+    "@cornerstonejs/tools": "^1.27.3",
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
     "@reduxjs/toolkit": "^1.9.7",
@@ -24,6 +27,7 @@
     "papaparse": "^5.4.1",
     "path-browserify": "^1.0.1",
     "react": "^18.2.0",
+    "react-cornerstone-viewport": "^4.1.5",
     "react-dom": "^18.2.0",
     "react-icons": "^4.11.0",
     "react-loader-spinner": "^5.4.5",

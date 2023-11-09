@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 
-const YourComponent = ({ before, after }) => {
-  const [rangeValue, setRangeValue] = useState(0);
-
+const YourComponent = ({ before, after, setRangeValue, rangeValue }) => {
   const calculatePercentage = (value) => {
     const min = Number(before);
     const max = Number(after);

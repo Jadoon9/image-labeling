@@ -118,7 +118,7 @@ body {
 }
 
 .cornerstone-canvas {
-  height: 270px !important;
+  height: 270px !;
   margin-block: 8px;
 }
 

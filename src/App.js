@@ -9,13 +9,24 @@ import IsAuthenticated from "./components/IsAuthenticated";
 import CreateSubject from "./components/models/CreateSubject";
 
 import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDcomImage } from "./hooks/useDcomImage";
 import { ToastContainer } from "react-toastify";
+import * as cornerstone3D from "@cornerstonejs/core";
+import * as cornerstoneTools3D from "@cornerstonejs/tools";
 
 function App() {
   const { isLoggedIn } = useSelector((state) => state.auth);
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    cornerstone3D.init({ gpuTier: { tier: 0 } });
+    cornerstoneTools3D.init();
+    cornerstoneTools3D.addTool(cornerstoneTools3D.ZoomTool);
+    cornerstoneTools3D.addTool(cornerstoneTools3D.WindowLevelTool);
+    cornerstoneTools3D.addTool(cornerstoneTools3D.PanTool);
+    cornerstoneTools3D.addTool(cornerstoneTools3D.StackScrollMouseWheelTool);
+  }, []);
 
   return (
     <div>
@@ -25,11 +36,7 @@ function App() {
           <Route element={<VerticalLayout setIsOpen={setIsOpen} />}>
             <Route path="/" element={<CreateProject />} />
             <Route path="/tabs-page" element={<TabsPage />} />
-            <Route
-              path="/person/:id"
-              onUpdate={() => window.scrollTo(0, 0)}
-              element={<PersonPage />}
-            />
+            <Route path="/person/:id" element={<PersonPage />} />
             {/* <Route path="/person/" element={<PersonPage />} /> */}
           </Route>
         </Route>

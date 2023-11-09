@@ -263,12 +263,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
 
                         <Disclosure.Panel className="px-4 pt-4 pb-2 body-regular">
                           <p
-                            className="body-light mb-1 text-[#4444F4] cursor-pointer"
-                            onClick={() => setIsOpen(true)}
-                          >
-                            Create a session +
-                          </p>
-                          <p
                             className="cursor-pointer flex items-center justify-between gap-2"
                             onClick={() => navigate(`/person/${item?.id}`)}
                           >
@@ -277,6 +271,15 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
                               onClick={(e) => handleCsv(e, item?.id)}
                             />
                           </p>
+
+                          {item?.sliceSession.map((sess) => (
+                            <p className="cursor-pointer flex items-center justify-between gap-5">
+                              {`Session - ${sess}`}
+                              <BsFillCloudDownloadFill
+                                onClick={(e) => handleCsv(e, sess)}
+                              />
+                            </p>
+                          ))}
                         </Disclosure.Panel>
                       </>
                     )}

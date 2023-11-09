@@ -12,8 +12,3 @@ export const drpItems = [
   { id: "1", value: "Option A" },
   { id: "2", value: "Option B" },
 ];
-
-export const distributeArrayElements = (labels, numRows) => {
-  const duplicatedArray = Array.from({ length: numRows }, () => [...labels]);
-  return duplicatedArray;
-};

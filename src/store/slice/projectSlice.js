@@ -25,17 +25,19 @@ export const projectSlice = createSlice({
     changeCheckBox: (state, action) => {
       const { currentCaseIndex, catIdx, optIdx } = action.payload;
       const categoryType =
-        state.projectData.session[0].case[currentCaseIndex].category_type;
+        state?.projectData?.session[0]?.case[currentCaseIndex]?.category_type;
       const currentOption = categoryType[catIdx].options[optIdx];
       currentOption.checked = !currentOption.checked; // Toggle the boolean value
     },
+
     replaceLabels: (state, action) => {
       const { currentCaseIndex, distributedLabels } = action.payload;
       if (
-        state.projectData.session[0].case[currentCaseIndex]?.newLabels?.length
+        state?.projectData?.session[0]?.case?.[currentCaseIndex]?.newLabels
+          ?.length
       ) {
         return;
-      } else {
+      } else if (state.projectData) {
         state.projectData.session[0].case[currentCaseIndex].newLabels = [];
         state.projectData.session[0].case[currentCaseIndex].newLabels =
           distributedLabels;
@@ -46,9 +48,31 @@ export const projectSlice = createSlice({
       state.projectData.session[0].case[currentCaseIndex].newLabels[rowIndex][
         labelIdx
       ].checked =
-        !state.projectData.session[0].case[currentCaseIndex].newLabels[
+        !state?.projectData?.session[0]?.case?.[currentCaseIndex]?.newLabels[
           rowIndex
-        ][labelIdx].checked;
+        ][labelIdx]?.checked;
+    },
+    resetLabels: (state, action) => {
+      if (state.projectData) {
+        state.projectData.session[0].case[action.payload]?.newLabels.forEach(
+          (row) => {
+            row.forEach((label) => {
+              label.checked = false;
+            });
+          }
+        );
+      }
+    },
+    resetOptions: (state, action) => {
+      if (state.projectData) {
+        state.projectData.session[0].case[
+          action.payload
+        ]?.category_type.forEach((category) => {
+          category.options.forEach((option) => {
+            option.checked = false;
+          });
+        });
+      }
     },
   },
 });
@@ -60,6 +84,8 @@ export const {
   changeCheckBox,
   replaceLabels,
   changeLabelCheckBox,
+  resetLabels,
+  resetOptions,
 } = projectSlice.actions;
 
 export default projectSlice.reducer;
