@@ -11,13 +11,22 @@ import cornerstoneTools from "cornerstone-tools";
 import Hammer from "hammerjs";
 import cornerstoneWADOImageLoader from "cornerstone-wado-image-loader";
 import dicomParser from "dicom-parser";
-import { RenderingEngine } from "@cornerstonejs/core";
-import { ViewportType } from "@cornerstonejs/core/dist/esm/enums";
-import * as cornerstone3D from "@cornerstonejs/core";
-import * as cornerstoneTools3D from "@cornerstonejs/tools";
 
-cornerstoneWADOImageLoader.external.cornerstone = cornerstone3D;
+cornerstoneTools.external.cornerstone = cornerstone;
+cornerstoneTools.external.Hammer = Hammer;
+cornerstoneTools.external.cornerstoneMath = cornerstoneMath;
+cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
 cornerstoneWADOImageLoader.external.dicomParser = dicomParser;
+
+cornerstoneTools.init();
+cornerstoneWADOImageLoader.webWorkerManager.initialize();
+
+cornerstoneTools.init({
+  mouseEnabled: true,
+  touchEnabled: true,
+  globalToolSyncEnabled: false,
+  showSVGCursors: false,
+});
 
 const CategoryCard = ({
   hideTitle,
@@ -29,214 +38,115 @@ const CategoryCard = ({
   catItem,
   handleValueChange,
 }) => {
-  console.log(idx, "asdasddas");
-  const toolGroupId = "myToolGroup" + idx;
-  const viewportId = "CT_AXIAL_STACK" + idx;
-  const renderingEngineId = "myRenderingEngine" + idx;
-  const [toolName, setToolName] = useState("");
-
-  // const handleReset = () => {
-  //   const element = document.getElementById(`${elementId}`);
-
-  //   // Reset zoom and pan
-  //   cornerstone.reset(element);
-
-  //   // Reset other tools if needed
-  //   const stack = cornerstoneTools.getToolState(element, "stack");
-  //   if (stack && stack.data && stack.data.length > 0) {
-  //     stack.data[0].currentImageIdIndex = 0;
-  //   }
-
-  //   // Reset other tools as necessary (example: length tool)
-  //   const lengthToolData = cornerstoneTools.getToolState(element, "Length");
-  //   if (
-  //     lengthToolData &&
-  //     lengthToolData.data &&
-  //     lengthToolData.data.length > 0
-  //   ) {
-  //     lengthToolData.data[0].measurementData.measurementValue = 0;
-  //   }
-
-  //   // Call updateImage to redraw the image after reset
-  //   cornerstone.updateImage(element);
-  // };
+  const [imageIds, setImageIds] = useState([]);
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  let element;
+  let elementId = `dicomImage${idx}`;
 
   const handleReset = () => {
-    setToolName("");
-    const renderingEngine = cornerstone3D.getRenderingEngine(renderingEngineId);
-    // const viewport = renderingEngine.getViewport(viewportId);
-    // viewport.setPan([0, 0]);
-    // viewport.setZoom(1);
-    // viewport.render();
-    const toolGroup =
-      cornerstoneTools3D.ToolGroupManager.getToolGroup(toolGroupId);
-    toolGroup.setToolDisabled(cornerstoneTools3D.ZoomTool.toolName);
-    toolGroup.setToolDisabled(
-      cornerstoneTools3D.StackScrollMouseWheelTool.toolName
-    );
-    toolGroup.setToolDisabled(cornerstoneTools3D.WindowLevelTool.toolName);
-    toolGroup.setToolActive(cornerstoneTools3D.PanTool.toolName, {
-      bindings: [
-        {
-          mouseButton: cornerstoneTools3D.Enums.MouseBindings.Primary,
-        },
-      ],
-    });
-  };
+    const element = document.getElementById(`${elementId}`);
 
+    // Reset zoom and pan
+    cornerstone.reset(element);
+
+    // Reset other tools if needed
+    const stack = cornerstoneTools.getToolState(element, "stack");
+    if (stack && stack.data && stack.data.length > 0) {
+      stack.data[0].currentImageIdIndex = 0;
+    }
+
+    // Reset other tools as necessary (example: length tool)
+    const lengthToolData = cornerstoneTools.getToolState(element, "Length");
+    if (
+      lengthToolData &&
+      lengthToolData.data &&
+      lengthToolData.data.length > 0
+    ) {
+      lengthToolData.data[0].measurementData.measurementValue = 0;
+    }
+
+    // Call updateImage to redraw the image after reset
+    cornerstone.updateImage(element);
+  };
   const baseUrl = "http://127.0.0.1:8000/";
   const scheme = "wadouri";
+  console.log(catItem, "99898");
   // loadAndViewImage`${elementId}`;
 
-  // useEffect(() => {
-  //   element = document.getElementById(`${elementId}`);
-  //   cornerstone.enable(element);
-  //   const loadImages = async () => {
-  //     try {
-  //       const imageIds = await Promise.all(
-  //         images.map(async (imagePath) => {
-  //           const imageId = `${scheme}:${baseUrl}${imagePath?.image}`;
-  //           return imageId;
-  //         })
-  //       );
+  useEffect(() => {}, [images]);
+  console.log(element, "cjjhkjh");
 
-  //       // Load and display the first image
-  //       const element = document.getElementById(elementId);
-  //       cornerstone.enable(element);
-
-  //       const image = await cornerstone.loadImage(imageIds[0]);
-  //       const viewport = cornerstone.getDefaultViewportForImage(element, image);
-
-  //       cornerstone.displayImage(element, image, viewport);
-
-  //       // Create a stack object and assign imageIds to it
-  //       const stack = {
-  //         currentImageIdIndex: 0,
-  //         imageIds: imageIds,
-  //       };
-
-  //       console.log(stack, "ceckstat");
-  //       // Add the stack to the cornerstone tools
-  //       cornerstoneTools.addStackStateManager(element, ["stack"]);
-  //       cornerstoneTools.addToolState(element, "stack", stack);
-
-  //       // Enable the StackScrollMouseWheelTool to enable scrolling through the stack
-  //       setScrollActive();
-  //     } catch (error) {
-  //       console.error("Error loading images:", error);
-  //     }
-  //   };
-  //   loadImages();
-  // }, [id, images]);
+  const synchronizer = new cornerstoneTools.Synchronizer(
+    "CornerstoneNewImage",
+    cornerstoneTools.updateImageSynchronizer
+  );
 
   useEffect(() => {
+    element = document.getElementById(`${elementId}`);
+    cornerstone.enable(element);
     const loadImages = async () => {
-      if (cornerstone3D.getRenderingEngine(renderingEngineId)) return;
+      try {
+        const imageIds = await Promise.all(
+          images.map(async (imagePath) => {
+            const imageId = `${scheme}:${baseUrl}${imagePath?.image}`;
+            return imageId;
+          })
+        );
 
-      const imageIds = await Promise.all(
-        images.map(async (imagePath) => {
-          const imageId = `${scheme}:${baseUrl}${imagePath?.image}`;
-          return imageId;
-        })
-      );
+        setImageIds(imageIds);
 
-      const content = document.getElementById(cat);
-      const element = document.createElement("div");
-      element.oncontextmenu = (e) => e.preventDefault();
-      element.style.width = "300px";
-      element.style.height = "200px";
-      content.appendChild(element);
+        // Load and display the first image
+        const element = document.getElementById(elementId);
+        cornerstone.enable(element);
 
-      const renderingEngine = new RenderingEngine(renderingEngineId);
+        const image = await cornerstone.loadImage(imageIds[0]);
+        const viewport = cornerstone.getDefaultViewportForImage(element, image);
 
-      const viewportInput = {
-        viewportId,
-        element,
-        type: ViewportType.STACK,
-      };
+        cornerstone.displayImage(element, image, viewport);
 
-      renderingEngine.enableElement(viewportInput);
-      const viewport = renderingEngine.getViewport(viewportId);
-      viewport.setUseCPURendering(true);
-      viewport.setStack(imageIds, 0);
+        // Create a stack object and assign imageIds to it
+        const stack = {
+          currentImageIdIndex: 0,
+          imageIds: imageIds,
+        };
 
-      const toolGroup =
-        cornerstoneTools3D.ToolGroupManager.createToolGroup(toolGroupId);
+        console.log(stack, "ceckstat");
+        // Add the stack to the cornerstone tools
+        cornerstoneTools.addStackStateManager(element, ["stack"]);
+        cornerstoneTools.addToolState(element, "stack", stack);
 
-      toolGroup.addTool(cornerstoneTools3D.WindowLevelTool.toolName);
-      toolGroup.addTool(cornerstoneTools3D.ZoomTool.toolName);
-      toolGroup.addTool(cornerstoneTools3D.PanTool.toolName);
-      toolGroup.addTool(cornerstoneTools3D.StackScrollMouseWheelTool.toolName);
-
-      toolGroup.addViewport(viewportId, renderingEngineId);
-      toolGroup.setToolActive(cornerstoneTools3D.PanTool.toolName, {
-        bindings: [
-          {
-            mouseButton: cornerstoneTools3D.Enums.MouseBindings.Primary,
-          },
-        ],
-      });
+        // Enable the StackScrollMouseWheelTool to enable scrolling through the stack
+        setScrollActive();
+        synchronizer.add(element);
+      } catch (error) {
+        console.error("Error loading images:", error);
+      }
     };
     loadImages();
-  }, []);
+  }, [id, images]);
 
-  // const setZoomActive = (event) => {
-  //   console.log(event, "evnhe");
-  //   // Load and display the first image
-  //   const element = document.getElementById(elementId);
-  //   cornerstone.enable(element);
+  const setZoomActive = (event) => {
+    console.log(event, "evnhe");
+    // Load and display the first image
+    const element = document.getElementById(elementId);
+    cornerstone.enable(element);
 
-  //   const ZoomMouseWheelTool = cornerstoneTools.ZoomMouseWheelTool;
-  //   const PanTool = cornerstoneTools.PanTool;
+    const ZoomMouseWheelTool = cornerstoneTools.ZoomMouseWheelTool;
+    const PanTool = cornerstoneTools.PanTool;
 
-  //   cornerstoneTools.addTool(ZoomMouseWheelTool);
-  //   cornerstoneTools.setToolActive("ZoomMouseWheel", { mouseButtonMask: 1 });
+    cornerstoneTools.addTool(ZoomMouseWheelTool);
+    cornerstoneTools.setToolActive("ZoomMouseWheel", { mouseButtonMask: 1 });
 
-  //   cornerstoneTools.addTool(PanTool);
-  //   cornerstoneTools.setToolActive("Pan", { mouseButtonMask: 1 });
-  // };
-
-  const setZoomActive = (e) => {
-    setToolName("zoom");
-    const toolGroup =
-      cornerstoneTools3D.ToolGroupManager.getToolGroup(toolGroupId);
-    toolGroup.setToolDisabled(cornerstoneTools3D.WindowLevelTool.toolName);
-    toolGroup.setToolDisabled(
-      cornerstoneTools3D.StackScrollMouseWheelTool.toolName
-    );
-    toolGroup.setToolDisabled(cornerstoneTools3D.PanTool.toolName);
-    toolGroup.setToolActive(cornerstoneTools3D.ZoomTool.toolName, {
-      bindings: [
-        {
-          mouseButton: cornerstoneTools3D.Enums.MouseBindings.Primary,
-        },
-      ],
-    });
+    cornerstoneTools.addTool(PanTool);
+    cornerstoneTools.setToolActive("Pan", { mouseButtonMask: 1 });
   };
 
   const setWwwcActive = (e) => {
-    setToolName("wwc");
-    const toolGroup =
-      cornerstoneTools3D.ToolGroupManager.getToolGroup(toolGroupId);
-    toolGroup.setToolDisabled(cornerstoneTools3D.ZoomTool.toolName);
-    toolGroup.setToolDisabled(cornerstoneTools3D.PanTool.toolName);
-    toolGroup.setToolDisabled(
-      cornerstoneTools3D.StackScrollMouseWheelTool.toolName
-    );
-    toolGroup.setToolActive(cornerstoneTools3D.WindowLevelTool.toolName, {
-      bindings: [
-        {
-          mouseButton: cornerstoneTools3D.Enums.MouseBindings.Primary,
-        },
-      ],
-    });
+    const WwwcTool = cornerstoneTools.WwwcTool;
+    cornerstoneTools.addTool(WwwcTool);
+    cornerstoneTools.setToolActive("Wwwc", { mouseButtonMask: 1 });
   };
-
-  // const setWwwcActive = (e) => {
-  //   const WwwcTool = cornerstoneTools.WwwcTool;
-  //   cornerstoneTools.addTool(WwwcTool);
-  //   cornerstoneTools.setToolActive("Wwwc", { mouseButtonMask: 1 });
-  // };
 
   const setScrollActive = () => {
     const StackScrollMouseWheelTool =
@@ -254,9 +164,9 @@ const CategoryCard = ({
           {!hideTitle && <h3 className="h3-bold">Category : {cat}</h3>}
           {!hideTitle && <p className="body-light mt-2">Type : {type}</p>}
         </div>
-        <div className="m-auto" id={idx} />
+
         <div className="">
-          {/* <div
+          <div
             onContextMenu={() => false}
             unselectable="on"
             className="overflow-hidden"
@@ -268,42 +178,32 @@ const CategoryCard = ({
                 </div>
               )}
             </div>
-          </div>  */}
+          </div>
 
-          <div className="flex-center gap-8 mt-3">
+          <div className="flex-center gap-1 mb-1 ">
             <button
-              style={{ backgroundColor: toolName === "" ? "black" : "white" }}
-              className="p-1 border border-black custom-shadow rounded-[8px] h-9 w-9"
+              className="p-1 custom-shadow  cursor-pointer rounded-[8px] h-6 w-6 "
               onClick={handleReset}
             >
-              <img src={restartIon} alt="rest" className="h-7 w-7" />
+              <img src={restartIon} alt="rest" className="" />
             </button>
             <button
-              style={{
-                backgroundColor: toolName === "zoom" ? "black" : "white",
-              }}
-              className="p-1 border border-black custom-shadow rounded-[8px] h-9 w-9"
-              onClick={setZoomActive}
+              className="p-1 custom-shadow  cursor-pointer rounded-[8px] h-6 w-6  "
+              onClick={(e) => setZoomActive(e)}
             >
-              <img src={zoomIcon} alt="rest" className="h-7 w-7" />
+              <img src={zoomIcon} alt="rest" />
             </button>
             <button
-              style={{
-                backgroundColor: toolName === "wwc" ? "black" : "white",
-              }}
-              className="p-1 border border-black custom-shadow rounded-[8px] h-9 w-9"
+              className="p-1 custom-shadow cursor-pointer rounded-[8px]h-6 w-6  "
               onClick={setWwwcActive}
             >
-              <img src={dropIcon} alt="rest" className="h-7 w-7" />
+              <img src={dropIcon} alt="rest" />
             </button>
             <button
-              style={{
-                backgroundColor: toolName === "stackscroll" ? "black" : "white",
-              }}
-              className="p-1 border border-black custom-shadow rounded-[8px] h-9 w-9"
+              className="p-1 custom-shadow cursor-pointer rounded-[8px]  h-6 w-6   "
               onClick={setScrollActive}
             >
-              <img src={gameIcon} alt="rest" className="flex h-7 w-7" />
+              <img src={gameIcon} alt="rest" />
             </button>
           </div>
         </div>

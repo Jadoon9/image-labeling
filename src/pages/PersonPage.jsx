@@ -26,122 +26,8 @@ import {
 import { distributeArrayElements } from "../constants";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
-import * as cornerstone3D from "@cornerstonejs/core";
-import * as cornerstoneTools3D from "@cornerstonejs/tools";
 
 const PersonPage = () => {
-  //* SyNC functionality =======================
-  const [isSynced, setIsSynced] = useState([]);
-
-  const handleSync = (index) => {
-    const viewPort1 = cornerstone3D
-      .getRenderingEngine(`myRenderingEngine${index - 1}`)
-      .getViewport(`CT_AXIAL_STACK${index - 1}`);
-    const viewPort2 = cornerstone3D
-      .getRenderingEngine(`myRenderingEngine${index}`)
-      .getViewport(`CT_AXIAL_STACK${index}`);
-    if (
-      cornerstoneTools3D.SynchronizerManager.getSynchronizer(
-        "zoomPanSynchronizer" + index
-      )
-    ) {
-      cornerstoneTools3D.SynchronizerManager.destroySynchronizer(
-        "zoomPanSynchronizer" + index
-      );
-    }
-
-    if (
-      cornerstoneTools3D.SynchronizerManager.getSynchronizer(
-        "staclScrollSynchronizer" + index
-      )
-    ) {
-      cornerstoneTools3D.SynchronizerManager.destroySynchronizer(
-        "staclScrollSynchronizer" + index
-      );
-    }
-
-    const panZoomSync =
-      cornerstoneTools3D.SynchronizerManager.createSynchronizer(
-        "zoomPanSynchronizer" + index,
-        cornerstone3D.EVENTS.CAMERA_MODIFIED,
-        (
-          synchronizerInstance,
-          sourceViewport,
-          targetViewport,
-          cameraModifiedEvent
-        ) => {
-          const IsourceViewport = cornerstone3D
-            .getRenderingEngine(sourceViewport.renderingEngineId)
-            .getViewport(sourceViewport.viewportId);
-          const ItargetViewport = cornerstone3D
-            .getRenderingEngine(targetViewport.renderingEngineId)
-            .getViewport(targetViewport.viewportId);
-          ItargetViewport.setImageIdIndex(
-            IsourceViewport.getCurrentImageIdIndex()
-          );
-
-          const sCamera = IsourceViewport.getCamera();
-          const tCamera = ItargetViewport.getCamera();
-          ItargetViewport.setCamera({
-            ...tCamera,
-            parallelScale: sCamera.parallelScale,
-            scale: sCamera.scale,
-            focalPoint: sCamera.focalPoint,
-          });
-          IsourceViewport.render();
-          ItargetViewport.render();
-        }
-      );
-
-    const stackScrollSync =
-      cornerstoneTools3D.SynchronizerManager.createSynchronizer(
-        "staclScrollSynchronizer" + index,
-        cornerstone3D.EVENTS.STACK_NEW_IMAGE,
-        (
-          synchronizerInstance,
-          sourceViewport,
-          targetViewport,
-          cameraModifiedEvent
-        ) => {
-          const IsourceViewport = cornerstone3D
-            .getRenderingEngine(sourceViewport.renderingEngineId)
-            .getViewport(sourceViewport.viewportId);
-          const ItargetViewport = cornerstone3D
-            .getRenderingEngine(targetViewport.renderingEngineId)
-            .getViewport(targetViewport.viewportId);
-          ItargetViewport.setImageIdIndex(
-            IsourceViewport.getCurrentImageIdIndex()
-          );
-          IsourceViewport.render();
-          ItargetViewport.render();
-        }
-      );
-
-    [viewPort1, viewPort2].map((element) => {
-      const { renderingEngineId, id } = element;
-      panZoomSync.add({ renderingEngineId, viewportId: id });
-      stackScrollSync.add({ renderingEngineId, viewportId: id });
-    });
-
-    setIsSynced((prev) => [...prev, index]);
-  };
-
-  const handleRemoveSync = (index) => {
-    if (
-      cornerstoneTools3D.SynchronizerManager.getSynchronizer(
-        "zoomPanSynchronizer" + index
-      )
-    ) {
-      cornerstoneTools3D.SynchronizerManager.destroySynchronizer(
-        "zoomPanSynchronizer" + index
-      );
-      setIsSynced((prev) => {
-        return prev.filter((v) => v !== index);
-      });
-    }
-  };
-
-  //* end SyNC functionality =======================
   const { id } = useParams();
   const { isLoading, isSuccess, isFetching, isError, refetch, error, data } =
     useGetProjectQuery(id, {
@@ -166,6 +52,7 @@ const PersonPage = () => {
   const dispatch = useDispatch();
   const { projectData } = useSelector((state) => state.project);
   const [currentCaseIndex, setCurrentCaseIndex] = useState(0);
+  const [isSynced, setIsSynced] = useState(false);
   const [rangeValue, setRangeValue] = useState(0);
   const dynamicGridRef = useRef(null);
 
@@ -193,6 +80,10 @@ const PersonPage = () => {
   useEffect(() => {
     dispatch(addProject(data));
   }, [id]);
+
+  const handleSync = () => {
+    setIsSynced(!isSynced);
+  };
 
   const handleNextCase = () => {
     setCurrentCaseIndex((prevIndex) => prevIndex + 1);
@@ -339,15 +230,15 @@ const PersonPage = () => {
             <div className=" grid grid-cols-1 p-4 primary-border-color">
               <h3 className="h3-bold mb-2">Reference</h3>
               <div className="flex ">
-                {/* <CategoryCard
+                <CategoryCard
                   id={id}
-                  idx={2000}
+                  elemntId={`dicomImage-0`}
                   images={
                     projectData?.session[0]?.case[currentCaseIndex]
                       ?.reference_folder?.image_list
                   }
                   hideTitle
-                /> */}
+                />
               </div>
             </div>
 
@@ -361,48 +252,23 @@ const PersonPage = () => {
                     <CategoryCard
                       id={id}
                       cat={catItem.category}
-                      idx={catItem.id}
+                      idx={catIdx}
                       type={catItem.type}
+                      elementId={`dicomImage${catItem.cat}`}
                       images={catItem.image_list}
+                      isSynced={isSynced}
                       catItem={catItem}
                       handleValueChange={handleValueChange}
                       // setZoomActive={setZoomActive}
                     />
 
-                    {/* Render button after every 2 items */}
-                    {(catItem + 1) %
-                      projectData?.session[0].case[currentCaseIndex]
-                        .cols_number ===
-                      0 && (
-                      <div className="grid grid-col-12 mt-4">
-                        {isSynced.includes(catItem + 1) ? (
-                          <Button
-                            onClick={() =>
-                              handleRemoveSync(
-                                catItem +
-                                  projectData?.session[0].case[currentCaseIndex]
-                                    .cols_number
-                              )
-                            }
-                            btnText="Remove Sync"
-                            className="bg-rose-700 text-white"
-                          />
-                        ) : (
-                          <Button
-                            onClick={() => handleSync(catItem + 1)}
-                            btnText="Sync"
-                          />
-                        )}
-                      </div>
-                    )}
-
-                    {/* {(catIdx + 1) % 2 === 0 && (
+                    {(catIdx + 1) % 2 === 0 && (
                       <div className="col-span-2 flex items-center justify-center w-full mt-8 mb-8 ">
                         <div className="w-[100%] absolute left-0 px-32 ">
                           <Button btnText="Sync" nobg onClick={handleSync} />
                         </div>
                       </div>
-                    )} */}
+                    )}
                   </div>
                 );
               })}
