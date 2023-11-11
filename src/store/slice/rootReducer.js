@@ -11,6 +11,7 @@ import projectSlice from "./projectSlice";
 export const appReducers = combineReducers({
   [noAuthApiService.reducerPath]: noAuthApiService.reducer,
   [authApiService.reducerPath]: authApiService.reducer,
+
   auth: authSlice,
   layout: layoutSlice,
   folders: folderSlice,

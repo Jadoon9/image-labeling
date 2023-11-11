@@ -15,6 +15,7 @@ import { useCreateProjectMutation } from "../../store/services/projectService";
 import { addProject } from "../../store/slice/projectSlice";
 import Loader from "../Loader";
 import { resetFolders } from "../../store/slice/foldersSlice";
+import { toast } from "react-toastify";
 
 const Instructions = () => {
   const navigate = useNavigate();
@@ -41,11 +42,14 @@ const Instructions = () => {
   useEffect(() => {
     if (isSuccess) {
       navigate(`/person/${data.id}`);
-
+      toast.success("Project Created Successfully");
       dispatch(resetTaxonomyData());
       dispatch(resetFolders());
     }
-  }, [isSuccess, data]);
+    if (isError) {
+      toast.error("Something went wrong");
+    }
+  }, [isSuccess, data, isError]);
 
   if (isLoading) {
     return <Loader />;
@@ -90,7 +94,7 @@ const Instructions = () => {
       >
         {() => (
           <Form>
-            <div className="p-5 flex flex-col justify-between h-screen">
+            <div className="p-5 flex flex-col justify-between h-full">
               <label htmlFor="" className="body-light text-[#4F4F4F]">
                 Instruction notes
               </label>
@@ -115,7 +119,7 @@ const Instructions = () => {
                 />
               </div>
 
-              <div className="flex-between relative bottom-0 mt-40">
+              <div className="flex-between relative bottom-0 mt-10">
                 <BackButton />
                 <div className="w-32">
                   <Button type="submit" btnText="Finish" icon />

@@ -140,6 +140,7 @@ const Taxonomy = () => {
                         options={foldersList?.result_lists?.list_folders || []}
                         label="Reference Class"
                         name="referenceClass"
+                        dontDelete
                         icon={
                           <HiOutlineFolder
                             className=" h-5 w-5 text-right text-secondary-500 "
@@ -224,6 +225,7 @@ const Taxonomy = () => {
                                   gridIndex={colIndex}
                                   valueHandler={handleChange}
                                   reduxName="columnlist"
+                                  dontDelete
                                 />
                               </th>
                             )
@@ -244,6 +246,7 @@ const Taxonomy = () => {
                                   gridIndex={rowIndex}
                                   valueHandler={handleChange}
                                   reduxName="rowlist"
+                                  dontDelete
                                 />
                               </td>
                               {/* Data cells for other columns */}

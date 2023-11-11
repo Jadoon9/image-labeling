@@ -74,14 +74,6 @@ const CategoryCard = ({
   console.log(catItem, "99898");
   // loadAndViewImage`${elementId}`;
 
-  useEffect(() => {}, [images]);
-  console.log(element, "cjjhkjh");
-
-  const synchronizer = new cornerstoneTools.Synchronizer(
-    "CornerstoneNewImage",
-    cornerstoneTools.updateImageSynchronizer
-  );
-
   useEffect(() => {
     element = document.getElementById(`${elementId}`);
     cornerstone.enable(element);
@@ -118,7 +110,6 @@ const CategoryCard = ({
 
         // Enable the StackScrollMouseWheelTool to enable scrolling through the stack
         setScrollActive();
-        synchronizer.add(element);
       } catch (error) {
         console.error("Error loading images:", error);
       }

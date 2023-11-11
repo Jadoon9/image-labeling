@@ -10,7 +10,7 @@ import Checkbox from "../components/CheckBox";
 import CategoryCard from "../components/CategoryCard";
 import CreateSubject from "../components/models/CreateSubject";
 
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   useAddSessionMutation,
   useGetProjectQuery,
@@ -23,11 +23,12 @@ import {
   resetLabels,
   resetOptions,
 } from "../store/slice/projectSlice";
-import { distributeArrayElements } from "../constants";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
 
 const PersonPage = () => {
+  const [, updateState] = React.useState();
+  const forceUpdate = React.useCallback(() => updateState({}), []);
   const { id } = useParams();
   const { isLoading, isSuccess, isFetching, isError, refetch, error, data } =
     useGetProjectQuery(id, {
@@ -48,12 +49,13 @@ const PersonPage = () => {
     const duplicatedArray = Array.from({ length: numRows }, () => [...labels]);
     return duplicatedArray;
   };
-
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { projectData } = useSelector((state) => state.project);
   const [currentCaseIndex, setCurrentCaseIndex] = useState(0);
-  const [isSynced, setIsSynced] = useState(false);
-  const [rangeValue, setRangeValue] = useState(0);
+
+  const [rangeValues, setRangeValues] = useState([]);
+
   const dynamicGridRef = useRef(null);
 
   const [distributedLabels, setDistributedLabels] = useState(
@@ -72,18 +74,12 @@ const PersonPage = () => {
   }, [sessionIsSuccess]);
 
   useEffect(() => {
+    navigate(`/person/${id}`);
+    dispatch(addProject(data));
     if (data) {
       dispatch(addProject(data));
     }
-  }, [isSuccess]);
-
-  useEffect(() => {
-    dispatch(addProject(data));
-  }, [id]);
-
-  const handleSync = () => {
-    setIsSynced(!isSynced);
-  };
+  }, [isSuccess, id]);
 
   const handleNextCase = () => {
     setCurrentCaseIndex((prevIndex) => prevIndex + 1);
@@ -93,37 +89,26 @@ const PersonPage = () => {
     setCurrentCaseIndex((prevIndex) => prevIndex - 1);
   };
 
-  // Check if there are more cases to display
+  //* Check if there are more cases to display
   const hasMoreCases =
     currentCaseIndex < (data?.session[0]?.case.length || 0) - 1;
 
+  //* Helper function to manage  Labels change
   function updateTargetArray(labelsArray, targetArray) {
     labelsArray?.forEach?.((labels, rowIndex) => {
       labels?.forEach?.((label) => {
         if (label.checked) {
           const labelValue = label.value;
-          const score = rangeValue; // Assuming rangeValue starts from 0
+          const colsNumber =
+            projectData?.session[0]?.case[currentCaseIndex]?.cols_number;
 
-          // Push the value and score of the selected label to both instances in targetArray
-          targetArray[
-            rowIndex *
-              projectData?.session[0]?.case[currentCaseIndex]?.cols_number
-          ].labels.push(labelValue);
-          targetArray[
-            rowIndex *
-              projectData?.session[0]?.case[currentCaseIndex]?.cols_number +
-              1
-          ].labels.push(labelValue);
+          // Calculate the starting index based on the current rowIndex
+          const startIndex = rowIndex * colsNumber;
 
-          targetArray[
-            rowIndex *
-              projectData?.session[0]?.case[currentCaseIndex]?.cols_number
-          ].score = score;
-          targetArray[
-            rowIndex *
-              projectData?.session[0]?.case[currentCaseIndex]?.cols_number +
-              1
-          ].score = score;
+          // Add the labelValue to the 'labels' array for each instance in targetArray
+          for (let i = 0; i < colsNumber; i++) {
+            targetArray[startIndex + i].labels.push(labelValue);
+          }
         }
       });
     });
@@ -131,6 +116,27 @@ const PersonPage = () => {
     return targetArray;
   }
 
+  //* Helper function to manage  score change
+  function updateScore(rangeValues, targetArray) {
+    rangeValues?.forEach?.((range, rowIndex) => {
+      if (range) {
+        const colsNumber =
+          projectData?.session[0]?.case[currentCaseIndex]?.cols_number;
+
+        // Calculate the starting index based on the current rowIndex
+        const startIndex = rowIndex * colsNumber;
+
+        // Add the label value to multiple positions in targetArray
+        for (let i = 0; i < colsNumber; i++) {
+          targetArray[startIndex + i].score = Number(range);
+        }
+      }
+    });
+
+    return targetArray;
+  }
+
+  // * Structure to send data to apito create a session
   let slices = [];
   projectData?.session?.[0]?.case?.[currentCaseIndex].category_type.forEach(
     (category) => {
@@ -153,11 +159,20 @@ const PersonPage = () => {
     }
   );
 
-  updateTargetArray(
+  console.log(slices, "aslsad");
+  // * Update the store after every label change
+  useEffect(() => {
+    updateTargetArray(
+      projectData?.session?.[0]?.case?.[currentCaseIndex]?.newLabels,
+      slices
+    );
+    updateScore(rangeValues, slices);
+  }, [
     projectData?.session?.[0]?.case?.[currentCaseIndex]?.newLabels,
-    slices
-  );
+    rangeValues,
+  ]);
 
+  // * Options change handler
   const handleValueChange = (catIdx, optIdx) => {
     console.log(catIdx, optIdx, "identifier");
     dispatch(
@@ -169,15 +184,17 @@ const PersonPage = () => {
     );
   };
 
+  // * Labels selections
   const handleLabelSelect = (rowIndex, labelIdx) => {
     dispatch(changeLabelCheckBox({ rowIndex, labelIdx, currentCaseIndex }));
   };
 
+  // * Add labels new field so we can have it in our format
   useEffect(() => {
     if (projectData) {
       dispatch(replaceLabels({ currentCaseIndex, distributedLabels }));
     }
-  }, [distributedLabels, id, projectData]);
+  }, [distributedLabels, id, projectData, currentCaseIndex]);
 
   useEffect(() => {
     if (dynamicGridRef.current) {
@@ -198,11 +215,20 @@ const PersonPage = () => {
     id,
   ]);
 
-  console.log(slices, "kljljk090");
+  const handleRangeChange = (rowIndex, value) => {
+    setRangeValues((prevValues) => {
+      const newValues = [...prevValues];
+      newValues[rowIndex] = value;
+      return newValues;
+    });
+  };
+
+  console.log(rangeValues, "jhjh");
 
   if (isLoading) {
     return <Loader />;
   }
+
   return (
     <>
       <div className="">
@@ -256,7 +282,6 @@ const PersonPage = () => {
                       type={catItem.type}
                       elementId={`dicomImage${catItem.cat}`}
                       images={catItem.image_list}
-                      isSynced={isSynced}
                       catItem={catItem}
                       handleValueChange={handleValueChange}
                       // setZoomActive={setZoomActive}
@@ -265,7 +290,7 @@ const PersonPage = () => {
                     {(catIdx + 1) % 2 === 0 && (
                       <div className="col-span-2 flex items-center justify-center w-full mt-8 mb-8 ">
                         <div className="w-[100%] absolute left-0 px-32 ">
-                          <Button btnText="Sync" nobg onClick={handleSync} />
+                          <Button btnText="Sync" nobg />
                         </div>
                       </div>
                     )}
@@ -300,11 +325,13 @@ const PersonPage = () => {
                         const [before, after] = item.value.split("-");
                         return (
                           <RangeSelector
-                            key={index}
                             before={before}
                             after={after}
-                            setRangeValue={setRangeValue}
-                            rangeValue={rangeValue}
+                            key={rowIndex}
+                            setRangeValue={(value) =>
+                              handleRangeChange(rowIndex, value)
+                            }
+                            rangeValue={rangeValues[rowIndex] || 0} // Use the stored value or default to 0
                           />
                         );
                       } else {

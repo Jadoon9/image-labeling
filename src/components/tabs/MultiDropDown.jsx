@@ -10,6 +10,7 @@ const MultiDropDown = ({
   placeholder,
   name,
   showBlackBorder,
+  noDelete,
   handleRemoveItem,
 }) => {
   const [field, meta, helpers] = useField(name);
@@ -75,9 +76,11 @@ const MultiDropDown = ({
                           >
                             <p className="body-light flex-1 ">{item.value}</p>
 
-                            <div onClick={(e) => handleRemoveItem(item.id)}>
-                              <AiTwotoneDelete className="text-red-400" />
-                            </div>
+                            {!noDelete && (
+                              <div onClick={(e) => handleRemoveItem(item.id)}>
+                                <AiTwotoneDelete className="text-red-400" />
+                              </div>
+                            )}
                           </div>
                         );
                       }}

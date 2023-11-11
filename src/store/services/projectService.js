@@ -30,7 +30,7 @@ const createProjectService = apiWithTag.injectEndpoints({
           method: "GET",
         };
       },
-      providesTags: ["Project"],
+      providesTags: (result, error, id) => [{ type: "Project", id }],
     }),
     getFromDb: build.query({
       query: () => {

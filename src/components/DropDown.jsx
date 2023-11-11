@@ -15,6 +15,7 @@ const DropDown = ({
   value,
   gridIndex,
   reduxName,
+  dontDelete,
 }) => {
   const [field, meta, helpers] = useField(name);
 
@@ -90,13 +91,15 @@ const DropDown = ({
                           )}
                           <p className="body-light flex-1 ">{item.value}</p>
 
-                          <div
-                            onClick={(e) =>
-                              handleRemoveItem && handleRemoveItem(e, item)
-                            }
-                          >
-                            <AiTwotoneDelete className="text-red-400" />
-                          </div>
+                          {!dontDelete && (
+                            <div
+                              onClick={(e) =>
+                                handleRemoveItem && handleRemoveItem(e, item)
+                              }
+                            >
+                              <AiTwotoneDelete className="text-red-400" />
+                            </div>
+                          )}
                         </div>
                       )}
                     </Listbox.Option>
