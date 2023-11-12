@@ -170,6 +170,7 @@ const PersonPage = () => {
   }, [
     projectData?.session?.[0]?.case?.[currentCaseIndex]?.newLabels,
     rangeValues,
+    id,
   ]);
 
   // * Options change handler
