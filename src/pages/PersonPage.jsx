@@ -30,7 +30,7 @@ import { toast } from "react-toastify";
 import Loader from "../components/Loader";
 
 const PersonPage = () => {
-  // * Sync Functionality ===============
+  // * Start Sync Functionality ===========================================
   const [isSynced, setIsSynced] = useState([]);
   const [syncedToolName, setSyncedToolName] = useState({
     cat1: "",
@@ -181,7 +181,7 @@ const PersonPage = () => {
     });
   };
 
-  // * Sync Functionality ==============
+  // * End Sync Functionality ==================================================
   const { id } = useParams();
   const { isLoading, isSuccess, isFetching, isError, refetch, error, data } =
     useGetProjectQuery(id, {
@@ -197,15 +197,15 @@ const PersonPage = () => {
     },
   ] = useAddSessionMutation();
 
-  console.log(sessionIsSuccess, "asasdasd");
   const distributeArrayElements = (labels, numRows) => {
     const duplicatedArray = Array.from({ length: numRows }, () => [...labels]);
     return duplicatedArray;
   };
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { projectData } = useSelector((state) => state.project);
+  const { projectData, sessionName } = useSelector((state) => state.project);
   const [currentCaseIndex, setCurrentCaseIndex] = useState(0);
+  const [test, setTest] = useState(false);
 
   const [rangeValues, setRangeValues] = useState([]);
 
@@ -227,7 +227,6 @@ const PersonPage = () => {
   }, [sessionIsSuccess]);
 
   useEffect(() => {
-    navigate(`/person/${id}`);
     dispatch(addProject(data));
     if (data) {
       dispatch(addProject(data));
@@ -235,11 +234,11 @@ const PersonPage = () => {
   }, [isSuccess, id]);
 
   const handleNextCase = () => {
-    setCurrentCaseIndex((prevIndex) => prevIndex + 1);
+    setCurrentCaseIndex(() => currentCaseIndex + 1);
   };
 
   const handleBackCase = () => {
-    setCurrentCaseIndex((prevIndex) => prevIndex - 1);
+    setCurrentCaseIndex(() => currentCaseIndex - 1);
   };
 
   //* Check if there are more cases to display
@@ -351,6 +350,10 @@ const PersonPage = () => {
   }, [distributedLabels, id, projectData, currentCaseIndex]);
 
   useEffect(() => {
+    setTest(!test);
+  }, [id]);
+
+  useEffect(() => {
     if (dynamicGridRef.current) {
       if (projectData?.session[0]?.case[currentCaseIndex]?.cols_number) {
         dynamicGridRef.current.style[
@@ -419,6 +422,7 @@ const PersonPage = () => {
                   }
                   hideTitle
                   idx={9800}
+                  currentCaseIndex={currentCaseIndex}
                 />
               </div>
             </div>
@@ -433,6 +437,7 @@ const PersonPage = () => {
                   <div key={catItem?.id} className="flex flex-col gap-4 p-1">
                     <CategoryCard
                       id={id}
+                      index={catIdx}
                       cat={catItem.category}
                       idx={catItem.id}
                       type={catItem.type}
@@ -442,6 +447,7 @@ const PersonPage = () => {
                       handleValueChange={handleValueChange}
                       syncedToolName={syncedToolName}
                       setSyncedToolName={setSyncedToolName}
+                      currentCaseIndex={currentCaseIndex}
                       synced={
                         isSynced.includes(catItem.id) ||
                         isSynced.includes(catItem.id)
@@ -479,7 +485,12 @@ const PersonPage = () => {
                 <Button
                   btnText="Submit"
                   type="button"
-                  onClick={() => createProject({ slices_data: slices })}
+                  onClick={() =>
+                    createProject({
+                      session_name: sessionName,
+                      slices_data: slices,
+                    })
+                  }
                 />
               </div>
             </div>

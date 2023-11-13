@@ -16,13 +16,16 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { addSidebarProjectList } from "../store/slice/projectSlice";
 import Papa from "papaparse";
+import CreateSession from "./models/CreateSubject";
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [csvId, setCsvId] = useState(null);
   const { isLoading, isSuccess, isError, refetch, data } =
-    useGetProjectsListQuery(null, { refetchOnMountOrArgChange: true });
+    useGetProjectsListQuery(null, {
+      refetchOnMountOrArgChange: true,
+    });
 
   const {
     isLoading: csvIsLoading,
@@ -39,6 +42,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
   const { sidebarProjectsList } = useSelector((state) => state.project);
 
   useEffect(() => {
+    refetch();
     if (cvIsSuccess) {
       const parsedData = Papa.parse(csvData.csv_text, {
         header: true,
@@ -121,20 +125,28 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
 
                         <Disclosure.Panel className="px-4 pt-4 pb-2 body-regular">
                           <p
+                            className="cursor-pointer text-[#4444F4]"
+                            onClick={() => {
+                              setIsOpen(true);
+                            }}
+                          >
+                            Create a Session +
+                          </p>
+                          <p
                             className="cursor-pointer flex items-center justify-between gap-2"
                             onClick={() => navigate(`/person/${item?.id}`)}
                           >
-                            {item?.project_name}{" "}
+                            {item?.project_name}
                             <BsFillCloudDownloadFill
                               onClick={(e) => handleCsv(e, item?.id)}
                             />
                           </p>
 
-                          {item?.sliceSession.map((sess) => (
+                          {item?.session?.map?.((item) => (
                             <p className="cursor-pointer flex items-center justify-between gap-5">
-                              {`Session - ${sess}`}
+                              {`${item.session_name}`}
                               <BsFillCloudDownloadFill
-                                onClick={(e) => handleCsv(e, sess)}
+                                onClick={(e) => handleCsv(e, item.id)}
                               />
                             </p>
                           ))}

@@ -3,8 +3,11 @@ import { Fragment } from "react";
 import Input from "../Input";
 import Button from "../Button";
 import { Form, Formik } from "formik";
+import { useDispatch } from "react-redux";
+import { addSession } from "../../store/slice/projectSlice";
 
-export default function MyModal({ isOpen, handleOpen }) {
+export default function CreateSession({ isOpen, handleOpen }) {
+  const dispatch = useDispatch();
   return (
     <>
       <Transition appear show={isOpen} as={Fragment}>
@@ -42,11 +45,13 @@ export default function MyModal({ isOpen, handleOpen }) {
 
                   <Formik
                     initialValues={{
-                      sessionName: "",
+                      sessionNamee: "",
                     }}
                     // validationSchema={taxonomySchema}
                     onSubmit={(values) => {
                       console.log(values, "valuess");
+                      dispatch(addSession(values));
+                      handleOpen();
                     }}
                   >
                     {() => (
@@ -54,7 +59,7 @@ export default function MyModal({ isOpen, handleOpen }) {
                         <div className="flex flex-col gap-6 justify-center items-center mt-2">
                           <Input
                             label="Enter Name of Session"
-                            name="sessionName"
+                            name="sessionNamee"
                           />
                           <div className="w-1/2 ">
                             <Button btnText="Create Session" />

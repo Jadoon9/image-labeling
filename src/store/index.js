@@ -26,12 +26,12 @@ export const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-      },
-      immutableCheck: {
-        warnAfter: 500, // Increase the threshold as needed
-      },
+      // serializableCheck: {
+      //   ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      // },
+      // immutableCheck: {
+      //   warnAfter: 500, // Increase the threshold as needed
+      // },
     }).concat(authApiService.middleware, noAuthApiService.middleware),
 });
 

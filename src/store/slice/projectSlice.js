@@ -4,6 +4,7 @@ const initialState = {
   projectData: null,
   projectList: [],
   sidebarProjectsList: [],
+  sessionName: "",
 };
 
 export const projectSlice = createSlice({
@@ -74,6 +75,10 @@ export const projectSlice = createSlice({
         });
       }
     },
+    addSession: (state, action) => {
+      const { sessionNamee } = action.payload;
+      state.sessionName = sessionNamee;
+    },
   },
 });
 
@@ -86,6 +91,7 @@ export const {
   changeLabelCheckBox,
   resetLabels,
   resetOptions,
+  addSession,
 } = projectSlice.actions;
 
 export default projectSlice.reducer;

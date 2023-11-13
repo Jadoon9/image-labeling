@@ -30,7 +30,9 @@ const CategoryCard = ({
   handleValueChange,
   synced,
   syncedToolName,
+  index,
   setSyncedToolName,
+  currentCaseIndex,
 }) => {
   const toolGroupId = "myToolGroup" + idx;
   const syncedToolGroupId =
@@ -38,11 +40,12 @@ const CategoryCard = ({
   const viewportId = "CT_AXIAL_STACK" + idx;
   const renderingEngineId = "myRenderingEngine" + idx;
   let currentVoi;
-
+  const [, forceUpdate] = useState();
   const baseUrl = "http://127.0.0.1:8000/";
   const scheme = "wadouri";
-  console.log(catItem, "99898");
+  console.log(currentCaseIndex, "99898");
 
+  const [loading, setLoading] = useState(false);
   const [toolName, setToolName] = useState("");
 
   // useEffect(() => {
@@ -59,6 +62,7 @@ const CategoryCard = ({
     const isActiveStackScroll =
       toolGroup.toolOptions.StackScrollMouseWheel.mode === "Active";
     const isActiveWwc = toolGroup.toolOptions.WindowLevel.mode === "Active";
+
     if (isActivePan) {
       if (isActiveZoom) {
         setZoomActive();
@@ -71,6 +75,7 @@ const CategoryCard = ({
   }, [synced]);
 
   useEffect(() => {
+    console.log("currentCaseIndex changed:", currentCaseIndex);
     const loadImages = async () => {
       if (cornerstone3D.getRenderingEngine(renderingEngineId)) return;
 
@@ -99,14 +104,14 @@ const CategoryCard = ({
       renderingEngine.enableElement(viewportInput);
       const viewport = renderingEngine.getViewport(viewportId);
       viewport.setUseCPURendering(true);
-
+      forceUpdate((prev) => !prev);
       if (imageIds.length === 0) {
         // Render "No Images Found" message
         content.innerHTML =
           '<div class="flex justify-center items-center h-[270px]"><p class="body-bold">No Images Found</p></div>';
       } else {
         // Set the stack if there are images
-        viewport.setStack(imageIds, 0);
+        viewport.setStack(imageIds, Math.floor(imageIds.length / 2));
       }
 
       const toolGroup =
@@ -133,14 +138,14 @@ const CategoryCard = ({
           ],
         });
       }
-
+      setLoading(false);
       // if (content.children.length > 0) {
       //   // Remove the first child
       //   content.removeChild(content.children[0]);
       // }
     };
     loadImages();
-  }, [id]);
+  }, [id, currentCaseIndex, idx, loading]);
 
   // const handleReset = () => {
   //   const element = document.getElementById(`${elementId}`);
@@ -176,14 +181,15 @@ const CategoryCard = ({
       cat5: "",
       cat6: "",
     };
-    updatedSyncedName[`cat${cat}`] = name;
-    if (cat % 2 === 0) {
-      updatedSyncedName[`cat${cat - 1}`] = name;
+    updatedSyncedName[`cat${idx}`] = name;
+    if (idx % 2 === 0) {
+      updatedSyncedName[`cat${idx - 1}`] = name;
     } else {
-      updatedSyncedName[`cat${cat + 1}`] = name;
+      updatedSyncedName[`cat${idx + 1}`] = name;
     }
     setSyncedToolName(updatedSyncedName);
   };
+
   const handleDisabledAllTools = () => {
     const renderingEngine = cornerstone3D.getRenderingEngine(renderingEngineId);
     const viewport = renderingEngine.getViewport(viewportId);
@@ -365,7 +371,7 @@ const CategoryCard = ({
             >
               <div
                 className="w-6 h-6 primary-border-color rounded-md flex items-center justify-center mr-2 transition duration-300 ease-in-out"
-                onClick={() => handleValueChange(idx, optIdx)}
+                onClick={() => handleValueChange(index, optIdx)}
               >
                 {item?.checked && (
                   <svg
