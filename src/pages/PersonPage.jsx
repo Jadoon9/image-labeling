@@ -346,6 +346,7 @@ const PersonPage = () => {
                       ?.reference_folder?.image_list
                   }
                   hideTitle
+                  idx={9800}
                 />
               </div>
             </div>

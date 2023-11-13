@@ -120,7 +120,7 @@ const CategoryCard = ({
       );
 
       const content = document.getElementById(idx);
-      const element = document.createElement("div");
+      const element = document?.createElement("div");
       element.oncontextmenu = (e) => e.preventDefault();
       element.style.width = "300px";
       element.style.height = "200px";
@@ -157,12 +157,13 @@ const CategoryCard = ({
       });
     };
     loadImages();
-  }, []);
+  }, [images, id]);
 
   // const setZoomActive = (event) => {
   //   console.log(event, "evnhe");
+  //   setToolName("zoom");
   //   // Load and display the first image
-  //   const element = document.getElementById(elementId);
+  //   const element = document.getElementById(idx);
   //   cornerstone.enable(element);
 
   //   const ZoomMouseWheelTool = cornerstoneTools.ZoomMouseWheelTool;
@@ -196,22 +197,28 @@ const CategoryCard = ({
       ],
     });
   };
+
   const setZoomActive = (e) => {
     setToolName("zoom");
+
     const toolGroup =
       cornerstoneTools3D.ToolGroupManager.getToolGroup(toolGroupId);
+
+    // Enable ZoomTool with bindings for mouse wheel
+    toolGroup.setToolActive(
+      cornerstoneTools3D.StackScrollMouseWheelTool.toolName
+    );
+
+    // Enable PanTool with touch
+    toolGroup.setToolActive(cornerstoneTools3D.PanTool.toolName, {
+      touch: true, // Enable touch for panning
+    });
+
+    // Disable other tools
     toolGroup.setToolDisabled(cornerstoneTools3D.WindowLevelTool.toolName);
     toolGroup.setToolDisabled(
       cornerstoneTools3D.StackScrollMouseWheelTool.toolName
     );
-    toolGroup.setToolDisabled(cornerstoneTools3D.PanTool.toolName);
-    toolGroup.setToolActive(cornerstoneTools3D.ZoomTool.toolName, {
-      bindings: [
-        {
-          mouseButton: cornerstoneTools3D.Enums.MouseBindings.Primary,
-        },
-      ],
-    });
   };
 
   // const setWwwcActive = (e) => {
@@ -270,14 +277,14 @@ const CategoryCard = ({
             unselectable="on"
             className="overflow-hidden"
           >
-            <div id={elementId} className="overflow-hidden relative">
+            <div id={idx} className="overflow-hidden relative">
               {!images?.length && (
                 <div className="absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center">
                   <p className="body-bold">No Images Found</p>
                 </div>
               )}
-            </div> */}
-          {/* </div> */}
+            </div>
+          </div> */}
 
           <div className="flex-center gap-8 mt-3">
             <button
