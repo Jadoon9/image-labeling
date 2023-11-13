@@ -117,10 +117,11 @@ body {
   text-decoration-line: underline;
 }
 
-/* .cornerstone-canvas {
-  height: 300px !important;
-  margin-block: 8px;
-} */
+.cornerstone-canvas {
+  /* height: 300px !important; */
+  width: 100% !important;
+  /* margin-block: 8px; */
+}
 
 @layer utilities {
   .flex-center {

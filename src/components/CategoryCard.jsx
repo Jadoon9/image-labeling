@@ -42,7 +42,7 @@ const CategoryCard = ({
   useEffect(() => {
     const loadImages = async () => {
       if (cornerstone3D.getRenderingEngine(renderingEngineId)) return;
-      debugger;
+
       const imageIds = await Promise.all(
         images.map(async (imagePath) => {
           const imageId = `${scheme}:${baseUrl}${imagePath?.image}`;
@@ -51,7 +51,7 @@ const CategoryCard = ({
       );
 
       const content = document.getElementById(idx);
-      const element = document?.createElement("div");
+      const element = document.createElement("div");
       element.oncontextmenu = (e) => e.preventDefault();
       element.style.width = "300px";
       element.style.height = "270px";
@@ -97,28 +97,29 @@ const CategoryCard = ({
       // }
     };
     loadImages();
-    return () => {
-      const content = document.getElementById(idx);
-      while (content.firstChild) {
-        content.removeChild(content.firstChild);
-      }
-    };
-  }, [images, id]);
+  }, [id]);
 
   const handleReset = () => {
     setToolName("");
     const renderingEngine = cornerstone3D.getRenderingEngine(renderingEngineId);
-    // const viewport = renderingEngine.getViewport(viewportId);
-    // viewport.setPan([0, 0]);
-    // viewport.setZoom(1);
-    // viewport.render();
+    const viewport = renderingEngine.getViewport(viewportId);
+
+    // Reset all properties of the viewport
+    viewport.reset();
+
     const toolGroup =
       cornerstoneTools3D.ToolGroupManager.getToolGroup(toolGroupId);
+
+    // Disable ZoomTool and StackScrollMouseWheelTool
     toolGroup.setToolDisabled(cornerstoneTools3D.ZoomTool.toolName);
     toolGroup.setToolDisabled(
       cornerstoneTools3D.StackScrollMouseWheelTool.toolName
     );
+
+    // Disable WindowLevelTool
     toolGroup.setToolDisabled(cornerstoneTools3D.WindowLevelTool.toolName);
+
+    // Enable PanTool
     toolGroup.setToolActive(cornerstoneTools3D.PanTool.toolName, {
       bindings: [
         {
@@ -130,25 +131,20 @@ const CategoryCard = ({
 
   const setZoomActive = (e) => {
     setToolName("zoom");
-
     const toolGroup =
       cornerstoneTools3D.ToolGroupManager.getToolGroup(toolGroupId);
-
-    // Enable ZoomTool with bindings for mouse wheel
-    toolGroup.setToolActive(
-      cornerstoneTools3D.StackScrollMouseWheelTool.toolName
-    );
-
-    // Enable PanTool with touch
-    toolGroup.setToolActive(cornerstoneTools3D.PanTool.toolName, {
-      touch: true, // Enable touch for panning
-    });
-
-    // Disable other tools
     toolGroup.setToolDisabled(cornerstoneTools3D.WindowLevelTool.toolName);
     toolGroup.setToolDisabled(
       cornerstoneTools3D.StackScrollMouseWheelTool.toolName
     );
+    toolGroup.setToolDisabled(cornerstoneTools3D.PanTool.toolName);
+    toolGroup.setToolActive(cornerstoneTools3D.ZoomTool.toolName, {
+      bindings: [
+        {
+          mouseButton: cornerstoneTools3D.Enums.MouseBindings.Primary,
+        },
+      ],
+    });
   };
 
   const setWwwcActive = (e) => {
@@ -189,7 +185,9 @@ const CategoryCard = ({
           {!hideTitle && <p className="body-light mt-2">Type : {type}</p>}
         </div>
 
-        <div id={idx} ref={ref} />
+        <div className="w-full">
+          <div id={idx} ref={ref} className="w-full" />
+        </div>
         <div className="">
           {/* <div
             onContextMenu={() => false}

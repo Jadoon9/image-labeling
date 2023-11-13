@@ -33,6 +33,7 @@ const PersonPage = () => {
   const [isSynced, setIsSynced] = useState([]);
 
   const handleSync = (index) => {
+    debugger;
     const viewPort1 = cornerstone3D
       .getRenderingEngine(`myRenderingEngine${index - 1}`)
       .getViewport(`CT_AXIAL_STACK${index - 1}`);
@@ -391,7 +392,7 @@ const PersonPage = () => {
                     <CategoryCard
                       id={id}
                       cat={catItem.category}
-                      idx={catItem.id}
+                      idx={catIdx}
                       type={catItem.type}
                       elementId={`dicomImage${catItem.cat}`}
                       images={catItem.image_list}
@@ -405,13 +406,13 @@ const PersonPage = () => {
                         <div className="w-[100%] absolute left-0 px-32 ">
                           {isSynced.includes(catIdx + 1) ? (
                             <Button
-                              onClick={() => handleRemoveSync(catIdx + 1)}
+                              onClick={() => handleRemoveSync(catIdx)}
                               btnText="Remove Sync"
                               className="bg-rose-700 text-white"
                             />
                           ) : (
                             <Button
-                              onClick={() => handleSync(catIdx + 1)}
+                              onClick={() => handleSync(catIdx)}
                               btnText="Sync"
                               nobg
                             />
