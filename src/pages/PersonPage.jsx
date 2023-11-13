@@ -9,6 +9,8 @@ import RangeSelector from "../components/RangeSelector";
 import Checkbox from "../components/CheckBox";
 import CategoryCard from "../components/CategoryCard";
 import CreateSubject from "../components/models/CreateSubject";
+import * as cornerstone3D from "@cornerstonejs/core";
+import * as cornerstoneTools3D from "@cornerstonejs/tools";
 
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -27,8 +29,117 @@ import { toast } from "react-toastify";
 import Loader from "../components/Loader";
 
 const PersonPage = () => {
-  const [, updateState] = React.useState();
-  const forceUpdate = React.useCallback(() => updateState({}), []);
+  // * Sync Functionality ===============
+  const [isSynced, setIsSynced] = useState([]);
+
+  const handleSync = (index) => {
+    const viewPort1 = cornerstone3D
+      .getRenderingEngine(`myRenderingEngine${index - 1}`)
+      .getViewport(`CT_AXIAL_STACK${index - 1}`);
+    const viewPort2 = cornerstone3D
+      .getRenderingEngine(`myRenderingEngine${index}`)
+      .getViewport(`CT_AXIAL_STACK${index}`);
+    if (
+      cornerstoneTools3D.SynchronizerManager.getSynchronizer(
+        "zoomPanSynchronizer" + index
+      )
+    ) {
+      cornerstoneTools3D.SynchronizerManager.destroySynchronizer(
+        "zoomPanSynchronizer" + index
+      );
+    }
+
+    if (
+      cornerstoneTools3D.SynchronizerManager.getSynchronizer(
+        "staclScrollSynchronizer" + index
+      )
+    ) {
+      cornerstoneTools3D.SynchronizerManager.destroySynchronizer(
+        "staclScrollSynchronizer" + index
+      );
+    }
+
+    const panZoomSync =
+      cornerstoneTools3D.SynchronizerManager.createSynchronizer(
+        "zoomPanSynchronizer" + index,
+        cornerstone3D.EVENTS.CAMERA_MODIFIED,
+        (
+          synchronizerInstance,
+          sourceViewport,
+          targetViewport,
+          cameraModifiedEvent
+        ) => {
+          const IsourceViewport = cornerstone3D
+            .getRenderingEngine(sourceViewport.renderingEngineId)
+            .getViewport(sourceViewport.viewportId);
+          const ItargetViewport = cornerstone3D
+            .getRenderingEngine(targetViewport.renderingEngineId)
+            .getViewport(targetViewport.viewportId);
+          ItargetViewport.setImageIdIndex(
+            IsourceViewport.getCurrentImageIdIndex()
+          );
+
+          const sCamera = IsourceViewport.getCamera();
+          const tCamera = ItargetViewport.getCamera();
+          ItargetViewport.setCamera({
+            ...tCamera,
+            parallelScale: sCamera.parallelScale,
+            scale: sCamera.scale,
+            focalPoint: sCamera.focalPoint,
+          });
+          IsourceViewport.render();
+          ItargetViewport.render();
+        }
+      );
+
+    const stackScrollSync =
+      cornerstoneTools3D.SynchronizerManager.createSynchronizer(
+        "staclScrollSynchronizer" + index,
+        cornerstone3D.EVENTS.STACK_NEW_IMAGE,
+        (
+          synchronizerInstance,
+          sourceViewport,
+          targetViewport,
+          cameraModifiedEvent
+        ) => {
+          const IsourceViewport = cornerstone3D
+            .getRenderingEngine(sourceViewport.renderingEngineId)
+            .getViewport(sourceViewport.viewportId);
+          const ItargetViewport = cornerstone3D
+            .getRenderingEngine(targetViewport.renderingEngineId)
+            .getViewport(targetViewport.viewportId);
+          ItargetViewport.setImageIdIndex(
+            IsourceViewport.getCurrentImageIdIndex()
+          );
+          IsourceViewport.render();
+          ItargetViewport.render();
+        }
+      );
+
+    [viewPort1, viewPort2].map((element) => {
+      const { renderingEngineId, id } = element;
+      panZoomSync.add({ renderingEngineId, viewportId: id });
+      stackScrollSync.add({ renderingEngineId, viewportId: id });
+    });
+
+    setIsSynced((prev) => [...prev, index]);
+  };
+
+  const handleRemoveSync = (index) => {
+    if (
+      cornerstoneTools3D.SynchronizerManager.getSynchronizer(
+        "zoomPanSynchronizer" + index
+      )
+    ) {
+      cornerstoneTools3D.SynchronizerManager.destroySynchronizer(
+        "zoomPanSynchronizer" + index
+      );
+      setIsSynced((prev) => {
+        return prev.filter((v) => v !== index);
+      });
+    }
+  };
+  // * Sync Functionality ==============
   const { id } = useParams();
   const { isLoading, isSuccess, isFetching, isError, refetch, error, data } =
     useGetProjectQuery(id, {
@@ -265,6 +376,7 @@ const PersonPage = () => {
                       ?.reference_folder?.image_list
                   }
                   hideTitle
+                  idx={9800}
                 />
               </div>
             </div>
@@ -279,7 +391,7 @@ const PersonPage = () => {
                     <CategoryCard
                       id={id}
                       cat={catItem.category}
-                      idx={catIdx}
+                      idx={catItem.id}
                       type={catItem.type}
                       elementId={`dicomImage${catItem.cat}`}
                       images={catItem.image_list}
@@ -291,7 +403,19 @@ const PersonPage = () => {
                     {(catIdx + 1) % 2 === 0 && (
                       <div className="col-span-2 flex items-center justify-center w-full mt-8 mb-8 ">
                         <div className="w-[100%] absolute left-0 px-32 ">
-                          <Button btnText="Sync" nobg />
+                          {isSynced.includes(catIdx + 1) ? (
+                            <Button
+                              onClick={() => handleRemoveSync(catIdx + 1)}
+                              btnText="Remove Sync"
+                              className="bg-rose-700 text-white"
+                            />
+                          ) : (
+                            <Button
+                              onClick={() => handleSync(catIdx + 1)}
+                              btnText="Sync"
+                              nobg
+                            />
+                          )}
                         </div>
                       </div>
                     )}
