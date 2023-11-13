@@ -11,6 +11,7 @@ import CategoryCard from "../components/CategoryCard";
 import CreateSubject from "../components/models/CreateSubject";
 import * as cornerstone3D from "@cornerstonejs/core";
 import * as cornerstoneTools3D from "@cornerstonejs/tools";
+import { createVOISynchronizer } from "@cornerstonejs/tools/dist/esm/synchronizers";
 
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -31,9 +32,15 @@ import Loader from "../components/Loader";
 const PersonPage = () => {
   // * Sync Functionality ===============
   const [isSynced, setIsSynced] = useState([]);
-
+  const [syncedToolName, setSyncedToolName] = useState({
+    cat1: "",
+    cat2: "",
+    cat3: "",
+    cat4: "",
+    cat5: "",
+    cat6: "",
+  });
   const handleSync = (index) => {
-    debugger;
     const viewPort1 = cornerstone3D
       .getRenderingEngine(`myRenderingEngine${index - 1}`)
       .getViewport(`CT_AXIAL_STACK${index - 1}`);
@@ -52,11 +59,21 @@ const PersonPage = () => {
 
     if (
       cornerstoneTools3D.SynchronizerManager.getSynchronizer(
-        "staclScrollSynchronizer" + index
+        "stackScrollSynchronizer" + index
       )
     ) {
       cornerstoneTools3D.SynchronizerManager.destroySynchronizer(
-        "staclScrollSynchronizer" + index
+        "stackScrollSynchronizer" + index
+      );
+    }
+
+    if (
+      cornerstoneTools3D.SynchronizerManager.getSynchronizer(
+        "wwcSynchronizer" + index
+      )
+    ) {
+      cornerstoneTools3D.SynchronizerManager.destroySynchronizer(
+        "wwcSynchronizer" + index
       );
     }
 
@@ -95,7 +112,7 @@ const PersonPage = () => {
 
     const stackScrollSync =
       cornerstoneTools3D.SynchronizerManager.createSynchronizer(
-        "staclScrollSynchronizer" + index,
+        "stackScrollSynchronizer" + index,
         cornerstone3D.EVENTS.STACK_NEW_IMAGE,
         (
           synchronizerInstance,
@@ -117,10 +134,13 @@ const PersonPage = () => {
         }
       );
 
+    const WwcSync = createVOISynchronizer("wwcSynchronizer" + index);
+
     [viewPort1, viewPort2].map((element) => {
       const { renderingEngineId, id } = element;
       panZoomSync.add({ renderingEngineId, viewportId: id });
       stackScrollSync.add({ renderingEngineId, viewportId: id });
+      WwcSync.add({ renderingEngineId, viewportId: id });
     });
 
     setIsSynced((prev) => [...prev, index]);
@@ -135,11 +155,32 @@ const PersonPage = () => {
       cornerstoneTools3D.SynchronizerManager.destroySynchronizer(
         "zoomPanSynchronizer" + index
       );
-      setIsSynced((prev) => {
-        return prev.filter((v) => v !== index);
-      });
     }
+
+    if (
+      cornerstoneTools3D.SynchronizerManager.getSynchronizer(
+        "stackScrollSynchronizer" + index
+      )
+    ) {
+      cornerstoneTools3D.SynchronizerManager.destroySynchronizer(
+        "stackScrollSynchronizer" + index
+      );
+    }
+
+    if (
+      cornerstoneTools3D.SynchronizerManager.getSynchronizer(
+        "wwcSynchronizer" + index
+      )
+    ) {
+      cornerstoneTools3D.SynchronizerManager.destroySynchronizer(
+        "wwcSynchronizer" + index
+      );
+    }
+    setIsSynced((prev) => {
+      return prev.filter((v) => v !== index);
+    });
   };
+
   // * Sync Functionality ==============
   const { id } = useParams();
   const { isLoading, isSuccess, isFetching, isError, refetch, error, data } =
@@ -386,33 +427,40 @@ const PersonPage = () => {
               {projectData?.session[0]?.case[
                 currentCaseIndex
               ]?.category_type?.map((catItem, catIdx) => {
-                console.log(catIdx, "catIdx");
+                console.log(catItem.id, "catIdx");
+                const dynamicStateName = `cat${catItem.id}`;
                 return (
                   <div key={catItem?.id} className="flex flex-col gap-4 p-1">
                     <CategoryCard
                       id={id}
                       cat={catItem.category}
-                      idx={catIdx}
+                      idx={catItem.id}
                       type={catItem.type}
                       elementId={`dicomImage${catItem.cat}`}
                       images={catItem.image_list}
                       catItem={catItem}
                       handleValueChange={handleValueChange}
+                      syncedToolName={syncedToolName}
+                      setSyncedToolName={setSyncedToolName}
+                      synced={
+                        isSynced.includes(catItem.id) ||
+                        isSynced.includes(catItem.id)
+                      }
                       // setZoomActive={setZoomActive}
                     />
 
                     {(catIdx + 1) % 2 === 0 && (
                       <div className="col-span-2 flex items-center justify-center w-full mt-8 mb-8 ">
                         <div className="w-[100%] absolute left-0 px-32 ">
-                          {isSynced.includes(catIdx + 1) ? (
+                          {isSynced.includes(catItem.id) ? (
                             <Button
-                              onClick={() => handleRemoveSync(catIdx)}
+                              onClick={() => handleRemoveSync(catItem.id)}
                               btnText="Remove Sync"
                               className="bg-rose-700 text-white"
                             />
                           ) : (
                             <Button
-                              onClick={() => handleSync(catIdx)}
+                              onClick={() => handleSync(catItem.id)}
                               btnText="Sync"
                               nobg
                             />

@@ -28,23 +28,54 @@ const CategoryCard = ({
   id,
   catItem,
   handleValueChange,
+  synced,
+  syncedToolName,
+  setSyncedToolName,
 }) => {
   const toolGroupId = "myToolGroup" + idx;
+  const syncedToolGroupId =
+    idx % 2 === 0 ? `myToolGroup${idx - 1}` : `myToolGroup${idx + 1}`;
   const viewportId = "CT_AXIAL_STACK" + idx;
   const renderingEngineId = "myRenderingEngine" + idx;
-  const [toolName, setToolName] = useState("");
-  const ref = useRef(null);
+  let currentVoi;
 
   const baseUrl = "http://127.0.0.1:8000/";
   const scheme = "wadouri";
   console.log(catItem, "99898");
+
+  const [toolName, setToolName] = useState("");
+
+  // useEffect(() => {
+  //   setToolName(syncedToolName[`cat${idx}`]);
+  // }, [syncedToolName]);
+
+  useEffect(() => {
+    if (!synced || idx % 2 === 1) return;
+    const toolGroup = cornerstoneTools3D.ToolGroupManager.getToolGroup(
+      "myToolGroup" + (idx - 1)
+    );
+    const isActivePan = toolGroup.toolOptions.Pan.mode === "Active";
+    const isActiveZoom = toolGroup.toolOptions.Zoom.mode === "Active";
+    const isActiveStackScroll =
+      toolGroup.toolOptions.StackScrollMouseWheel.mode === "Active";
+    const isActiveWwc = toolGroup.toolOptions.WindowLevel.mode === "Active";
+    if (isActivePan) {
+      if (isActiveZoom) {
+        setZoomActive();
+      } else {
+        handleReset();
+      }
+    }
+    if (isActiveStackScroll) setScrollActive();
+    if (isActiveWwc) setWwwcActive();
+  }, [synced]);
 
   useEffect(() => {
     const loadImages = async () => {
       if (cornerstone3D.getRenderingEngine(renderingEngineId)) return;
 
       const imageIds = await Promise.all(
-        images.map(async (imagePath) => {
+        images?.map(async (imagePath) => {
           const imageId = `${scheme}:${baseUrl}${imagePath?.image}`;
           return imageId;
         })
@@ -68,7 +99,15 @@ const CategoryCard = ({
       renderingEngine.enableElement(viewportInput);
       const viewport = renderingEngine.getViewport(viewportId);
       viewport.setUseCPURendering(true);
-      viewport.setStack(imageIds, 0);
+
+      if (imageIds.length === 0) {
+        // Render "No Images Found" message
+        content.innerHTML =
+          '<div class="flex justify-center items-center h-[270px]"><p class="body-bold">No Images Found</p></div>';
+      } else {
+        // Set the stack if there are images
+        viewport.setStack(imageIds, 0);
+      }
 
       const toolGroup =
         cornerstoneTools3D.ToolGroupManager.createToolGroup(toolGroupId);
@@ -80,8 +119,12 @@ const CategoryCard = ({
         toolGroup.addTool(
           cornerstoneTools3D.StackScrollMouseWheelTool.toolName
         );
-
         toolGroup.addViewport(viewportId, renderingEngineId);
+        toolGroup.setToolPassive(
+          cornerstoneTools3D.StackScrollMouseWheelTool.toolName
+        );
+        toolGroup.setToolPassive(cornerstoneTools3D.WindowLevelTool.toolName);
+        toolGroup.setToolPassive(cornerstoneTools3D.ZoomTool.toolName);
         toolGroup.setToolActive(cornerstoneTools3D.PanTool.toolName, {
           bindings: [
             {
@@ -99,33 +142,89 @@ const CategoryCard = ({
     loadImages();
   }, [id]);
 
-  const handleReset = () => {
-    setToolName("");
+  // const handleReset = () => {
+  //   const element = document.getElementById(`${elementId}`);
+
+  //   // Reset zoom and pan
+  //   cornerstone.reset(element);
+
+  //   // Reset other tools if needed
+  //   const stack = cornerstoneTools.getToolState(element, "stack");
+  //   if (stack && stack.data && stack.data.length > 0) {
+  //     stack.data[0].currentImageIdIndex = 0;
+  //   }
+
+  //   // Reset other tools as necessary (example: length tool)
+  //   const lengthToolData = cornerstoneTools.getToolState(element, "Length");
+  //   if (
+  //     lengthToolData &&
+  //     lengthToolData.data &&
+  //     lengthToolData.data.length > 0
+  //   ) {
+  //     lengthToolData.data[0].measurementData.measurementValue = 0;
+  //   }
+
+  //   // Call updateImage to redraw the image after reset
+  //   cornerstone.updateImage(element);
+  // };
+  const handleSetSyncedName = (name) => {
+    let updatedSyncedName = {
+      cat1: "",
+      cat2: "",
+      cat3: "",
+      cat4: "",
+      cat5: "",
+      cat6: "",
+    };
+    updatedSyncedName[`cat${cat}`] = name;
+    if (cat % 2 === 0) {
+      updatedSyncedName[`cat${cat - 1}`] = name;
+    } else {
+      updatedSyncedName[`cat${cat + 1}`] = name;
+    }
+    setSyncedToolName(updatedSyncedName);
+  };
+  const handleDisabledAllTools = () => {
     const renderingEngine = cornerstone3D.getRenderingEngine(renderingEngineId);
     const viewport = renderingEngine.getViewport(viewportId);
-
-    // Reset all properties of the viewport
-    viewport.reset();
-
+    currentVoi = viewport.voiRange;
     const toolGroup =
       cornerstoneTools3D.ToolGroupManager.getToolGroup(toolGroupId);
+    const syncedToolGroup =
+      cornerstoneTools3D.ToolGroupManager.getToolGroup(syncedToolGroupId);
+    const toolGroups = synced ? [toolGroup, syncedToolGroup] : [toolGroup];
+    toolGroups.map((toolGroup) => {
+      toolGroup.setToolPassive(cornerstoneTools3D.ZoomTool.toolName);
+      toolGroup.setToolPassive(cornerstoneTools3D.PanTool.toolName);
+      toolGroup.setToolPassive(
+        cornerstoneTools3D.StackScrollMouseWheelTool.toolName
+      );
+      toolGroup.setToolPassive(cornerstoneTools3D.WindowLevelTool.toolName);
+    });
+  };
 
-    // Disable ZoomTool and StackScrollMouseWheelTool
-    toolGroup.setToolDisabled(cornerstoneTools3D.ZoomTool.toolName);
-    toolGroup.setToolDisabled(
-      cornerstoneTools3D.StackScrollMouseWheelTool.toolName
-    );
-
-    // Disable WindowLevelTool
-    toolGroup.setToolDisabled(cornerstoneTools3D.WindowLevelTool.toolName);
-
-    // Enable PanTool
-    toolGroup.setToolActive(cornerstoneTools3D.PanTool.toolName, {
-      bindings: [
-        {
-          mouseButton: cornerstoneTools3D.Enums.MouseBindings.Primary,
-        },
-      ],
+  const handleReset = () => {
+    if (synced) handleSetSyncedName("");
+    else setToolName("");
+    const renderingEngine = cornerstone3D.getRenderingEngine(renderingEngineId);
+    const viewport = renderingEngine.getViewport(viewportId);
+    viewport.resetCamera(true, true);
+    viewport.setImageIdIndex(0);
+    viewport.setVOI(currentVoi, {});
+    handleDisabledAllTools();
+    const toolGroup =
+      cornerstoneTools3D.ToolGroupManager.getToolGroup(toolGroupId);
+    const syncedToolGroup =
+      cornerstoneTools3D.ToolGroupManager.getToolGroup(syncedToolGroupId);
+    const toolGroups = synced ? [toolGroup, syncedToolGroup] : [toolGroup];
+    toolGroups.map((toolGroup) => {
+      toolGroup.setToolActive(cornerstoneTools3D.PanTool.toolName, {
+        bindings: [
+          {
+            mouseButton: cornerstoneTools3D.Enums.MouseBindings.Primary,
+          },
+        ],
+      });
     });
   };
 
@@ -148,33 +247,42 @@ const CategoryCard = ({
   };
 
   const setWwwcActive = (e) => {
-    setToolName("wwc");
+    if (synced) handleSetSyncedName("wwc");
+    else setToolName("wwc");
+    handleDisabledAllTools();
     const toolGroup =
       cornerstoneTools3D.ToolGroupManager.getToolGroup(toolGroupId);
-    toolGroup.setToolDisabled(cornerstoneTools3D.ZoomTool.toolName);
-    toolGroup.setToolDisabled(cornerstoneTools3D.PanTool.toolName);
-    toolGroup.setToolDisabled(
-      cornerstoneTools3D.StackScrollMouseWheelTool.toolName
-    );
-    toolGroup.setToolActive(cornerstoneTools3D.WindowLevelTool.toolName, {
-      bindings: [
-        {
-          mouseButton: cornerstoneTools3D.Enums.MouseBindings.Primary,
-        },
-      ],
+    const syncedToolGroup =
+      cornerstoneTools3D.ToolGroupManager.getToolGroup(syncedToolGroupId);
+    const toolGroups = synced ? [toolGroup, syncedToolGroup] : [toolGroup];
+    toolGroups.map((toolGroup) => {
+      toolGroup.setToolActive(cornerstoneTools3D.WindowLevelTool.toolName, {
+        bindings: [
+          {
+            mouseButton: cornerstoneTools3D.Enums.MouseBindings.Primary,
+          },
+        ],
+      });
     });
   };
 
   const setScrollActive = () => {
-    setToolName("stackscroll");
+    if (synced) handleSetSyncedName("stackscroll");
+    else setToolName("stackscroll");
+    handleDisabledAllTools();
     const toolGroup =
       cornerstoneTools3D.ToolGroupManager.getToolGroup(toolGroupId);
-    toolGroup.setToolDisabled(cornerstoneTools3D.ZoomTool.toolName);
-    toolGroup.setToolDisabled(cornerstoneTools3D.PanTool.toolName);
-    toolGroup.setToolDisabled(cornerstoneTools3D.WindowLevelTool.toolName);
-    toolGroup.setToolActive(
-      cornerstoneTools3D.StackScrollMouseWheelTool.toolName
-    );
+    const syncedToolGroup =
+      cornerstoneTools3D.ToolGroupManager.getToolGroup(syncedToolGroupId);
+    const toolGroups = synced ? [toolGroup, syncedToolGroup] : [toolGroup];
+    toolGroups.map((toolGroup) => {
+      toolGroup.setToolPassive(cornerstoneTools3D.ZoomTool.toolName);
+      toolGroup.setToolPassive(cornerstoneTools3D.PanTool.toolName);
+      toolGroup.setToolPassive(cornerstoneTools3D.WindowLevelTool.toolName);
+      toolGroup.setToolActive(
+        cornerstoneTools3D.StackScrollMouseWheelTool.toolName
+      );
+    });
   };
 
   return (
@@ -186,7 +294,7 @@ const CategoryCard = ({
         </div>
 
         <div className="w-full">
-          <div id={idx} ref={ref} className="w-full" />
+          <div id={idx} className="w-full" />
         </div>
         <div className="">
           {/* <div
