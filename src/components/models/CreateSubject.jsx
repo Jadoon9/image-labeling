@@ -1,13 +1,24 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import Input from "../Input";
 import Button from "../Button";
 import { Form, Formik } from "formik";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addSession } from "../../store/slice/projectSlice";
+import { useAddSessionMutation } from "../../store/services/projectService";
+import { toast } from "react-toastify";
 
 export default function CreateSession({ isOpen, handleOpen }) {
   const dispatch = useDispatch();
+  const { sessionId } = useSelector((state) => state.project);
+  const [createProject, { isLoading, isSuccess, data }] =
+    useAddSessionMutation();
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Session Created");
+    }
+  }, [isSuccess]);
   return (
     <>
       <Transition appear show={isOpen} as={Fragment}>
@@ -50,7 +61,11 @@ export default function CreateSession({ isOpen, handleOpen }) {
                     // validationSchema={taxonomySchema}
                     onSubmit={(values) => {
                       console.log(values, "valuess");
-                      dispatch(addSession(values));
+                      createProject({
+                        session_id: sessionId,
+                        session_name: values.sessionNamee,
+                      });
+
                       handleOpen();
                     }}
                   >

@@ -10,11 +10,15 @@ import { TbLogout } from "react-icons/tb";
 import { MdCancel } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import {
+  useAddSessionMutation,
   useGetCsvQuery,
   useGetProjectsListQuery,
 } from "../store/services/projectService";
 import { useDispatch, useSelector } from "react-redux";
-import { addSidebarProjectList } from "../store/slice/projectSlice";
+import {
+  addSessionId,
+  addSidebarProjectList,
+} from "../store/slice/projectSlice";
 import Papa from "papaparse";
 import CreateSession from "./models/CreateSubject";
 
@@ -127,6 +131,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
                           <p
                             className="cursor-pointer text-[#4444F4]"
                             onClick={() => {
+                              dispatch(addSessionId(item.session[0]?.id));
                               setIsOpen(true);
                             }}
                           >

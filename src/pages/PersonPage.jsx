@@ -17,6 +17,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   useAddSessionMutation,
   useGetProjectQuery,
+  useUpdateSessionMutation,
 } from "../store/services/projectService";
 import {
   addProject,
@@ -176,6 +177,8 @@ const PersonPage = () => {
     });
   };
 
+  console.log(isSynced, "checksynced");
+
   // * End Sync Functionality ==================================================
   const { id } = useParams();
   const { isLoading, isSuccess, isFetching, isError, refetch, error, data } =
@@ -184,13 +187,18 @@ const PersonPage = () => {
     });
 
   const [
-    createProject,
-    {
-      isLoading: sessionLoading,
-      isSuccess: sessionIsSuccess,
-      data: sessionData,
-    },
-  ] = useAddSessionMutation();
+    updateSession,
+    { isLoading: sessionLoading, isSuccess: sessionSuccess, data: sessionData },
+  ] = useUpdateSessionMutation();
+
+  // const [
+  //   createProject,
+  //   {
+  //     isLoading: sessionLoading,
+  //     isSuccess: sessionIsSuccess,
+  //     data: sessionData,
+  //   },
+  // ] = useAddSessionMutation();
 
   const distributeArrayElements = (labels, numRows) => {
     const duplicatedArray = Array.from({ length: numRows }, () => [...labels]);
@@ -213,13 +221,13 @@ const PersonPage = () => {
     )
   );
 
-  useEffect(() => {
-    if (sessionIsSuccess) {
-      toast.success("Session Created");
-      // dispatch(resetLabels({ caseIndex: currentCaseIndex }));
-      // dispatch(resetOptions({ caseIndex: currentCaseIndex }));
-    }
-  }, [sessionIsSuccess]);
+  // useEffect(() => {
+  //   if (sessionIsSuccess) {
+  //     toast.success("Session Created");
+  //     // dispatch(resetLabels({ caseIndex: currentCaseIndex }));
+  //     // dispatch(resetOptions({ caseIndex: currentCaseIndex }));
+  //   }
+  // }, [sessionIsSuccess]);
 
   useEffect(() => {
     dispatch(addProject(data));
@@ -227,6 +235,12 @@ const PersonPage = () => {
       dispatch(addProject(data));
     }
   }, [isSuccess, id]);
+
+  useEffect(() => {
+    if (sessionSuccess) {
+      toast.success("Successuly updated session");
+    }
+  }, [sessionSuccess]);
 
   const handleNextCase = () => {
     setCurrentCaseIndex(() => currentCaseIndex + 1);
@@ -445,7 +459,7 @@ const PersonPage = () => {
                       currentCaseIndex={currentCaseIndex}
                       synced={
                         isSynced.includes(catItem.id) ||
-                        isSynced.includes(catItem.id)
+                        isSynced.includes(catItem.id + 1)
                       }
                       // setZoomActive={setZoomActive}
                     />
@@ -480,12 +494,14 @@ const PersonPage = () => {
                 <Button
                   btnText="Submit"
                   type="button"
-                  onClick={() =>
-                    createProject({
-                      session_name: sessionName,
+                  onClick={() => {
+                    const data = {
+                      session_name: "string",
                       slices_data: slices,
-                    })
-                  }
+                    };
+                    const id = projectData.session[0].id;
+                    updateSession({ data, id });
+                  }}
                 />
               </div>
             </div>

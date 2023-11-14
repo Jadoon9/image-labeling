@@ -43,7 +43,7 @@ const CategoryCard = ({
   const [, forceUpdate] = useState();
   const baseUrl = "http://127.0.0.1:8000/";
   const scheme = "wadouri";
-  console.log(synced, "99898");
+  console.log(currentCaseIndex, "99898");
 
   const [loading, setLoading] = useState(false);
   const [toolName, setToolName] = useState("");
@@ -58,21 +58,22 @@ const CategoryCard = ({
     const toolGroup = cornerstoneTools3D.ToolGroupManager.getToolGroup(
       "myToolGroup" + (idx - 1)
     );
-    const isActivePan = toolGroup.toolOptions.Pan.mode === "Active";
-    const isActiveZoom = toolGroup.toolOptions.Zoom.mode === "Active";
-    const isActiveStackScroll =
-      toolGroup.toolOptions.StackScrollMouseWheel.mode === "Active";
-    const isActiveWwc = toolGroup.toolOptions.WindowLevel.mode === "Active";
-
-    if (isActivePan) {
-      if (isActiveZoom) {
-        setZoomActive();
-      } else {
-        handleReset();
+    if (toolGroup) {
+      const isActivePan = toolGroup.toolOptions.Pan.mode === "Active";
+      const isActiveZoom = toolGroup.toolOptions.Zoom.mode === "Active";
+      const isActiveStackScroll =
+        toolGroup.toolOptions.StackScrollMouseWheel.mode === "Active";
+      const isActiveWwc = toolGroup.toolOptions.WindowLevel.mode === "Active";
+      if (isActivePan) {
+        if (isActiveZoom) {
+          setZoomActive();
+        } else {
+          handleReset();
+        }
       }
+      if (isActiveStackScroll) setScrollActive();
+      if (isActiveWwc) setWwwcActive();
     }
-    if (isActiveStackScroll) setScrollActive();
-    if (isActiveWwc) setWwwcActive();
   }, [synced]);
 
   useEffect(() => {
@@ -81,7 +82,7 @@ const CategoryCard = ({
       if (cornerstone3D.getRenderingEngine(renderingEngineId)) return;
 
       const imageIds = await Promise.all(
-        images?.map(async (imagePath) => {
+        images?.map?.(async (imagePath) => {
           const imageId = `${scheme}:${baseUrl}${imagePath?.image}`;
           return imageId;
         })
@@ -174,16 +175,15 @@ const CategoryCard = ({
   //   // Call updateImage to redraw the image after reset
   //   cornerstone.updateImage(element);
   // };
-  const handleSetSyncedName = (name) => {
-    debugger;
+  const handleSetSyncedName = (id, name) => {
     setSyncedToolName((prevSyncedToolName) => {
       const updatedSyncedName = { ...prevSyncedToolName };
 
       // Add or update the name for the current ID
-      updatedSyncedName[`id${idx}`] = name;
+      updatedSyncedName[`id${id}`] = name;
 
       // Determine the adjacent ID based on whether id is even or odd
-      const adjacentId = idx % 2 === 0 ? idx - 1 : idx + 1;
+      const adjacentId = id % 2 === 0 ? id - 1 : id + 1;
 
       // Add or update the name for the adjacent ID
       updatedSyncedName[`id${adjacentId}`] = name;
@@ -201,14 +201,16 @@ const CategoryCard = ({
     const syncedToolGroup =
       cornerstoneTools3D.ToolGroupManager.getToolGroup(syncedToolGroupId);
     const toolGroups = synced ? [toolGroup, syncedToolGroup] : [toolGroup];
-    toolGroups.map((toolGroup) => {
-      toolGroup.setToolPassive(cornerstoneTools3D.ZoomTool.toolName);
-      toolGroup.setToolPassive(cornerstoneTools3D.PanTool.toolName);
-      toolGroup.setToolPassive(
-        cornerstoneTools3D.StackScrollMouseWheelTool.toolName
-      );
-      toolGroup.setToolPassive(cornerstoneTools3D.WindowLevelTool.toolName);
-    });
+    if (toolGroup) {
+      toolGroups.map((toolGroup) => {
+        toolGroup.setToolPassive(cornerstoneTools3D.ZoomTool.toolName);
+        toolGroup.setToolPassive(cornerstoneTools3D.PanTool.toolName);
+        toolGroup.setToolPassive(
+          cornerstoneTools3D.StackScrollMouseWheelTool.toolName
+        );
+        toolGroup.setToolPassive(cornerstoneTools3D.WindowLevelTool.toolName);
+      });
+    }
   };
 
   const handleReset = () => {
@@ -216,10 +218,11 @@ const CategoryCard = ({
     else setToolName("");
     const renderingEngine = cornerstone3D.getRenderingEngine(renderingEngineId);
     const viewport = renderingEngine.getViewport(viewportId);
-    viewport.resetCamera(true, true);
-    viewport.setImageIdIndex(0);
-    viewport.setVOI(currentVoi, {});
+    viewport?.resetCamera(true, true);
+    viewport?.setImageIdIndex(0);
+    viewport?.setVOI(currentVoi, {});
     handleDisabledAllTools();
+
     const toolGroup =
       cornerstoneTools3D.ToolGroupManager.getToolGroup(toolGroupId);
     const syncedToolGroup =
@@ -237,7 +240,9 @@ const CategoryCard = ({
   };
 
   const setZoomActive = (e) => {
-    setToolName("zoom");
+    if (synced) handleSetSyncedName("zoom");
+    else setToolName("zoom");
+    handleDisabledAllTools();
     const toolGroup =
       cornerstoneTools3D.ToolGroupManager.getToolGroup(toolGroupId);
     toolGroup.setToolDisabled(cornerstoneTools3D.WindowLevelTool.toolName);

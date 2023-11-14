@@ -5,6 +5,7 @@ const initialState = {
   projectList: [],
   sidebarProjectsList: [],
   sessionName: "",
+  sessionId: "",
 };
 
 export const projectSlice = createSlice({
@@ -79,6 +80,9 @@ export const projectSlice = createSlice({
       const { sessionNamee } = action.payload;
       state.sessionName = sessionNamee;
     },
+    addSessionId: (state, action) => {
+      state.sessionId = action.payload;
+    },
   },
 });
 
@@ -91,6 +95,7 @@ export const {
   changeLabelCheckBox,
   resetLabels,
   resetOptions,
+  addSessionId,
   addSession,
 } = projectSlice.actions;
 

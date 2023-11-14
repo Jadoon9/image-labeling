@@ -3,6 +3,7 @@ import { authApiService } from "./authService";
 const apiWithTag = authApiService.enhanceEndpoints({
   addTagTypes: ["Project"],
 });
+
 const createProjectService = apiWithTag.injectEndpoints({
   endpoints: (build) => ({
     createProject: build.mutation({
@@ -11,6 +12,16 @@ const createProjectService = apiWithTag.injectEndpoints({
           url: "/project/",
           method: "POST",
           body: data,
+        };
+      },
+      invalidatesTags: ["Project"],
+    }),
+    updateSession: build.mutation({
+      query: (data) => {
+        return {
+          url: `/update_session/${data.id}/`,
+          method: "PUT",
+          body: data.data,
         };
       },
       invalidatesTags: ["Project"],
@@ -44,7 +55,7 @@ const createProjectService = apiWithTag.injectEndpoints({
     getCsv: build.query({
       query: (id) => {
         return {
-          url: `/export_data/${id}/`,
+          url: `/update_session/${id}/`,
           method: "GET",
         };
       },
@@ -53,7 +64,7 @@ const createProjectService = apiWithTag.injectEndpoints({
     addSession: build.mutation({
       query: (data) => {
         return {
-          url: "/slice/",
+          url: "/create_session/",
           method: "POST",
           body: data,
         };
@@ -70,5 +81,6 @@ export const {
   useGetFromDbQuery,
   useGetCsvQuery,
   useAddSessionMutation,
+  useUpdateSessionMutation,
 } = createProjectService;
 export default createProjectService;
