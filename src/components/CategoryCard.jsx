@@ -54,6 +54,7 @@ const CategoryCard = ({
 
   useEffect(() => {
     if (!synced || idx % 2 === 1) return;
+
     const toolGroup = cornerstoneTools3D.ToolGroupManager.getToolGroup(
       "myToolGroup" + (idx - 1)
     );
@@ -75,8 +76,9 @@ const CategoryCard = ({
   }, [synced]);
 
   useEffect(() => {
-    console.log("currentCaseIndex changed:", currentCaseIndex);
     const loadImages = async () => {
+      // debugger;
+      console.log("first", renderingEngineId);
       if (cornerstone3D.getRenderingEngine(renderingEngineId)) return;
 
       const imageIds = await Promise.all(
@@ -89,7 +91,8 @@ const CategoryCard = ({
       const content = document.getElementById(idx);
       const element = document.createElement("div");
       element.oncontextmenu = (e) => e.preventDefault();
-      element.style.width = "300px";
+      element.style.width = "100%";
+      // element.style.width = "400px";
       element.style.height = "270px";
       content.appendChild(element);
 
@@ -145,7 +148,7 @@ const CategoryCard = ({
       // }
     };
     loadImages();
-  }, [id, currentCaseIndex, idx, loading]);
+  }, [id, currentCaseIndex, idx, loading, renderingEngineId]);
 
   // const handleReset = () => {
   //   const element = document.getElementById(`${elementId}`);
@@ -173,14 +176,8 @@ const CategoryCard = ({
   //   cornerstone.updateImage(element);
   // };
   const handleSetSyncedName = (name) => {
-    let updatedSyncedName = {
-      cat1: "",
-      cat2: "",
-      cat3: "",
-      cat4: "",
-      cat5: "",
-      cat6: "",
-    };
+    // debugger;
+    let updatedSyncedName = {};
     updatedSyncedName[`cat${idx}`] = name;
     if (idx % 2 === 0) {
       updatedSyncedName[`cat${idx - 1}`] = name;
