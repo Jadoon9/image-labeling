@@ -46,13 +46,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
   const { sidebarProjectsList } = useSelector((state) => state.project);
 
   useEffect(() => {
-    refetch();
+    console.log(cvIsSuccess, csvData, "asdadasd");
     if (cvIsSuccess) {
       const parsedData = Papa.parse(csvData.csv_text, {
         header: true,
         skipEmptyLines: true,
       }).data;
-
       const csv = Papa.unparse(parsedData);
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
       const url = URL.createObjectURL(blob);
@@ -70,11 +69,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
       dispatch(addSidebarProjectList(data));
     }
   }, [isSuccess, data]);
-
-  const handleCsv = (e, id) => {
-    e.stopPropagation();
-    setCsvId(id);
-  };
 
   console.log(addSidebarProjectList, "hgjhgg");
   return (
@@ -131,30 +125,55 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
                           <p
                             className="cursor-pointer text-[#4444F4]"
                             onClick={() => {
-                              dispatch(addSessionId(item.session[0]?.id));
+                              dispatch(
+                                addSessionId(item.session[0]?.session[0]?.id)
+                              );
                               setIsOpen(true);
                             }}
                           >
                             Create a Session +
                           </p>
-                          <p
+                          {/* <p
                             className="cursor-pointer flex items-center justify-between gap-2"
-                            onClick={() => navigate(`/person/${item?.id}`)}
+                            onClick={() =>
+                              navigate(
+                                `/person/${item.session[0]?.session[0]?.id}`
+                              )
+                            }
                           >
                             {item?.project_name}
                             <BsFillCloudDownloadFill
-                              onClick={(e) => handleCsv(e, item?.id)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setCsvId(item.id);
+                              }}
                             />
-                          </p>
+                          </p> */}
 
-                          {item?.session?.map?.((item) => (
+                          {item?.session?.map?.((item) =>
+                            item.session.map((sess) => (
+                              <p
+                                className="cursor-pointer flex items-center justify-between gap-5"
+                                onClick={() => navigate(`/person/${sess.id}`)}
+                              >
+                                {`${sess.session_name}`}
+                                <BsFillCloudDownloadFill
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setCsvId(sess.id);
+                                  }}
+                                />
+                              </p>
+                            ))
+                          )}
+                          {/* {item?.session[0]?.session?.map?.((item) => (
                             <p className="cursor-pointer flex items-center justify-between gap-5">
                               {`${item.session_name}`}
                               <BsFillCloudDownloadFill
                                 onClick={(e) => handleCsv(e, item.id)}
                               />
                             </p>
-                          ))}
+                          ))} */}
                         </Disclosure.Panel>
                       </>
                     )}

@@ -41,7 +41,7 @@ const Instructions = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      navigate(`/person/${data.id}`);
+      navigate(`/person/${data.session[0].id}`);
       toast.success("Project Created Successfully");
       dispatch(resetTaxonomyData());
       dispatch(resetFolders());

@@ -2,7 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   projectData: null,
-  projectList: [],
   sidebarProjectsList: [],
   sessionName: "",
   sessionId: "",

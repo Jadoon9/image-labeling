@@ -252,7 +252,7 @@ const PersonPage = () => {
 
   //* Check if there are more cases to display
   const hasMoreCases =
-    currentCaseIndex < (data?.session[0]?.case.length || 0) - 1;
+    currentCaseIndex < (data?.session?.[0]?.case.length || 0) - 1;
 
   //* Helper function to manage  Labels change
   function updateTargetArray(labelsArray, targetArray) {
@@ -459,7 +459,7 @@ const PersonPage = () => {
                       currentCaseIndex={currentCaseIndex}
                       synced={
                         isSynced.includes(catItem.id) ||
-                        isSynced.includes(catItem.id + 1)
+                        isSynced.includes(catItem.id)
                       }
                       // setZoomActive={setZoomActive}
                     />

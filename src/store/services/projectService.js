@@ -29,7 +29,7 @@ const createProjectService = apiWithTag.injectEndpoints({
     getProject: build.query({
       query: (id) => {
         return {
-          url: `/project/${id}/`,
+          url: `/update_session/${id}/`,
           method: "GET",
         };
       },
@@ -55,7 +55,7 @@ const createProjectService = apiWithTag.injectEndpoints({
     getCsv: build.query({
       query: (id) => {
         return {
-          url: `/update_session/${id}/`,
+          url: `/export_data/${id}/`,
           method: "GET",
         };
       },
