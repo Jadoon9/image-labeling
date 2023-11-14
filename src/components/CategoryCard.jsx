@@ -43,7 +43,7 @@ const CategoryCard = ({
   const [, forceUpdate] = useState();
   const baseUrl = "http://127.0.0.1:8000/";
   const scheme = "wadouri";
-  console.log(currentCaseIndex, "99898");
+  console.log(synced, "99898");
 
   const [loading, setLoading] = useState(false);
   const [toolName, setToolName] = useState("");
@@ -77,7 +77,6 @@ const CategoryCard = ({
 
   useEffect(() => {
     const loadImages = async () => {
-      // debugger;
       console.log("first", renderingEngineId);
       if (cornerstone3D.getRenderingEngine(renderingEngineId)) return;
 
@@ -176,15 +175,21 @@ const CategoryCard = ({
   //   cornerstone.updateImage(element);
   // };
   const handleSetSyncedName = (name) => {
-    // debugger;
-    let updatedSyncedName = {};
-    updatedSyncedName[`cat${idx}`] = name;
-    if (idx % 2 === 0) {
-      updatedSyncedName[`cat${idx - 1}`] = name;
-    } else {
-      updatedSyncedName[`cat${idx + 1}`] = name;
-    }
-    setSyncedToolName(updatedSyncedName);
+    debugger;
+    setSyncedToolName((prevSyncedToolName) => {
+      const updatedSyncedName = { ...prevSyncedToolName };
+
+      // Add or update the name for the current ID
+      updatedSyncedName[`id${idx}`] = name;
+
+      // Determine the adjacent ID based on whether id is even or odd
+      const adjacentId = idx % 2 === 0 ? idx - 1 : idx + 1;
+
+      // Add or update the name for the adjacent ID
+      updatedSyncedName[`id${adjacentId}`] = name;
+
+      return updatedSyncedName;
+    });
   };
 
   const handleDisabledAllTools = () => {

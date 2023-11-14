@@ -32,14 +32,9 @@ import Loader from "../components/Loader";
 const PersonPage = () => {
   // * Start Sync Functionality ===========================================
   const [isSynced, setIsSynced] = useState([]);
-  const [syncedToolName, setSyncedToolName] = useState({
-    cat1: "",
-    cat2: "",
-    cat3: "",
-    cat4: "",
-    cat5: "",
-    cat6: "",
-  });
+  const [syncedToolName, setSyncedToolName] = useState({});
+  console.log(syncedToolName, "syncedToolName");
+
   const handleSync = (index) => {
     const viewPort1 = cornerstone3D
       .getRenderingEngine(`myRenderingEngine${index - 1}`)
