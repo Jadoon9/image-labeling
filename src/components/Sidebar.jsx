@@ -70,7 +70,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
     }
   }, [isSuccess, data]);
 
-  console.log(addSidebarProjectList, "hgjhgg");
   return (
     <>
       {/* Mobile Sidebar */}
@@ -126,7 +125,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
                             className="cursor-pointer text-[#4444F4]"
                             onClick={() => {
                               dispatch(
-                                addSessionId(item.session[0]?.session[0]?.id)
+                                // addSessionId(item.session[0]?.session[0]?.id)
+                                addSessionId(item?.session[0]?.id)
                               );
                               setIsOpen(true);
                             }}
@@ -150,22 +150,20 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
                             />
                           </p> */}
 
-                          {item?.session?.map?.((item) =>
-                            item.session.map((sess) => (
-                              <p
-                                className="cursor-pointer flex items-center justify-between gap-5"
-                                onClick={() => navigate(`/person/${sess.id}`)}
-                              >
-                                {`${sess.session_name}`}
-                                <BsFillCloudDownloadFill
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setCsvId(sess.id);
-                                  }}
-                                />
-                              </p>
-                            ))
-                          )}
+                          {item.session.map((sess) => (
+                            <p
+                              className="cursor-pointer flex items-center justify-between gap-5"
+                              onClick={() => navigate(`/person/${sess.id}`)}
+                            >
+                              {`${sess.session_name}`}
+                              <BsFillCloudDownloadFill
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setCsvId(sess.id);
+                                }}
+                              />
+                            </p>
+                          ))}
                           {/* {item?.session[0]?.session?.map?.((item) => (
                             <p className="cursor-pointer flex items-center justify-between gap-5">
                               {`${item.session_name}`}
