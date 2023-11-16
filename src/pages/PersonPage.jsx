@@ -34,7 +34,7 @@ const PersonPage = () => {
   // * Start Sync Functionality ===========================================
   const [isSynced, setIsSynced] = useState([]);
   const [syncedToolName, setSyncedToolName] = useState({});
-  console.log(syncedToolName, "syncedToolName");
+  // console.log(syncedToolName, "syncedToolName");
 
   const handleSync = (index) => {
     const viewPort1 = cornerstone3D
@@ -177,7 +177,7 @@ const PersonPage = () => {
     });
   };
 
-  console.log(isSynced, "checksynced");
+  // console.log(isSynced, "checksynced");
 
   // * End Sync Functionality ==================================================
   const { id } = useParams();
@@ -230,11 +230,10 @@ const PersonPage = () => {
   // }, [sessionIsSuccess]);
 
   useEffect(() => {
-    dispatch(addProject(data));
     if (data) {
       dispatch(addProject(data));
     }
-  }, [isSuccess, id]);
+  }, [isSuccess, id, data]);
 
   useEffect(() => {
     if (sessionSuccess) {
@@ -307,13 +306,15 @@ const PersonPage = () => {
       const checkoedOptionsValues = checkedOptions?.map(
         (option) => option.value
       );
+      const checkedOptionsID = checkedOptions?.map((option) => option.id);
 
       slices.push({
-        project_id: projectData?.id, // You can set the appropriate project_id here
+        // project_id: projectData?.id, // You can set the appropriate project_id here
         case_id: projectData?.session?.[0]?.case?.[currentCaseIndex]?.id,
         category_type: category.id,
-        image_id: 1,
+        image_id: category.image,
         options: checkoedOptionsValues,
+        option: checkedOptionsID,
         labels: [],
         score: 0,
       });
@@ -321,6 +322,7 @@ const PersonPage = () => {
   );
 
   console.log(slices, "aslsad");
+  console.log(projectData?.session?.[0]?.case?.[currentCaseIndex], "aslsad 2");
   // * Update the store after every label change
   useEffect(() => {
     updateTargetArray(
@@ -336,7 +338,7 @@ const PersonPage = () => {
 
   // * Options change handler
   const handleValueChange = (catIdx, optIdx) => {
-    console.log(catIdx, optIdx, "identifier");
+    // console.log(catIdx, optIdx, "identifier");
     dispatch(
       changeCheckBox({
         optIdx,
@@ -389,7 +391,7 @@ const PersonPage = () => {
     });
   };
 
-  console.log(rangeValues, "jhjh");
+  // console.log(rangeValues, "jhjh");
 
   if (isLoading) {
     return <Loader />;
@@ -431,6 +433,7 @@ const PersonPage = () => {
                   }
                   hideTitle
                   idx={9800}
+                  // idx={"id_" + Math.random().toString(36).substr(2, 9)}
                   currentCaseIndex={currentCaseIndex}
                 />
               </div>
@@ -440,7 +443,7 @@ const PersonPage = () => {
               {projectData?.session[0]?.case[
                 currentCaseIndex
               ]?.category_type?.map((catItem, catIdx) => {
-                console.log(catItem.id, "catIdx");
+                // console.log(catItem.id, "catIdx");
                 const dynamicStateName = `cat${catItem.id}`;
                 return (
                   <div key={catItem?.id} className="flex flex-col gap-4 p-1">

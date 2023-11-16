@@ -43,7 +43,7 @@ const CategoryCard = ({
   const [, forceUpdate] = useState();
   const baseUrl = "http://127.0.0.1:8000/";
   const scheme = "wadouri";
-  console.log(currentCaseIndex, "99898");
+  console.log(currentCaseIndex, "currentCaseIndex");
 
   const [loading, setLoading] = useState(false);
   const [toolName, setToolName] = useState("");
@@ -79,7 +79,9 @@ const CategoryCard = ({
   useEffect(() => {
     const loadImages = async () => {
       console.log("first", renderingEngineId);
-      if (cornerstone3D.getRenderingEngine(renderingEngineId)) return;
+      // if (cornerstone3D.getRenderingEngine(renderingEngineId)) return;
+      if (cornerstone3D.getRenderingEngine(renderingEngineId) && idx === 9800)
+        return;
 
       const imageIds = await Promise.all(
         images?.map?.(async (imagePath) => {
@@ -365,7 +367,6 @@ const CategoryCard = ({
       <div className="flex flex-col gap-6 mt-2">
         {catItem?.options?.map((item, optIdx) => (
           <div className=" w-full flex items-center gap-24" key={item?.id}>
-            {console.log(optIdx, "asdasd")}
             <input
               type="checkbox"
               className="hidden"
