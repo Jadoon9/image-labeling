@@ -75,6 +75,7 @@ const CategoryCard = ({
       if (isActiveWwc) setWwwcActive();
     }
   }, [synced]);
+  let myContent = document.getElementById(idx);
 
   useEffect(() => {
     const loadImages = async () => {
@@ -90,14 +91,25 @@ const CategoryCard = ({
         })
       );
 
-      const content = document.getElementById(idx);
-      const element = document.createElement("div");
-      element.oncontextmenu = (e) => e.preventDefault();
-      element.style.width = "100%";
-      // element.style.width = "400px";
-      element.style.height = "270px";
-      content.appendChild(element);
+      // const content = document.getElementById(idx);
+      console.log("content", myContent);
+      // const element = document.createElement("div");
+      // element.oncontextmenu = (e) => e.preventDefault();
+      // element.style.width = "100%";
+      // element.style.height = "270px";
+      // content.appendChild(element);
 
+      let element;
+      if (myContent) {
+        element = document.createElement("div");
+        element.oncontextmenu = (e) => e.preventDefault();
+        element.style.width = "100%";
+        element.style.height = "270px";
+        myContent.appendChild(element);
+      } else {
+        console.log(`Element with ID ${idx} not found.`);
+      }
+      if (!element) return;
       const renderingEngine = new RenderingEngine(renderingEngineId);
 
       const viewportInput = {
@@ -112,7 +124,7 @@ const CategoryCard = ({
       forceUpdate((prev) => !prev);
       if (imageIds.length === 0) {
         // Render "No Images Found" message
-        content.innerHTML =
+        myContent.innerHTML =
           '<div class="flex justify-center items-center h-[270px]"><p class="body-bold">No Images Found</p></div>';
       } else {
         // Set the stack if there are images
@@ -150,7 +162,7 @@ const CategoryCard = ({
       // }
     };
     loadImages();
-  }, [id, currentCaseIndex, idx, loading, renderingEngineId]);
+  }, [id, currentCaseIndex, idx, loading, renderingEngineId, myContent]);
 
   // const handleReset = () => {
   //   const element = document.getElementById(`${elementId}`);
