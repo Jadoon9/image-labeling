@@ -45,13 +45,20 @@ export const projectSlice = createSlice({
       }
     },
     changeLabelCheckBox: (state, action) => {
-      const { rowIndex, labelIdx, currentCaseIndex } = action.payload;
-      state.projectData.session[0].case[currentCaseIndex].newLabels[rowIndex][
-        labelIdx
-      ].checked =
-        !state?.projectData?.session[0]?.case?.[currentCaseIndex]?.newLabels[
-          rowIndex
-        ][labelIdx]?.checked;
+      const { rowIndex, labelIdx, currentCaseIndex, type, value } =
+        action.payload;
+      if (type === "checkbox") {
+        state.projectData.session[0].case[currentCaseIndex].labels[rowIndex][
+          labelIdx
+        ].checked =
+          !state?.projectData?.session[0]?.case?.[currentCaseIndex]?.labels[
+            rowIndex
+          ][labelIdx]?.checked;
+      } else if (type === "range") {
+        state.projectData.session[0].case[currentCaseIndex].labels[rowIndex][
+          labelIdx
+        ].score = value;
+      }
     },
     resetLabels: (state, action) => {
       if (state.projectData) {
@@ -86,6 +93,7 @@ export const projectSlice = createSlice({
 });
 
 export const {
+  // resetProject,
   addProject,
   addProjectList,
   addSidebarProjectList,
