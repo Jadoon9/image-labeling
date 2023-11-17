@@ -37,13 +37,39 @@ const PersonPage = () => {
   const [syncedToolName, setSyncedToolName] = useState({});
   // console.log(syncedToolName, "syncedToolName");
 
-  const handleSync = (index) => {
-    const viewPort1 = cornerstone3D
-      .getRenderingEngine(`myRenderingEngine${index - 1}`)
-      .getViewport(`CT_AXIAL_STACK${index - 1}`);
-    const viewPort2 = cornerstone3D
-      .getRenderingEngine(`myRenderingEngine${index}`)
-      .getViewport(`CT_AXIAL_STACK${index}`);
+  const handleSync = (index, indexArr, column) => {
+    const objFind = indexArr.findIndex((obj) => obj.id === index);
+
+    if (objFind === -1) {
+      return []; // ID not found
+    }
+
+    let col = column - 1;
+    const extractedObjects = indexArr.slice(
+      Math.max(objFind - col, 0),
+      objFind + 1
+    );
+    let newArray = extractedObjects.map((data) => data.id);
+
+    // const viewPort1 = cornerstone3D
+    //   .getRenderingEngine(`myRenderingEngine${index - 1}`)
+    //   .getViewport(`CT_AXIAL_STACK${index - 1}`);
+    // const viewPort2 = cornerstone3D
+    //   .getRenderingEngine(`myRenderingEngine${index}`)
+    //   .getViewport(`CT_AXIAL_STACK${index}`);
+    // const viewPort3 = cornerstone3D
+    //   .getRenderingEngine(`myRenderingEngine${index + 1}`)
+    //   .getViewport(`CT_AXIAL_STACK${index + 1}`);
+    const viewPorts = newArray.map((index) => {
+      const currentRenderingEngine = cornerstone3D.getRenderingEngine(
+        `myRenderingEngine${index}`
+      );
+      const currentViewport = currentRenderingEngine.getViewport(
+        `CT_AXIAL_STACK${index}`
+      );
+
+      return currentViewport;
+    });
     if (
       cornerstoneTools3D.SynchronizerManager.getSynchronizer(
         "zoomPanSynchronizer" + index
@@ -133,7 +159,7 @@ const PersonPage = () => {
 
     const WwcSync = createVOISynchronizer("wwcSynchronizer" + index);
 
-    [viewPort1, viewPort2].map((element) => {
+    viewPorts.map((element) => {
       const { renderingEngineId, id } = element;
       panZoomSync.add({ renderingEngineId, viewportId: id });
       stackScrollSync.add({ renderingEngineId, viewportId: id });
@@ -492,7 +518,10 @@ const PersonPage = () => {
                       // setZoomActive={setZoomActive}
                     />
 
-                    {(catIdx + 1) % 2 === 0 && (
+                    {(catIdx + 1) %
+                      projectData?.session[0]?.case[currentCaseIndex]
+                        ?.cols_number ===
+                      0 && (
                       <div className="col-span-2 flex items-center justify-center w-full mt-8 mb-8 ">
                         <div className="w-[100%] absolute left-0 px-32 ">
                           {isSynced.includes(catItem.id) ? (
@@ -503,7 +532,18 @@ const PersonPage = () => {
                             />
                           ) : (
                             <Button
-                              onClick={() => handleSync(catItem.id)}
+                              id={catIdx}
+                              onClick={() =>
+                                handleSync(
+                                  catItem.id,
+                                  projectData?.session[0]?.case[
+                                    currentCaseIndex
+                                  ]?.category_type,
+                                  projectData?.session[0]?.case[
+                                    currentCaseIndex
+                                  ]?.cols_number
+                                )
+                              }
                               btnText="Sync"
                               nobg
                             />
