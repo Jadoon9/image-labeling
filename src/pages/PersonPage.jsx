@@ -26,6 +26,7 @@ import {
   replaceLabels,
   resetLabels,
   resetOptions,
+  resetProject,
 } from "../store/slice/projectSlice";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
@@ -200,10 +201,10 @@ const PersonPage = () => {
   //   },
   // ] = useAddSessionMutation();
 
-  const distributeArrayElements = (labels, numRows) => {
-    const duplicatedArray = Array.from({ length: numRows }, () => [...labels]);
-    return duplicatedArray;
-  };
+  // const distributeArrayElements = (labels, numRows) => {
+  //   // const duplicatedArray = Array.from({ length: numRows }, () => [...labels]);
+  //   return labels;
+  // };
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { projectData, sessionName } = useSelector((state) => state.project);
@@ -214,12 +215,15 @@ const PersonPage = () => {
 
   const dynamicGridRef = useRef(null);
 
-  const [distributedLabels, setDistributedLabels] = useState(
-    distributeArrayElements(
-      projectData?.session[0]?.case[currentCaseIndex]?.labels,
-      projectData?.session[0]?.case[currentCaseIndex]?.rows_number
-    )
-  );
+  // const [distributedLabels, setDistributedLabels] = useState(
+  //   distributeArrayElements(
+  //     projectData?.session[0]?.case[currentCaseIndex]?.labels,
+  //     projectData?.session[0]?.case[currentCaseIndex]?.rows_number
+  //   )
+  // );
+  // const [distributedLabels, setDistributedLabels] = useState(
+  //   projectData?.session[0]?.case[currentCaseIndex]?.labels
+  // );
 
   // useEffect(() => {
   //   if (sessionIsSuccess) {
@@ -233,7 +237,7 @@ const PersonPage = () => {
     if (data) {
       dispatch(addProject(data));
     }
-  }, [isSuccess, id, data]);
+  }, [isSuccess, data]);
 
   useEffect(() => {
     if (sessionSuccess) {
@@ -254,47 +258,47 @@ const PersonPage = () => {
     currentCaseIndex < (data?.session?.[0]?.case.length || 0) - 1;
 
   //* Helper function to manage  Labels change
-  function updateTargetArray(labelsArray, targetArray) {
-    labelsArray?.forEach?.((labels, rowIndex) => {
-      labels?.forEach?.((label) => {
-        if (label.checked) {
-          const labelValue = label.value;
-          const colsNumber =
-            projectData?.session[0]?.case[currentCaseIndex]?.cols_number;
+  // function updateTargetArray(labelsArray, targetArray) {
+  //   labelsArray?.forEach?.((labels, rowIndex) => {
+  //     labels?.forEach?.((label) => {
+  //       if (label.checked) {
+  //         const labelValue = label.value;
+  //         const colsNumber =
+  //           projectData?.session[0]?.case[currentCaseIndex]?.cols_number;
 
-          // Calculate the starting index based on the current rowIndex
-          const startIndex = rowIndex * colsNumber;
+  //         // Calculate the starting index based on the current rowIndex
+  //         const startIndex = rowIndex * colsNumber;
 
-          // Add the labelValue to the 'labels' array for each instance in targetArray
-          for (let i = 0; i < colsNumber; i++) {
-            targetArray[startIndex + i].labels.push(labelValue);
-          }
-        }
-      });
-    });
+  //         // Add the labelValue to the 'labels' array for each instance in targetArray
+  //         for (let i = 0; i < colsNumber; i++) {
+  //           targetArray[startIndex + i].labels.push(labelValue);
+  //         }
+  //       }
+  //     });
+  //   });
 
-    return targetArray;
-  }
+  //   return targetArray;
+  // }
 
   //* Helper function to manage  score change
-  function updateScore(rangeValues, targetArray) {
-    rangeValues?.forEach?.((range, rowIndex) => {
-      if (range) {
-        const colsNumber =
-          projectData?.session[0]?.case[currentCaseIndex]?.cols_number;
+  // function updateScore(rangeValues, targetArray) {
+  //   rangeValues?.forEach?.((range, rowIndex) => {
+  //     if (range) {
+  //       const colsNumber =
+  //         projectData?.session[0]?.case[currentCaseIndex]?.cols_number;
 
-        // Calculate the starting index based on the current rowIndex
-        const startIndex = rowIndex * colsNumber;
+  //       // Calculate the starting index based on the current rowIndex
+  //       const startIndex = rowIndex * colsNumber;
 
-        // Add the label value to multiple positions in targetArray
-        for (let i = 0; i < colsNumber; i++) {
-          targetArray[startIndex + i].score = Number(range);
-        }
-      }
-    });
+  //       // Add the label value to multiple positions in targetArray
+  //       for (let i = 0; i < colsNumber; i++) {
+  //         targetArray[startIndex + i].score = Number(range);
+  //       }
+  //     }
+  //   });
 
-    return targetArray;
-  }
+  //   return targetArray;
+  // }
 
   // * Structure to send data to apito create a session
   let slices = [];
@@ -316,7 +320,6 @@ const PersonPage = () => {
         options: checkoedOptionsValues,
         option: checkedOptionsID,
         labels: [],
-        score: 0,
       });
     }
   );
@@ -324,17 +327,17 @@ const PersonPage = () => {
   console.log(slices, "aslsad");
   console.log(projectData?.session?.[0]?.case?.[currentCaseIndex], "aslsad 2");
   // * Update the store after every label change
-  useEffect(() => {
-    updateTargetArray(
-      projectData?.session?.[0]?.case?.[currentCaseIndex]?.newLabels,
-      slices
-    );
-    updateScore(rangeValues, slices);
-  }, [
-    projectData?.session?.[0]?.case?.[currentCaseIndex]?.newLabels,
-    rangeValues,
-    id,
-  ]);
+  // useEffect(() => {
+  //   updateTargetArray(
+  //     projectData?.session?.[0]?.case?.[currentCaseIndex]?.newLabels,
+  //     slices
+  //   );
+  //   updateScore(rangeValues, slices);
+  // }, [
+  //   projectData?.session?.[0]?.case?.[currentCaseIndex]?.newLabels,
+  //   rangeValues,
+  //   id,
+  // ]);
 
   // * Options change handler
   const handleValueChange = (catIdx, optIdx) => {
@@ -350,15 +353,35 @@ const PersonPage = () => {
 
   // * Labels selections
   const handleLabelSelect = (rowIndex, labelIdx) => {
-    dispatch(changeLabelCheckBox({ rowIndex, labelIdx, currentCaseIndex }));
+    dispatch(
+      changeLabelCheckBox({
+        rowIndex,
+        labelIdx,
+        currentCaseIndex,
+        type: "checkbox",
+      })
+    );
+  };
+
+  // * Labels selections
+  const handleLabelSelectRange = (rowIndex, labelIdx, value) => {
+    dispatch(
+      changeLabelCheckBox({
+        rowIndex,
+        labelIdx,
+        currentCaseIndex,
+        type: "range",
+        value,
+      })
+    );
   };
 
   // * Add labels new field so we can have it in our format
-  useEffect(() => {
-    if (projectData) {
-      dispatch(replaceLabels({ currentCaseIndex, distributedLabels }));
-    }
-  }, [distributedLabels, id, projectData, currentCaseIndex]);
+  // useEffect(() => {
+  //   if (projectData && distributedLabels) {
+  //     dispatch(replaceLabels({ currentCaseIndex, distributedLabels }));
+  //   }
+  // }, [distributedLabels, id, projectData, currentCaseIndex]);
 
   useEffect(() => {
     setTest(!test);
@@ -396,6 +419,8 @@ const PersonPage = () => {
   if (isLoading) {
     return <Loader />;
   }
+
+  console.log(projectData?.session[0]?.case[currentCaseIndex].labels, "ali");
 
   return (
     <>
@@ -501,6 +526,10 @@ const PersonPage = () => {
                     const data = {
                       session_name: "string",
                       slices_data: slices,
+                      labels: [].concat(
+                        ...projectData?.session[0]?.case[currentCaseIndex]
+                          .labels
+                      ),
                     };
                     const id = projectData.session[0].id;
                     updateSession({ data, id });
@@ -513,13 +542,14 @@ const PersonPage = () => {
           <div className="w-[200px] flex flex-col  max-md:hidden primary-border-color p-2 h-auto">
             <div className="h-[400px]"></div>
             <div className="flex flex-col gap-6">
-              {projectData?.session[0]?.case[currentCaseIndex].newLabels?.map(
+              {projectData?.session[0]?.case[currentCaseIndex].labels?.map(
                 (row, rowIndex) => (
                   <div
                     key={rowIndex}
                     className="flex flex-col gap-4 p-1 h-[600px]"
                   >
                     {row?.map?.((item, index) => {
+                      // item?.map?.((item, index) => {
                       if (item?.value?.includes("-")) {
                         const [before, after] = item.value.split("-");
                         return (
@@ -527,10 +557,12 @@ const PersonPage = () => {
                             before={before}
                             after={after}
                             key={rowIndex}
-                            setRangeValue={(value) =>
-                              handleRangeChange(rowIndex, value)
-                            }
-                            rangeValue={rangeValues[rowIndex] || 0} // Use the stored value or default to 0
+                            setRangeValue={(value) => {
+                              // handleRangeChange(rowIndex, value);
+                              handleLabelSelectRange(rowIndex, index, value);
+                            }}
+                            // rangeValue={rangeValues[rowIndex] || 0} // Use the stored value or default to 0
+                            rangeValue={item?.score || 0} // Use the stored value or default to 0
                           />
                         );
                       } else {
@@ -579,6 +611,7 @@ const PersonPage = () => {
                           </div>
                         );
                       }
+                      // });
                     })}
                   </div>
                 )
