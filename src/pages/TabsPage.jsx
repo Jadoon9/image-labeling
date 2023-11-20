@@ -12,7 +12,7 @@ function classNames(...classes) {
 }
 
 export default function Example() {
-  const { selectedTab } = useSelector((state) => state.layout);
+  const { selectedTab, isUploading } = useSelector((state) => state.layout);
   const dispatch = useDispatch();
   const findTabIndexByName = (name) => {
     return tabItems.findIndex((tab) => tab === name);
@@ -38,9 +38,12 @@ export default function Example() {
                   "w-full rounded-t-[15px] py-2.5 paragraph-regular focus:outline-none ",
                   category === selectedTab
                     ? "primary-background"
-                    : "bg-gray-200"
+                    : "bg-gray-200",
+                  isUploading ? "cursor-not-allowed" : "",
+                  isUploading ? "bg-gray-300" : ""
                 )
               }
+              disabled={isUploading}
             >
               {category}
             </Tab>

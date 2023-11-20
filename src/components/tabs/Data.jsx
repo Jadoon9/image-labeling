@@ -8,6 +8,7 @@ import { addFolders } from "../../store/slice/foldersSlice";
 import { toast } from "react-toastify";
 import { useGetFromDbQuery } from "../../store/services/projectService";
 import Loader from "../Loader";
+import { setIsUploading } from "../../store/slice/layoutSlice";
 
 const Data = () => {
   const dispatch = useDispatch();
@@ -49,6 +50,10 @@ const Data = () => {
       toast.error("Something went Wrong");
     }
   }, [isSuccess, isError, dbIsSuccess, getDbData]);
+
+  useEffect(() => {
+    dispatch(setIsUploading(isLoading));
+  }, [isLoading]);
 
   if (isLoading) {
     return <Loader />;

@@ -15,6 +15,7 @@ const initialState = {
     rowlist: [],
     columnlist: [],
     selectedTab: "Data",
+    isUploading: false,
   },
 };
 
@@ -91,6 +92,9 @@ export const layoutSlice = createSlice({
     setSelectedTab: (state, action) => {
       state.selectedTab = action.payload;
     },
+    setIsUploading: (state, action) => {
+      state.isUploading = action.payload;
+    },
   },
 });
 
@@ -102,6 +106,7 @@ export const {
   deleteLabel,
   resetTaxonomyData,
   setSelectedTab,
+  setIsUploading,
 } = layoutSlice.actions;
 
 export default layoutSlice.reducer;
