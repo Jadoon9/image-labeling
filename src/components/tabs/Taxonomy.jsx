@@ -19,6 +19,7 @@ import {
   addOptions,
   deleteLabel,
   deleteOption,
+  setSelectedTab,
 } from "../../store/slice/layoutSlice";
 import MultiDropDown from "./MultiDropDown";
 
@@ -67,6 +68,13 @@ const Taxonomy = () => {
     console.log("hrerre", taxonomy);
     console.log("hrerre 2", taxonomy.columnlist, taxonomy.columnlist?.length);
   }, [taxonomy]);
+
+  const handleNextClick = () => {
+    dispatch(setSelectedTab("Instructions"));
+  };
+  const handleBackClick = () => {
+    dispatch(setSelectedTab("Data"));
+  };
 
   console.log(foldersList, "checkfoldersList");
 
@@ -273,10 +281,15 @@ const Taxonomy = () => {
               )}
 
               <div className="flex-between relative bottom-0 mt-auto p-5">
-                <BackButton />
-                {/* <div className="w-32">
-                  <Button type="button" btnText="Next" icon />
-                </div> */}
+                <BackButton onClick={handleBackClick} type="button" />
+                <div className="w-32">
+                  <Button
+                    type="button"
+                    btnText="Next"
+                    icon
+                    onClick={handleNextClick}
+                  />
+                </div>
               </div>
             </div>
           </Form>

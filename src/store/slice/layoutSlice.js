@@ -14,6 +14,7 @@ const initialState = {
     randomizeCat: false,
     rowlist: [],
     columnlist: [],
+    selectedTab: "Data",
   },
 };
 
@@ -87,6 +88,9 @@ export const layoutSlice = createSlice({
         columnlist: [],
       };
     },
+    setSelectedTab: (state, action) => {
+      state.selectedTab = action.payload;
+    },
   },
 });
 
@@ -97,6 +101,7 @@ export const {
   deleteOption,
   deleteLabel,
   resetTaxonomyData,
+  setSelectedTab,
 } = layoutSlice.actions;
 
 export default layoutSlice.reducer;

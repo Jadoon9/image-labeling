@@ -26,6 +26,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [csvId, setCsvId] = useState(null);
+
   const { isLoading, isSuccess, isError, refetch, data } =
     useGetProjectsListQuery(null, {
       refetchOnMountOrArgChange: true,

@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   addTaxonomyData,
   resetTaxonomyData,
+  setSelectedTab,
 } from "../../store/slice/layoutSlice";
 import { useCreateProjectMutation } from "../../store/services/projectService";
 import { addProject } from "../../store/slice/projectSlice";
@@ -36,7 +37,9 @@ const Instructions = () => {
   const transformedOptions = taxonomy?.options.map((item) => {
     return { value: item.value };
   });
-
+  const handleBackClick = () => {
+    dispatch(setSelectedTab("Taxonomy"));
+  };
   console.log(data, isSuccess, "chehce");
 
   useEffect(() => {
@@ -120,7 +123,7 @@ const Instructions = () => {
               </div>
 
               <div className="flex-between relative bottom-0 mt-10">
-                <BackButton />
+                <BackButton onClick={handleBackClick} type="button" />
                 <div className="w-32">
                   <Button type="submit" btnText="Finish" icon />
                 </div>
