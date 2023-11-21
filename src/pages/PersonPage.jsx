@@ -279,10 +279,6 @@ const PersonPage = () => {
     setCurrentCaseIndex(() => currentCaseIndex - 1);
   };
 
-  //* Check if there are more cases to display
-  const hasMoreCases =
-    currentCaseIndex < (data?.session?.[0]?.case.length || 0) - 1;
-
   //* Helper function to manage  Labels change
   // function updateTargetArray(labelsArray, targetArray) {
   //   labelsArray?.forEach?.((labels, rowIndex) => {
@@ -442,6 +438,12 @@ const PersonPage = () => {
 
   // console.log(rangeValues, "jhjh");
 
+  //* Check if there are more cases to display
+  const hasMoreCases =
+    currentCaseIndex < (data?.session?.[0]?.case.length || 1) - 1;
+
+  console.log(hasMoreCases, "jkjhjkhkj");
+
   if (isLoading) {
     return <Loader />;
   }
@@ -585,7 +587,7 @@ const PersonPage = () => {
                 (row, rowIndex) => (
                   <div
                     key={rowIndex}
-                    className="flex flex-col gap-4 p-1 min-h-[600px]"
+                    className="flex flex-col justify-center gap-4 p-1 min-h-[600px]"
                   >
                     {row?.map?.((item, index) => {
                       // item?.map?.((item, index) => {
@@ -601,7 +603,7 @@ const PersonPage = () => {
                               handleLabelSelectRange(rowIndex, index, value);
                             }}
                             // rangeValue={rangeValues[rowIndex] || 0} // Use the stored value or default to 0
-                            rangeValue={item?.score || 0} // Use the stored value or default to 0
+                            rangeValue={Number(item?.score) || 0} // Use the stored value or default to 0
                           />
                         );
                       } else {
