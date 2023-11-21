@@ -8,7 +8,7 @@ import { addFolders } from "../../store/slice/foldersSlice";
 import { toast } from "react-toastify";
 import { useGetFromDbQuery } from "../../store/services/projectService";
 import Loader from "../Loader";
-import { setIsUploading } from "../../store/slice/layoutSlice";
+import { setIsUploading, setSelectedTab } from "../../store/slice/layoutSlice";
 
 const Data = () => {
   const dispatch = useDispatch();
@@ -41,10 +41,12 @@ const Data = () => {
     if (isSuccess) {
       dispatch(addFolders(data));
       toast.success("Successfully Upoaded from Local");
+      dispatch(setSelectedTab("Taxonomy"));
     }
     if (dbIsSuccess && getDbData) {
       dispatch(addFolders(dbData));
       toast.success("Successfully Upoaded from Db");
+      dispatch(setSelectedTab("Taxonomy"));
     }
     if (isError || dbIsError) {
       toast.error("Something went Wrong");

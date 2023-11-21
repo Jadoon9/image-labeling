@@ -16,6 +16,7 @@ const initialState = {
     columnlist: [],
     selectedTab: "Data",
     isUploading: false,
+    addedSession: false,
   },
 };
 
@@ -87,6 +88,10 @@ export const layoutSlice = createSlice({
         randomizeCat: false,
         rowlist: [],
         columnlist: [],
+        selectedTab: "Data",
+        isUploading: false,
+        addedSession: false,
+        projectAdded: false,
       };
     },
     setSelectedTab: (state, action) => {
@@ -94,6 +99,12 @@ export const layoutSlice = createSlice({
     },
     setIsUploading: (state, action) => {
       state.isUploading = action.payload;
+    },
+    setAddedSession: (state, action) => {
+      state.addedSession = !state.addedSession;
+    },
+    setProjectAdded: (state, action) => {
+      state.projectAdded = !state.projectAdded;
     },
   },
 });
@@ -107,6 +118,8 @@ export const {
   resetTaxonomyData,
   setSelectedTab,
   setIsUploading,
+  setAddedSession,
+  setProjectAdded,
 } = layoutSlice.actions;
 
 export default layoutSlice.reducer;

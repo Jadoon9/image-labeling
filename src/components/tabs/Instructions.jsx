@@ -10,13 +10,19 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   addTaxonomyData,
   resetTaxonomyData,
+  setAddedSession,
+  setProjectAdded,
   setSelectedTab,
 } from "../../store/slice/layoutSlice";
 import { useCreateProjectMutation } from "../../store/services/projectService";
-import { addProject } from "../../store/slice/projectSlice";
+import {
+  addProject,
+  addSidebarProjectList,
+} from "../../store/slice/projectSlice";
 import Loader from "../Loader";
 import { resetFolders } from "../../store/slice/foldersSlice";
 import { toast } from "react-toastify";
+import { baseUrl } from "../../store/services/authService";
 
 const Instructions = () => {
   const navigate = useNavigate();
@@ -42,9 +48,34 @@ const Instructions = () => {
   };
   console.log(data, isSuccess, "chehce");
 
+  const getSidebarProjects = async () => {
+    try {
+      const response = await fetch(`${baseUrl}/project/`);
+
+      // Check if the response status is OK (status code 200-299)
+      if (!response.ok) {
+        throw new Error(
+          `Network response was not ok, status: ${response.status}`
+        );
+      }
+
+      // Parse the response JSON
+      const data = await response.json();
+      if (data) {
+        dispatch(addSidebarProjectList(data));
+      }
+    } catch (error) {
+      // Handle errors during the fetch operation
+      console.error("Error during fetch:", error.message);
+    }
+  };
+
   useEffect(() => {
     if (isSuccess) {
       navigate(`/person/${data.session[0].id}`);
+
+      getSidebarProjects();
+      dispatch(setProjectAdded());
       toast.success("Project Created Successfully");
       dispatch(resetTaxonomyData());
       dispatch(resetFolders());
@@ -52,7 +83,7 @@ const Instructions = () => {
     if (isError) {
       toast.error("Something went wrong");
     }
-  }, [isSuccess, data, isError]);
+  }, [isSuccess, isError]);
 
   if (isLoading) {
     return <Loader />;

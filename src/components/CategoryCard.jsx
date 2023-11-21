@@ -45,12 +45,9 @@ const CategoryCard = ({
   const scheme = "wadouri";
   console.log(currentCaseIndex, "currentCaseIndex");
 
-  const [loading, setLoading] = useState(false);
   const [toolName, setToolName] = useState("");
 
-  // useEffect(() => {
-  //   setToolName(syncedToolName[`cat${idx}`]);
-  // }, [syncedToolName]);
+  const elementRef = useRef(null);
 
   useEffect(() => {
     if (!synced || idx % 2 === 1) return;
@@ -75,16 +72,13 @@ const CategoryCard = ({
       if (isActiveWwc) setWwwcActive();
     }
   }, [synced]);
-  let myContent = document.getElementById(idx);
 
   useEffect(() => {
     const loadImages = async () => {
       console.log("first", renderingEngineId);
       // if (cornerstone3D.getRenderingEngine(renderingEngineId)) return;
-      if (cornerstone3D.getRenderingEngine(renderingEngineId) && idx === 9800)
-        return;
 
-      const imageIds = await Promise.all(
+      const imageIds = await Promise?.all(
         images?.map?.(async (imagePath) => {
           const imageId = `${scheme}:${baseUrl}${imagePath?.image}`;
           return imageId;
@@ -92,23 +86,26 @@ const CategoryCard = ({
       );
 
       // const content = document.getElementById(idx);
-      console.log("content", myContent);
+
       // const element = document.createElement("div");
       // element.oncontextmenu = (e) => e.preventDefault();
       // element.style.width = "100%";
       // element.style.height = "270px";
       // content.appendChild(element);
 
-      let element;
-      if (myContent) {
-        element = document.createElement("div");
-        element.oncontextmenu = (e) => e.preventDefault();
-        element.style.width = "100%";
-        element.style.height = "270px";
-        myContent.appendChild(element);
-      } else {
-        console.log(`Element with ID ${idx} not found.`);
-      }
+      // let element;
+      // if (myContent) {
+      //   element = document.createElement("div");
+      //   element.oncontextmenu = (e) => e.preventDefault();
+      //   element.style.width = "100%";
+      //   element.style.height = "270px";
+      //   myContent.appendChild(element);
+      //   setRenderElement(element);
+      // } else {
+      //   console.log(`Element with ID ${idx} not found.`);
+      // }
+
+      let element = elementRef.current;
       if (!element) return;
       const renderingEngine = new RenderingEngine(renderingEngineId);
 
@@ -117,16 +114,18 @@ const CategoryCard = ({
         element,
         type: ViewportType.STACK,
       };
+      // debugger;
+      renderingEngine?.enableElement(viewportInput);
+      const viewport = renderingEngine?.getViewport(viewportId);
+      if (viewport) {
+        viewport.setUseCPURendering(true);
+      }
 
-      renderingEngine.enableElement(viewportInput);
-      const viewport = renderingEngine.getViewport(viewportId);
-      viewport.setUseCPURendering(true);
-      forceUpdate((prev) => !prev);
       if (imageIds.length === 0) {
         // Render "No Images Found" message
-        myContent.innerHTML =
+        element.innerHTML =
           '<div class="flex justify-center items-center h-[270px]"><p class="body-bold">No Images Found</p></div>';
-      } else {
+      } else if (viewport && element) {
         // Set the stack if there are images
         viewport.setStack(imageIds, Math.floor(imageIds.length / 2));
       }
@@ -155,40 +154,15 @@ const CategoryCard = ({
           ],
         });
       }
-      setLoading(false);
+
       // if (content.children.length > 0) {
       //   // Remove the first child
       //   content.removeChild(content.children[0]);
       // }
     };
     loadImages();
-  }, [id, currentCaseIndex, idx, loading, renderingEngineId, myContent]);
+  }, [id, currentCaseIndex, idx, renderingEngineId, elementRef]);
 
-  // const handleReset = () => {
-  //   const element = document.getElementById(`${elementId}`);
-
-  //   // Reset zoom and pan
-  //   cornerstone.reset(element);
-
-  //   // Reset other tools if needed
-  //   const stack = cornerstoneTools.getToolState(element, "stack");
-  //   if (stack && stack.data && stack.data.length > 0) {
-  //     stack.data[0].currentImageIdIndex = 0;
-  //   }
-
-  //   // Reset other tools as necessary (example: length tool)
-  //   const lengthToolData = cornerstoneTools.getToolState(element, "Length");
-  //   if (
-  //     lengthToolData &&
-  //     lengthToolData.data &&
-  //     lengthToolData.data.length > 0
-  //   ) {
-  //     lengthToolData.data[0].measurementData.measurementValue = 0;
-  //   }
-
-  //   // Call updateImage to redraw the image after reset
-  //   cornerstone.updateImage(element);
-  // };
   const handleSetSyncedName = (id, name) => {
     setSyncedToolName((prevSyncedToolName) => {
       const updatedSyncedName = { ...prevSyncedToolName };
@@ -324,19 +298,22 @@ const CategoryCard = ({
           <div id={idx} className="w-full" />
         </div>
         <div className="">
-          {/* <div
+          <div
             onContextMenu={() => false}
             unselectable="on"
             className="overflow-hidden"
           >
-            <div id={elementId} className="overflow-hidden relative">
-              {!images?.length && (
+            <div
+              className="overflow-hidden relative w-full h-[270px]"
+              ref={elementRef}
+            >
+              {/* {!images?.length && (
                 <div className="absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center">
                   <p className="body-bold">No Images Found</p>
                 </div>
-              )}
+              )} */}
             </div>
-          </div> */}
+          </div>
 
           <div className="flex-center gap-8 mt-3">
             <button

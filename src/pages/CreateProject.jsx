@@ -2,11 +2,15 @@ import React from "react";
 import creatImage from "../assets/createproject.svg";
 import Button from "../components/Button";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setSelectedTab } from "../store/slice/layoutSlice";
 
 const CreateProject = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleCreate = () => {
+    dispatch(setSelectedTab("Data"));
     navigate("/tabs-page");
   };
 

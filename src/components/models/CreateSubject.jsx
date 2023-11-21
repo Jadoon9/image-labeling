@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addSession } from "../../store/slice/projectSlice";
 import { useAddSessionMutation } from "../../store/services/projectService";
 import { toast } from "react-toastify";
+import { setAddedSession } from "../../store/slice/layoutSlice";
 
 export default function CreateSession({ isOpen, handleOpen }) {
   const dispatch = useDispatch();
@@ -17,6 +18,7 @@ export default function CreateSession({ isOpen, handleOpen }) {
   useEffect(() => {
     if (isSuccess) {
       toast.success("Session Created");
+      dispatch(setAddedSession());
     }
   }, [isSuccess]);
   return (

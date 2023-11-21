@@ -22,7 +22,7 @@ function App() {
   useEffect(() => {
     cornerstone3D.init({ gpuTier: { tier: 0 } });
     cornerstoneTools3D.init();
-    cornerstoneTools3D.addTool(cornerstoneTools3D.ZoomTool);
+    cornerstoneTools3D.addTool(cornerstoneTools3D?.ZoomTool);
     cornerstoneTools3D.addTool(cornerstoneTools3D.WindowLevelTool);
     cornerstoneTools3D.addTool(cornerstoneTools3D.PanTool);
     cornerstoneTools3D.addTool(cornerstoneTools3D.StackScrollMouseWheelTool);

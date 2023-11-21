@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 // const url = "https://tahir727.pythonanywhere.com/";
 const url = "http://127.0.0.1:8000/api";
+export const baseUrl = "http://127.0.0.1:8000/api";
 
 const token = localStorage.getItem("token");
 

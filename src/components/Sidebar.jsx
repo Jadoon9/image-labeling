@@ -8,7 +8,7 @@ import { BsChevronDown } from "react-icons/bs";
 import { BsSun, BsFillCloudDownloadFill } from "react-icons/bs";
 import { TbLogout } from "react-icons/tb";
 import { MdCancel } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   useAddSessionMutation,
   useGetCsvQuery,
@@ -21,16 +21,45 @@ import {
 } from "../store/slice/projectSlice";
 import Papa from "papaparse";
 import CreateSession from "./models/CreateSubject";
+import { baseUrl } from "../store/services/authService";
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [csvId, setCsvId] = useState(null);
+  const { projectAdded, addedSession } = useSelector((state) => state.layout);
+  const { sessionId } = useSelector((state) => state.project);
 
-  const { isLoading, isSuccess, isError, refetch, data } =
-    useGetProjectsListQuery(null, {
-      refetchOnMountOrArgChange: true,
-    });
+  // const { isLoading, isSuccess, isError, refetch, data } =
+  //   useGetProjectsListQuery(null, {
+  //     refetchOnMountOrArgChange: true,
+  //   });
+
+  useEffect(() => {
+    const getSidebarProjects = async () => {
+      try {
+        const response = await fetch(`${baseUrl}/project/`);
+
+        // Check if the response status is OK (status code 200-299)
+        if (!response.ok) {
+          throw new Error(
+            `Network response was not ok, status: ${response.status}`
+          );
+        }
+
+        // Parse the response JSON
+        const data = await response.json();
+        console.log(data, "checkdata");
+        if (data) {
+          dispatch(addSidebarProjectList(data));
+        }
+      } catch (error) {
+        // Handle errors during the fetch operation
+        console.error("Error during fetch:", error.message);
+      }
+    };
+    getSidebarProjects();
+  }, [projectAdded, addedSession]);
 
   const {
     isLoading: csvIsLoading,
@@ -64,12 +93,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
       document.body.removeChild(link);
     }
   }, [cvIsSuccess, error, csvId]);
-
-  useEffect(() => {
-    if (isSuccess && data) {
-      dispatch(addSidebarProjectList(data));
-    }
-  }, [isSuccess, data]);
 
   return (
     <>
@@ -123,7 +146,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
 
                         <Disclosure.Panel className="px-4 pt-4 pb-2 body-regular">
                           <p
-                            className="cursor-pointer text-[#4444F4]"
+                            className="cursor-pointer text-[#4444F4] px-2 py-2"
                             onClick={() => {
                               dispatch(
                                 // addSessionId(item.session[0]?.session[0]?.id)
@@ -153,9 +176,28 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
 
                           {item.session.map((sess) => (
                             <p
-                              className="cursor-pointer flex items-center justify-between gap-5"
-                              onClick={() => navigate(`/person/${sess.id}`)}
+                              key={sess.id}
+                              className={`${
+                                sess.id === sessionId
+                                  ? "bg-[#9f7aea] text-white"
+                                  : ""
+                              } cursor-pointer flex items-center justify-between mt-3 py-2 px-2 rounded-lg`}
+                              onClick={() => {
+                                dispatch(addSessionId(sess.id));
+                                navigate(`/person/${sess.id}`);
+                              }}
+                              style={{
+                                transition: "background-color 0.3s",
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor =
+                                  "#b091ee";
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = "";
+                              }}
                             >
+                              {console.log(sess, "suib7877")}
                               {`${sess.session_name}`}
                               <BsFillCloudDownloadFill
                                 onClick={(e) => {
