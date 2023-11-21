@@ -59,7 +59,6 @@ const createProjectService = apiWithTag.injectEndpoints({
           method: "GET",
         };
       },
-      providesTags: ["Project"],
     }),
     addSession: build.mutation({
       query: (data) => {

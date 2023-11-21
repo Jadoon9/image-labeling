@@ -76,7 +76,12 @@ const CategoryCard = ({
   useEffect(() => {
     const loadImages = async () => {
       console.log("first", renderingEngineId);
-      // if (cornerstone3D.getRenderingEngine(renderingEngineId)) return;
+      if (
+        cornerstone3D.getRenderingEngine(renderingEngineId) ||
+        !images?.length
+      ) {
+        return;
+      }
 
       const imageIds = await Promise?.all(
         images?.map?.(async (imagePath) => {
@@ -117,18 +122,21 @@ const CategoryCard = ({
       // debugger;
       renderingEngine?.enableElement(viewportInput);
       const viewport = renderingEngine?.getViewport(viewportId);
-      if (viewport) {
-        viewport.setUseCPURendering(true);
-      }
 
-      if (imageIds.length === 0) {
-        // Render "No Images Found" message
-        element.innerHTML =
-          '<div class="flex justify-center items-center h-[270px]"><p class="body-bold">No Images Found</p></div>';
-      } else if (viewport && element) {
+      viewport.setUseCPURendering(true);
+
+      if (viewport && element && imageIds.length) {
         // Set the stack if there are images
         viewport.setStack(imageIds, Math.floor(imageIds.length / 2));
       }
+      // if (imageIds.length === 0) {
+      //   // Render "No Images Found" message
+      //   element.innerHTML =
+      //     '<div class="flex justify-center items-center h-[270px]"><p class="body-bold">No Images Found</p></div>';
+      // } else if (viewport && element && imageIds.length) {
+      //   // Set the stack if there are images
+      //   viewport.setStack(imageIds, Math.floor(imageIds.length / 2));
+      // }
 
       const toolGroup =
         cornerstoneTools3D.ToolGroupManager.createToolGroup(toolGroupId);
@@ -160,8 +168,9 @@ const CategoryCard = ({
       //   content.removeChild(content.children[0]);
       // }
     };
+
     loadImages();
-  }, [id, currentCaseIndex, idx, renderingEngineId, elementRef]);
+  }, [id, currentCaseIndex, idx, renderingEngineId]);
 
   const handleSetSyncedName = (id, name) => {
     setSyncedToolName((prevSyncedToolName) => {
@@ -307,11 +316,11 @@ const CategoryCard = ({
               className="overflow-hidden relative w-full h-[270px]"
               ref={elementRef}
             >
-              {/* {!images?.length && (
-                <div className="absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center">
+              {!images?.length && (
+                <div className="absolute top-0 bg-white left-0 right-0 bottom-0 flex justify-center items-center">
                   <p className="body-bold">No Images Found</p>
                 </div>
-              )} */}
+              )}
             </div>
           </div>
 

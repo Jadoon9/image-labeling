@@ -27,6 +27,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [csvId, setCsvId] = useState(null);
+  const [apiCallCount, setApiCallCount] = useState(0);
+  const [isClicked, setIsClicked] = useState(false);
   const { projectAdded, addedSession } = useSelector((state) => state.layout);
   const { sessionId } = useSelector((state) => state.project);
 
@@ -61,38 +63,68 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
     getSidebarProjects();
   }, [projectAdded, addedSession]);
 
-  const {
-    isLoading: csvIsLoading,
-    isSuccess: cvIsSuccess,
-    data: csvData,
-    status,
-    error,
-  } = useGetCsvQuery(csvId, {
-    refetchOnMountOrArgChange: true,
-    skip: !csvId,
-  });
+  // const {
+  //   isLoading: csvIsLoading,
+  //   isSuccess: cvIsSuccess,
+  //   data: csvData,
+  //   status,
+  //   error,
+  // } = useGetCsvQuery(csvId, {
+  //   refetchOnMountOrArgChange: true,
+  //   skip: !csvId,
+  // });
+
+  useEffect(() => {
+    const getCsv = async (id) => {
+      try {
+        const response = await fetch(`${baseUrl}/export_data/${id}`);
+
+        // Check if the response status is OK (status code 200-299)
+        if (!response.ok) {
+          throw new Error(
+            `Network response was not ok, status: ${response.status}`
+          );
+        }
+
+        // Parse the response JSON
+        const data = await response.json();
+        if (data) {
+          const parsedData = Papa.parse(data.csv_text, {
+            header: true,
+            skipEmptyLines: true,
+          }).data;
+          const csv = Papa.unparse(parsedData);
+          const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", "data.csv");
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+      } catch (error) {
+        // Handle errors during the fetch operation
+        console.error("Error during fetch:", error.message);
+      }
+    };
+    // Check if csvId has changed or if the component is initially mounted
+    if (csvId !== null && (isClicked || csvId !== sessionId)) {
+      getCsv(csvId);
+      // Increment the API call count only when csvId changes
+      setIsClicked(false);
+    }
+  }, [csvId, isClicked, apiCallCount]);
 
   const [enabled, setEnabled] = useState(false);
   const { sidebarProjectsList } = useSelector((state) => state.project);
 
-  useEffect(() => {
-    console.log(cvIsSuccess, csvData, "asdadasd");
-    if (cvIsSuccess) {
-      const parsedData = Papa.parse(csvData.csv_text, {
-        header: true,
-        skipEmptyLines: true,
-      }).data;
-      const csv = Papa.unparse(parsedData);
-      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", "data.csv");
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-  }, [cvIsSuccess, error, csvId]);
+  // useEffect(() => {
+  //   console.log(cvIsSuccess, csvData, "asdadasd");
+  //   if (cvIsSuccess) {
+  //
+  //   }
+  // }, [, csvId]);
 
   return (
     <>
@@ -203,6 +235,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   setCsvId(sess.id);
+                                  setIsClicked(!isClicked);
                                 }}
                               />
                             </p>
