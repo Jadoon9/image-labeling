@@ -483,8 +483,8 @@ const PersonPage = () => {
                       ?.reference_folder?.image_list
                   }
                   hideTitle
-                  idx={9800}
-                  // idx={"id_" + Math.random().toString(36).substr(2, 9)}
+                  // idx={9800}
+                  idx={"id_" + Math.random().toString(36).substr(2, 9)}
                   currentCaseIndex={currentCaseIndex}
                 />
               </div>
@@ -495,7 +495,6 @@ const PersonPage = () => {
                 currentCaseIndex
               ]?.category_type?.map((catItem, catIdx) => {
                 // console.log(catItem.id, "catIdx");
-                const dynamicStateName = `cat${catItem.id}`;
                 return (
                   <div key={catItem?.id} className="flex flex-col gap-4 p-1">
                     <CategoryCard
@@ -586,7 +585,7 @@ const PersonPage = () => {
                 (row, rowIndex) => (
                   <div
                     key={rowIndex}
-                    className="flex flex-col gap-4 p-1 h-[600px]"
+                    className="flex flex-col gap-4 p-1 min-h-[600px]"
                   >
                     {row?.map?.((item, index) => {
                       // item?.map?.((item, index) => {

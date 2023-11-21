@@ -29,7 +29,6 @@ const CategoryCard = ({
   catItem,
   handleValueChange,
   synced,
-  syncedToolName,
   index,
   setSyncedToolName,
   currentCaseIndex,
