@@ -579,7 +579,7 @@ const PersonPage = () => {
             </div>
           </div>
 
-          <div className="w-[200px] flex flex-col  max-md:hidden primary-border-color p-2 h-auto">
+          <div className="w-[200px] flex flex-col max-md:hidden primary-border-color p-2 h-auto">
             <div className="h-[400px]"></div>
             <div className="flex flex-col gap-6">
               {projectData?.session[0]?.case[currentCaseIndex].labels?.map(

@@ -77,7 +77,7 @@ const CategoryCard = ({
     const loadImages = async () => {
       console.log("first", renderingEngineId);
       if (
-        cornerstone3D.getRenderingEngine(renderingEngineId) ||
+        cornerstone3D.getRenderingEngine(renderingEngineId) &&
         !images?.length
       ) {
         return;
@@ -119,7 +119,7 @@ const CategoryCard = ({
         element,
         type: ViewportType.STACK,
       };
-      // debugger;
+
       renderingEngine?.enableElement(viewportInput);
       const viewport = renderingEngine?.getViewport(viewportId);
 
@@ -317,7 +317,7 @@ const CategoryCard = ({
               ref={elementRef}
             >
               {!images?.length && (
-                <div className="absolute top-0 bg-white left-0 right-0 bottom-0 flex justify-center items-center">
+                <div className="z-50 absolute top-0 bg-white left-0 right-0 bottom-0 flex justify-center items-center">
                   <p className="body-bold">No Images Found</p>
                 </div>
               )}

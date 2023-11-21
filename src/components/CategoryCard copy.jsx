@@ -146,7 +146,6 @@ const CategoryCard = ({ hideTitle, cat, type, images }) => {
   });
 
   useEffect(() => {
-    debugger;
     const files = imagesData;
     setUploadedFiles(files);
 
