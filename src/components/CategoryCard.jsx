@@ -74,97 +74,101 @@ const CategoryCard = ({
 
   useEffect(() => {
     const loadImages = async () => {
-      if (
-        cornerstone3D.getRenderingEngine(renderingEngineId) &&
-        !images?.length
-      ) {
-        return;
-      }
+      try {
+        if (
+          cornerstone3D.getRenderingEngine(renderingEngineId) &&
+          !images?.length
+        ) {
+          return;
+        }
 
-      const imageIds = await Promise?.all(
-        images?.map?.(async (imagePath) => {
-          const imageId = `${scheme}:${baseUrl}${imagePath?.image}`;
-          return imageId;
-        })
-      );
-
-      // const content = document.getElementById(idx);
-
-      // const element = document.createElement("div");
-      // element.oncontextmenu = (e) => e.preventDefault();
-      // element.style.width = "100%";
-      // element.style.height = "270px";
-      // content.appendChild(element);
-
-      // let element;
-      // if (myContent) {
-      //   element = document.createElement("div");
-      //   element.oncontextmenu = (e) => e.preventDefault();
-      //   element.style.width = "100%";
-      //   element.style.height = "270px";
-      //   myContent.appendChild(element);
-      //   setRenderElement(element);
-      // } else {
-      //   console.log(`Element with ID ${idx} not found.`);
-      // }
-
-      let element = elementRef.current;
-      if (!element) return;
-      const renderingEngine = new RenderingEngine(renderingEngineId);
-
-      const viewportInput = {
-        viewportId,
-        element,
-        type: ViewportType.STACK,
-      };
-
-      renderingEngine?.enableElement(viewportInput);
-      const viewport = renderingEngine?.getViewport(viewportId);
-
-      viewport.setUseCPURendering(true);
-
-      if (viewport && element && imageIds.length) {
-        // Set the stack if there are images
-        viewport.setStack(imageIds, Math.floor(imageIds.length / 2));
-      }
-      // if (imageIds.length === 0) {
-      //   // Render "No Images Found" message
-      //   element.innerHTML =
-      //     '<div class="flex justify-center items-center h-[270px]"><p class="body-bold">No Images Found</p></div>';
-      // } else if (viewport && element && imageIds.length) {
-      //   // Set the stack if there are images
-      //   viewport.setStack(imageIds, Math.floor(imageIds.length / 2));
-      // }
-
-      const toolGroup =
-        cornerstoneTools3D.ToolGroupManager.createToolGroup(toolGroupId);
-
-      if (toolGroup) {
-        toolGroup.addTool(cornerstoneTools3D.WindowLevelTool.toolName);
-        toolGroup.addTool(cornerstoneTools3D.ZoomTool.toolName);
-        toolGroup.addTool(cornerstoneTools3D.PanTool.toolName);
-        toolGroup.addTool(
-          cornerstoneTools3D.StackScrollMouseWheelTool.toolName
+        const imageIds = await Promise?.all(
+          images?.map?.(async (imagePath) => {
+            const imageId = `${scheme}:${baseUrl}${imagePath?.image}`;
+            return imageId;
+          })
         );
-        toolGroup.addViewport(viewportId, renderingEngineId);
-        toolGroup.setToolPassive(
-          cornerstoneTools3D.StackScrollMouseWheelTool.toolName
-        );
-        toolGroup.setToolPassive(cornerstoneTools3D.WindowLevelTool.toolName);
-        toolGroup.setToolPassive(cornerstoneTools3D.ZoomTool.toolName);
-        toolGroup.setToolActive(cornerstoneTools3D.PanTool.toolName, {
-          bindings: [
-            {
-              mouseButton: cornerstoneTools3D.Enums.MouseBindings.Primary,
-            },
-          ],
-        });
-      }
 
-      // if (content.children.length > 0) {
-      //   // Remove the first child
-      //   content.removeChild(content.children[0]);
-      // }
+        // const content = document.getElementById(idx);
+
+        // const element = document.createElement("div");
+        // element.oncontextmenu = (e) => e.preventDefault();
+        // element.style.width = "100%";
+        // element.style.height = "270px";
+        // content.appendChild(element);
+
+        // let element;
+        // if (myContent) {
+        //   element = document.createElement("div");
+        //   element.oncontextmenu = (e) => e.preventDefault();
+        //   element.style.width = "100%";
+        //   element.style.height = "270px";
+        //   myContent.appendChild(element);
+        //   setRenderElement(element);
+        // } else {
+        //   console.log(`Element with ID ${idx} not found.`);
+        // }
+
+        let element = elementRef.current;
+        if (!element) return;
+        const renderingEngine = new RenderingEngine(renderingEngineId);
+
+        const viewportInput = {
+          viewportId,
+          element,
+          type: ViewportType.STACK,
+        };
+
+        renderingEngine?.enableElement(viewportInput);
+        const viewport = renderingEngine?.getViewport(viewportId);
+
+        viewport.setUseCPURendering(true);
+
+        if (viewport && element && imageIds.length) {
+          // Set the stack if there are images
+          viewport.setStack(imageIds, Math.floor(imageIds.length / 2));
+        }
+        // if (imageIds.length === 0) {
+        //   // Render "No Images Found" message
+        //   element.innerHTML =
+        //     '<div class="flex justify-center items-center h-[270px]"><p class="body-bold">No Images Found</p></div>';
+        // } else if (viewport && element && imageIds.length) {
+        //   // Set the stack if there are images
+        //   viewport.setStack(imageIds, Math.floor(imageIds.length / 2));
+        // }
+
+        const toolGroup =
+          cornerstoneTools3D.ToolGroupManager.createToolGroup(toolGroupId);
+
+        if (toolGroup) {
+          toolGroup.addTool(cornerstoneTools3D.WindowLevelTool.toolName);
+          toolGroup.addTool(cornerstoneTools3D.ZoomTool.toolName);
+          toolGroup.addTool(cornerstoneTools3D.PanTool.toolName);
+          toolGroup.addTool(
+            cornerstoneTools3D.StackScrollMouseWheelTool.toolName
+          );
+          toolGroup.addViewport(viewportId, renderingEngineId);
+          toolGroup.setToolPassive(
+            cornerstoneTools3D.StackScrollMouseWheelTool.toolName
+          );
+          toolGroup.setToolPassive(cornerstoneTools3D.WindowLevelTool.toolName);
+          toolGroup.setToolPassive(cornerstoneTools3D.ZoomTool.toolName);
+          toolGroup.setToolActive(cornerstoneTools3D.PanTool.toolName, {
+            bindings: [
+              {
+                mouseButton: cornerstoneTools3D.Enums.MouseBindings.Primary,
+              },
+            ],
+          });
+        }
+
+        // if (content.children.length > 0) {
+        //   // Remove the first child
+        //   content.removeChild(content.children[0]);
+        // }
+      } catch (error) {
+        console.log(error, "checkerror");
+      }
     };
 
     loadImages();

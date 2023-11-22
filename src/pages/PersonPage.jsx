@@ -494,10 +494,9 @@ const PersonPage = () => {
             </div>
 
             <div ref={dynamicGridRef} className={`grid w-full relative `}>
-              {projectData?.session[0]?.case[
+              {/* {projectData?.session[0]?.case[
                 currentCaseIndex
               ]?.category_type?.map((catItem, catIdx) => {
-                // console.log(catItem.id, "catIdx");
                 return (
                   <div key={catItem?.id} className="flex flex-col gap-4 p-1">
                     <CategoryCard
@@ -517,7 +516,6 @@ const PersonPage = () => {
                         isSynced.includes(catItem.id) ||
                         isSynced.includes(catItem.id)
                       }
-                      // setZoomActive={setZoomActive}
                     />
 
                     {(catIdx + 1) %
@@ -555,7 +553,7 @@ const PersonPage = () => {
                     )}
                   </div>
                 );
-              })}
+              })} */}
 
               {/* Centered button spanning full width */}
             </div>
