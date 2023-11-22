@@ -74,7 +74,6 @@ const CategoryCard = ({
 
   useEffect(() => {
     const loadImages = async () => {
-      console.log("first", renderingEngineId);
       if (
         cornerstone3D.getRenderingEngine(renderingEngineId) &&
         !images?.length

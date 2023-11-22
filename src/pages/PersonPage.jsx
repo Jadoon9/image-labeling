@@ -70,6 +70,7 @@ const PersonPage = () => {
 
       return currentViewport;
     });
+
     if (
       cornerstoneTools3D.SynchronizerManager.getSynchronizer(
         "zoomPanSynchronizer" + index
