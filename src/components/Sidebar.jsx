@@ -77,7 +77,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
   useEffect(() => {
     const getCsv = async (id) => {
       try {
-        const response = await fetch(`${baseUrl}/export_data/${id}`);
+        const response = await fetch(`${baseUrl}/export_data/${id}/`);
 
         // Check if the response status is OK (status code 200-299)
         if (!response.ok) {
