@@ -213,7 +213,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
                                 sess.id === sessionId
                                   ? "bg-[#9f7aea] text-white"
                                   : ""
-                              } cursor-pointer flex items-center justify-between mt-3 py-2 px-2 rounded-lg`}
+                              } cursor-pointer flex items-center justify-between mt-2 py-2 px-2 rounded-lg`}
                               onClick={() => {
                                 dispatch(addSessionId(sess.id));
                                 navigate(`/person/${sess.id}`);
