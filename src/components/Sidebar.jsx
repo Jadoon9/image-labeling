@@ -123,12 +123,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
   const handleFilter = (event) => {
     setFilter(event.target.value);
   };
-  // useEffect(() => {
-  //   console.log(cvIsSuccess, csvData, "asdadasd");
-  //   if (cvIsSuccess) {
-  //
-  //   }
-  // }, [, csvId]);
 
   return (
     <>
