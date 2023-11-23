@@ -5,10 +5,6 @@ import zoomIcon from "../assets/tabler_zoom-in-filled.svg";
 import dropIcon from "../assets/mdi_water-opacity.svg";
 import gameIcon from "../assets/game-icons_level-four.svg";
 
-import cornerstone from "cornerstone-core";
-import cornerstoneMath from "cornerstone-math";
-import cornerstoneTools from "cornerstone-tools";
-import Hammer from "hammerjs";
 import cornerstoneWADOImageLoader from "cornerstone-wado-image-loader";
 import dicomParser from "dicom-parser";
 import { RenderingEngine } from "@cornerstonejs/core";
@@ -32,6 +28,7 @@ const CategoryCard = ({
   index,
   setSyncedToolName,
   currentCaseIndex,
+  syncedToolName
 }) => {
   const toolGroupId = "myToolGroup" + idx;
   const syncedToolGroupId =
@@ -47,6 +44,10 @@ const CategoryCard = ({
   const [toolName, setToolName] = useState("");
 
   const elementRef = useRef(null);
+
+  useEffect(() => {
+    if(synced) setToolName(syncedToolName[`id${idx}`])
+  }, [syncedToolName])
 
   useEffect(() => {
     if (!synced || idx % 2 === 1) return;
@@ -174,15 +175,15 @@ const CategoryCard = ({
     loadImages();
   }, [id, currentCaseIndex, idx, renderingEngineId]);
 
-  const handleSetSyncedName = (id, name) => {
+  const handleSetSyncedName = (name) => {
     setSyncedToolName((prevSyncedToolName) => {
       const updatedSyncedName = { ...prevSyncedToolName };
 
       // Add or update the name for the current ID
-      updatedSyncedName[`id${id}`] = name;
+      updatedSyncedName[`id${idx}`] = name;
 
       // Determine the adjacent ID based on whether id is even or odd
-      const adjacentId = id % 2 === 0 ? id - 1 : id + 1;
+      const adjacentId = idx % 2 === 0 ? idx - 1 : idx + 1;
 
       // Add or update the name for the adjacent ID
       updatedSyncedName[`id${adjacentId}`] = name;

@@ -514,7 +514,7 @@ const PersonPage = () => {
                       currentCaseIndex={currentCaseIndex}
                       synced={
                         isSynced.includes(catItem.id) ||
-                        isSynced.includes(catItem.id)
+                        isSynced.includes(catItem.id + 1)
                       }
                       // setZoomActive={setZoomActive}
                     />
@@ -530,6 +530,7 @@ const PersonPage = () => {
                               onClick={() => handleRemoveSync(catItem.id)}
                               btnText="Remove Sync"
                               className="bg-rose-700 text-white"
+                              nobg
                             />
                           ) : (
                             <Button
