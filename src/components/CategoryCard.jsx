@@ -36,7 +36,6 @@ const CategoryCard = ({
   const viewportId = "CT_AXIAL_STACK" + idx;
   const renderingEngineId = "myRenderingEngine" + idx;
   let currentVoi;
-  const [, forceUpdate] = useState();
   const baseUrl = "http://127.0.0.1:8000/";
   const scheme = "wadouri";
   console.log(currentCaseIndex, "currentCaseIndex");
@@ -50,6 +49,7 @@ const CategoryCard = ({
   }, [syncedToolName])
 
   useEffect(() => {
+    console.log("fewrwerwere")
     if (!synced || idx % 2 === 1) return;
 
     const toolGroup = cornerstoneTools3D.ToolGroupManager.getToolGroup(
@@ -245,17 +245,17 @@ const CategoryCard = ({
     handleDisabledAllTools();
     const toolGroup =
       cornerstoneTools3D.ToolGroupManager.getToolGroup(toolGroupId);
-    toolGroup.setToolDisabled(cornerstoneTools3D.WindowLevelTool.toolName);
-    toolGroup.setToolDisabled(
-      cornerstoneTools3D.StackScrollMouseWheelTool.toolName
-    );
-    toolGroup.setToolDisabled(cornerstoneTools3D.PanTool.toolName);
-    toolGroup.setToolActive(cornerstoneTools3D.ZoomTool.toolName, {
-      bindings: [
-        {
-          mouseButton: cornerstoneTools3D.Enums.MouseBindings.Primary,
-        },
-      ],
+    const syncedToolGroup =
+      cornerstoneTools3D.ToolGroupManager.getToolGroup(syncedToolGroupId);
+    const toolGroups = synced ? [toolGroup, syncedToolGroup] : [toolGroup];
+    toolGroups.map((toolGroup) => {
+      toolGroup.setToolActive(cornerstoneTools3D.ZoomTool.toolName, {
+        bindings: [
+          {
+            mouseButton: cornerstoneTools3D.Enums.MouseBindings.Primary,
+          },
+        ],
+      });
     });
   };
 
@@ -289,9 +289,6 @@ const CategoryCard = ({
       cornerstoneTools3D.ToolGroupManager.getToolGroup(syncedToolGroupId);
     const toolGroups = synced ? [toolGroup, syncedToolGroup] : [toolGroup];
     toolGroups.map((toolGroup) => {
-      toolGroup.setToolPassive(cornerstoneTools3D.ZoomTool.toolName);
-      toolGroup.setToolPassive(cornerstoneTools3D.PanTool.toolName);
-      toolGroup.setToolPassive(cornerstoneTools3D.WindowLevelTool.toolName);
       toolGroup.setToolActive(
         cornerstoneTools3D.StackScrollMouseWheelTool.toolName
       );
