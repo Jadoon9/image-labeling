@@ -74,9 +74,9 @@ const Instructions = () => {
     if (isSuccess) {
       navigate(`/person/${data.session[0].id}`);
 
-      getSidebarProjects();
       dispatch(setProjectAdded());
       toast.success("Project Created Successfully");
+      getSidebarProjects();
       dispatch(resetTaxonomyData());
       dispatch(resetFolders());
     }

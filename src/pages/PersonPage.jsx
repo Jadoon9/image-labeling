@@ -475,7 +475,12 @@ const PersonPage = () => {
         <div className="gap-2 flex ">
           <div className="flex-1 px-4 ">
             <div className=" grid grid-cols-1 p-4 primary-border-color">
-              <h3 className="h3-bold mb-2">Reference</h3>
+              <h3 className="h3-bold mb-2">
+                {
+                  projectData?.session[0]?.case[currentCaseIndex]
+                    ?.reference_folder?.reference_name
+                }
+              </h3>
               <div className="flex ">
                 <CategoryCard
                   id={id}

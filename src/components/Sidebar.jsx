@@ -28,6 +28,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
   const dispatch = useDispatch();
   const [csvId, setCsvId] = useState(null);
   const [apiCallCount, setApiCallCount] = useState(0);
+  const [filter, setFilter] = useState("");
   const [isClicked, setIsClicked] = useState(false);
   const { projectAdded, addedSession } = useSelector((state) => state.layout);
   const { sessionId } = useSelector((state) => state.project);
@@ -119,6 +120,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
   const [enabled, setEnabled] = useState(false);
   const { sidebarProjectsList } = useSelector((state) => state.project);
 
+  const handleFilter = (event) => {
+    setFilter(event.target.value);
+  };
   // useEffect(() => {
   //   console.log(cvIsSuccess, csvData, "asdadasd");
   //   if (cvIsSuccess) {
@@ -146,6 +150,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
               class="outline-none py-2 body-regular focus:outline-none secondary-background"
               type="text"
               placeholder="Search..."
+              value={filter}
+              onChange={handleFilter}
             />
           </div>
           {/* =============================== */}
@@ -159,37 +165,49 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
                 Create New Project +
               </p>
             </div>
-            {sidebarProjectsList?.map?.((item, idx) => {
-              return (
-                <>
-                  <Disclosure key={idx}>
-                    {({ open }) => (
-                      <>
-                        <Disclosure.Button className="flex flex-between w-full justify-between rounded-[16px]  secondary-background px-4 py-2 text-left text-sm font-medium focus:outline-none h-[56px]">
-                          <span className="body-medium">
-                            {item?.project_name}
-                          </span>
-                          <BsChevronDown
-                            className={`${
-                              open ? "rotate-180 transform" : ""
-                            } h-4 w-4 `}
-                          />
-                        </Disclosure.Button>
+            {sidebarProjectsList
+              ?.filter(
+                (item) =>
+                  item.project_name
+                    .toLowerCase()
+                    .includes(filter.toLowerCase()) ||
+                  item.session.some((sess) =>
+                    sess.session_name
+                      .toLowerCase()
+                      .includes(filter.toLowerCase())
+                  )
+              )
+              .map?.((item, idx) => {
+                return (
+                  <>
+                    <Disclosure key={idx}>
+                      {({ open }) => (
+                        <>
+                          <Disclosure.Button className="flex flex-between w-full justify-between rounded-[16px]  secondary-background px-4 py-2 text-left text-sm font-medium focus:outline-none h-[56px]">
+                            <span className="body-medium">
+                              {item?.project_name}
+                            </span>
+                            <BsChevronDown
+                              className={`${
+                                open ? "rotate-180 transform" : ""
+                              } h-4 w-4 `}
+                            />
+                          </Disclosure.Button>
 
-                        <Disclosure.Panel className="px-4 pt-4 pb-2 body-regular">
-                          <p
-                            className="cursor-pointer text-[#4444F4] px-2 py-2"
-                            onClick={() => {
-                              dispatch(
-                                // addSessionId(item.session[0]?.session[0]?.id)
-                                addSessionId(item?.session[0]?.id)
-                              );
-                              setIsOpen(true);
-                            }}
-                          >
-                            Create a Session +
-                          </p>
-                          {/* <p
+                          <Disclosure.Panel className="px-4 pt-4 pb-2 body-regular">
+                            <p
+                              className="cursor-pointer text-[#4444F4] px-2 py-2"
+                              onClick={() => {
+                                dispatch(
+                                  // addSessionId(item.session[0]?.session[0]?.id)
+                                  addSessionId(item?.session[0]?.id)
+                                );
+                                setIsOpen(true);
+                              }}
+                            >
+                              Create a Session +
+                            </p>
+                            {/* <p
                             className="cursor-pointer flex items-center justify-between gap-2"
                             onClick={() =>
                               navigate(
@@ -206,41 +224,41 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
                             />
                           </p> */}
 
-                          {item.session.map((sess) => (
-                            <p
-                              key={sess.id}
-                              className={`${
-                                sess.id === sessionId
-                                  ? "bg-[#9f7aea] text-white"
-                                  : ""
-                              } cursor-pointer flex items-center justify-between mt-2 py-2 px-2 rounded-lg`}
-                              onClick={() => {
-                                dispatch(addSessionId(sess.id));
-                                navigate(`/person/${sess.id}`);
-                              }}
-                              style={{
-                                transition: "background-color 0.3s",
-                              }}
-                              onMouseEnter={(e) => {
-                                e.currentTarget.style.backgroundColor =
-                                  "#b091ee";
-                              }}
-                              onMouseLeave={(e) => {
-                                e.currentTarget.style.backgroundColor = "";
-                              }}
-                            >
-                              {console.log(sess, "suib7877")}
-                              {`${sess.session_name}`}
-                              <BsFillCloudDownloadFill
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setCsvId(sess.id);
-                                  setIsClicked(!isClicked);
+                            {item.session.map((sess) => (
+                              <p
+                                key={sess.id}
+                                className={`${
+                                  sess.id === sessionId
+                                    ? "bg-[#9f7aea] text-white"
+                                    : ""
+                                } cursor-pointer flex items-center justify-between mt-2 py-2 px-2 rounded-lg`}
+                                onClick={() => {
+                                  dispatch(addSessionId(sess.id));
+                                  navigate(`/person/${sess.id}`);
                                 }}
-                              />
-                            </p>
-                          ))}
-                          {/* {item?.session[0]?.session?.map?.((item) => (
+                                style={{
+                                  transition: "background-color 0.3s",
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.currentTarget.style.backgroundColor =
+                                    "#b091ee";
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.currentTarget.style.backgroundColor = "";
+                                }}
+                              >
+                                {console.log(sess, "suib7877")}
+                                {`${sess.session_name}`}
+                                <BsFillCloudDownloadFill
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setCsvId(sess.id);
+                                    setIsClicked(!isClicked);
+                                  }}
+                                />
+                              </p>
+                            ))}
+                            {/* {item?.session[0]?.session?.map?.((item) => (
                             <p className="cursor-pointer flex items-center justify-between gap-5">
                               {`${item.session_name}`}
                               <BsFillCloudDownloadFill
@@ -248,13 +266,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
                               />
                             </p>
                           ))} */}
-                        </Disclosure.Panel>
-                      </>
-                    )}
-                  </Disclosure>
-                </>
-              );
-            })}
+                          </Disclosure.Panel>
+                        </>
+                      )}
+                    </Disclosure>
+                  </>
+                );
+              })}
           </div>
 
           {/* =============================== */}
