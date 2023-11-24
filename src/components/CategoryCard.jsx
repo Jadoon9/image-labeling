@@ -113,6 +113,7 @@ const CategoryCard = ({
         let element = elementRef.current;
         if (!element) return;
         const renderingEngine = new RenderingEngine(renderingEngineId);
+        element.oncontextmenu = (e) => e.preventDefault();
 
         const viewportInput = {
           viewportId,
