@@ -256,6 +256,13 @@ const CategoryCard = ({
           },
         ],
       });
+      toolGroup.setToolActive(cornerstoneTools3D.PanTool.toolName, {
+        bindings: [
+          {
+            mouseButton: cornerstoneTools3D.Enums.MouseBindings.Secondary,
+          },
+        ],
+      });
     });
   };
 
