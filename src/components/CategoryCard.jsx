@@ -113,6 +113,7 @@ const CategoryCard = ({
         let element = elementRef.current;
         if (!element) return;
         const renderingEngine = new RenderingEngine(renderingEngineId);
+        element.oncontextmenu = (e) => e.preventDefault();
 
         const viewportInput = {
           viewportId,
@@ -253,6 +254,13 @@ const CategoryCard = ({
         bindings: [
           {
             mouseButton: cornerstoneTools3D.Enums.MouseBindings.Primary,
+          },
+        ],
+      });
+      toolGroup.setToolActive(cornerstoneTools3D.PanTool.toolName, {
+        bindings: [
+          {
+            mouseButton: cornerstoneTools3D.Enums.MouseBindings.Secondary,
           },
         ],
       });
