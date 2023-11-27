@@ -28,7 +28,7 @@ const CategoryCard = ({
   index,
   setSyncedToolName,
   currentCaseIndex,
-  syncedToolName
+  syncedToolName,
 }) => {
   const toolGroupId = "myToolGroup" + idx;
   const syncedToolGroupId =
@@ -41,15 +41,14 @@ const CategoryCard = ({
   console.log(currentCaseIndex, "currentCaseIndex");
 
   const [toolName, setToolName] = useState("");
-
   const elementRef = useRef(null);
 
   useEffect(() => {
-    if(synced) setToolName(syncedToolName[`id${idx}`])
-  }, [syncedToolName])
+    if (synced) setToolName(syncedToolName[`id${idx}`]);
+  }, [syncedToolName]);
 
   useEffect(() => {
-    console.log("fewrwerwere")
+    console.log("fewrwerwere");
     if (!synced || idx % 2 === 1) return;
 
     const toolGroup = cornerstoneTools3D.ToolGroupManager.getToolGroup(

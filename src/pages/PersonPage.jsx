@@ -448,7 +448,10 @@ const PersonPage = () => {
     return <Loader />;
   }
 
-  console.log(projectData?.session[0]?.case[currentCaseIndex].labels, "ali");
+  console.log(
+    projectData?.session[0]?.case[currentCaseIndex].labels,
+    "212123123"
+  );
 
   return (
     <>
@@ -603,7 +606,7 @@ const PersonPage = () => {
                           <RangeSelector
                             before={before}
                             after={after}
-                            key={rowIndex}
+                            key={`${rowIndex}-${index}`}
                             setRangeValue={(value) => {
                               // handleRangeChange(rowIndex, value);
                               handleLabelSelectRange(rowIndex, index, value);

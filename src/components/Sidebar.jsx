@@ -33,6 +33,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
   const { projectAdded, addedSession } = useSelector((state) => state.layout);
   const { sessionId } = useSelector((state) => state.project);
 
+  const [enabled, setEnabled] = useState(false);
+  const { sidebarProjectsList } = useSelector((state) => state.project);
   // const { isLoading, isSuccess, isError, refetch, data } =
   //   useGetProjectsListQuery(null, {
   //     refetchOnMountOrArgChange: true,
@@ -116,9 +118,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
       setIsClicked(false);
     }
   }, [csvId, isClicked, apiCallCount]);
-
-  const [enabled, setEnabled] = useState(false);
-  const { sidebarProjectsList } = useSelector((state) => state.project);
 
   const handleFilter = (event) => {
     setFilter(event.target.value);
