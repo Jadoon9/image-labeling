@@ -117,6 +117,7 @@ const Taxonomy = () => {
                         label="Project Name"
                         name="projectName"
                         valueHandler={handleChange}
+                        isRequired
                       />
                     </div>
                     <div className=" flex flex-col align-center justify-center w-full md:w-[49%]">
@@ -141,6 +142,7 @@ const Taxonomy = () => {
                         label="Question"
                         name="question"
                         valueHandler={handleChange}
+                        isRequired
                       />
                     </div>
                     <div className="w-full md:w-[49%]">
@@ -191,6 +193,7 @@ const Taxonomy = () => {
                           label="Evaluation Page Layout"
                           name="rows"
                           valueHandler={handleChange}
+                          isRequired
                         />
                       </div>
                       <div className=" md:w-[49%] w-full ">

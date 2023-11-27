@@ -3,7 +3,7 @@ import Sidebar from "./Sidebar";
 import { Outlet } from "react-router-dom";
 import { GiHamburgerMenu } from "react-icons/gi";
 
-const VerticalLayout = ({ children, setIsOpen }) => {
+const VerticalLayout = ({ children, setIsOpen, setIsOpenDeleteModel }) => {
   const [open, setOpen] = useState(false);
   const handleSidebar = () => {
     setOpen(!open);
@@ -22,6 +22,7 @@ const VerticalLayout = ({ children, setIsOpen }) => {
           sidebarOpen={open}
           setSidebarOpen={handleSidebar}
           setIsOpen={setIsOpen}
+          setIsOpenDeleteModel={setIsOpenDeleteModel}
         />
         <div className="flex-1 px-5">
           <Outlet />

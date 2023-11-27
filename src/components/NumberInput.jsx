@@ -3,19 +3,19 @@ import { useDispatch } from "react-redux";
 import { Field, useField, useFormikContext } from "formik";
 import { laoyoutRows, layoutCols } from "../store/slice/layoutSlice";
 
-const NumberInput = ({ label, name, valueHandler }) => {
+const NumberInput = ({ label, name, valueHandler, isRequired }) => {
   const [field, meta, helpers] = useField(name);
 
   const incrementNumber = (e) => {
     e.preventDefault();
     helpers.setValue(field?.value + 1);
-    valueHandler && valueHandler(field?.name, field?.value + 1)
+    valueHandler && valueHandler(field?.name, field?.value + 1);
   };
 
   const decrementNumber = (e) => {
     e.preventDefault();
     helpers.setValue(field?.value - 1);
-    valueHandler && valueHandler(field?.name, field?.value - 1)
+    valueHandler && valueHandler(field?.name, field?.value - 1);
   };
 
   const handleChange = (e) => {
@@ -28,7 +28,7 @@ const NumberInput = ({ label, name, valueHandler }) => {
     <div>
       {label ? (
         <label htmlFor="" className="body-regular w-100 text-[#4F4F4F]">
-          {label}
+          {label} {isRequired && <span className="text-red-400">*</span>}
         </label>
       ) : (
         <div className="h-6"></div>

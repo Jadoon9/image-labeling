@@ -5,6 +5,8 @@ const initialState = {
   sidebarProjectsList: [],
   sessionName: "",
   sessionId: "",
+  deleteProjectId: null,
+  openModel: false,
 };
 
 export const projectSlice = createSlice({
@@ -89,6 +91,9 @@ export const projectSlice = createSlice({
     addSessionId: (state, action) => {
       state.sessionId = action.payload;
     },
+    deleteProject: (state, action) => {
+      state.id = action.payload;
+    },
   },
 });
 
@@ -103,6 +108,7 @@ export const {
   resetLabels,
   resetOptions,
   addSessionId,
+  deleteProject,
   addSession,
 } = projectSlice.actions;
 

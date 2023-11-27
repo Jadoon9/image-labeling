@@ -18,12 +18,19 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   addSessionId,
   addSidebarProjectList,
+  deleteProject,
 } from "../store/slice/projectSlice";
 import Papa from "papaparse";
 import CreateSession from "./models/CreateSubject";
 import { baseUrl } from "../store/services/authService";
+import { AiTwotoneDelete } from "react-icons/ai";
 
-const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
+const Sidebar = ({
+  sidebarOpen,
+  setSidebarOpen,
+  setIsOpen,
+  setIsOpenDeleteModel,
+}) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [csvId, setCsvId] = useState(null);
@@ -119,6 +126,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
     }
   }, [csvId, isClicked, apiCallCount]);
 
+  const handleDeleteProject = (e, id) => {
+    e.stopPropagation();
+    console.log(id, "23123123");
+    dispatch(deleteProject(id));
+    setIsOpenDeleteModel(true);
+  };
+
   const handleFilter = (event) => {
     setFilter(event.target.value);
   };
@@ -180,11 +194,17 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setIsOpen }) => {
                             <span className="body-medium">
                               {item?.project_name}
                             </span>
-                            <BsChevronDown
-                              className={`${
-                                open ? "rotate-180 transform" : ""
-                              } h-4 w-4 `}
-                            />
+                            <div className="flex justify-between gap-3">
+                              <AiTwotoneDelete
+                                className=" h-4 w-4 text-red-400"
+                                onClick={(e) => handleDeleteProject(e, item.id)}
+                              />
+                              <BsChevronDown
+                                className={`${
+                                  open ? "rotate-180 transform" : ""
+                                } h-4 w-4 `}
+                              />
+                            </div>
                           </Disclosure.Button>
 
                           <Disclosure.Panel className="px-4 pt-4 pb-2 body-regular">

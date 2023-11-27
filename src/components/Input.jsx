@@ -1,7 +1,14 @@
 import { useField } from "formik";
 import React from "react";
 
-const Input = ({ type, placeholder, label, name, valueHandler }) => {
+const Input = ({
+  type,
+  placeholder,
+  label,
+  name,
+  valueHandler,
+  isRequired,
+}) => {
   const [field, meta, helpers] = useField(name);
   const handleChange = (e) => {
     console.log("eeee", e.target.value, e.target.name);
@@ -11,7 +18,7 @@ const Input = ({ type, placeholder, label, name, valueHandler }) => {
   return (
     <div className="w-full">
       <label htmlFor="" className="body-regular text-secondary-500">
-        {label}
+        {label} {isRequired && <span className="text-red-400">*</span>}
       </label>
       <input
         className="primary-border-color  focus:outline-none focus:ring-1 focus:border-[primary-border-color]  text-secondary-500 body-regular w-full h-[42px] mt-2 rounded-[8px] p-2  mb-2"
