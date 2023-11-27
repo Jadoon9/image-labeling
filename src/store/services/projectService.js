@@ -60,6 +60,22 @@ const createProjectService = apiWithTag.injectEndpoints({
         };
       },
     }),
+    deleteProject: build.mutation({
+      query: (id) => {
+        return {
+          url: `/project/${id}/`,
+          method: "DELETE",
+        };
+      },
+    }),
+    deleteSession: build.mutation({
+      query: (id) => {
+        return {
+          url: `/destroy_session/${id}/`,
+          method: "DELETE",
+        };
+      },
+    }),
     addSession: build.mutation({
       query: (data) => {
         return {
@@ -81,5 +97,7 @@ export const {
   useGetCsvQuery,
   useAddSessionMutation,
   useUpdateSessionMutation,
+  useDeleteProjectMutation,
+  useDeleteSessionMutation,
 } = createProjectService;
 export default createProjectService;

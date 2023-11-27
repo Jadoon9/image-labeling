@@ -42,6 +42,7 @@ function App() {
       <DeleteProject
         isOpen={isOpenDeleteModel}
         handleOpen={() => setIsOpenDeleteModel(!isOpenDeleteModel)}
+        setIsOpenDeleteModel={setIsOpenDeleteModel}
       />
       <Routes>
         <Route element={<IsAuthenticated isLoggedIn={isLoggedIn} />}>

@@ -1,10 +1,32 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment } from "react";
-import Input from "../Input";
+import { Fragment, useEffect } from "react";
 import Button from "../Button";
-import { Form, Formik } from "formik";
+import { useDispatch, useSelector } from "react-redux";
+import { baseUrl } from "../../store/services/authService";
+import {
+  useDeleteProjectMutation,
+  useDeleteSessionMutation,
+} from "../../store/services/projectService";
+import {
+  setAddedSession,
+  setProjectAdded,
+} from "../../store/slice/layoutSlice";
 
-export default function DeleteProject({ isOpen, handleOpen, handleOptions }) {
+export default function DeleteProject({
+  isOpen,
+  handleOpen,
+  handleOptions,
+  setIsOpenDeleteModel,
+}) {
+  const dispatch = useDispatch();
+  const { deleteProjectId, deleteSessionId } = useSelector(
+    (state) => state.project
+  );
+  const [deleteProject, { data, isSuccess, isError }] =
+    useDeleteProjectMutation();
+  const [deleteSession, { sessionData, sessionIsSuccess, sessionIsError }] =
+    useDeleteSessionMutation();
+
   return (
     <>
       <Transition appear show={isOpen} as={Fragment}>
@@ -45,6 +67,17 @@ export default function DeleteProject({ isOpen, handleOpen, handleOptions }) {
                       btnText="Delete"
                       className="bg-rose-700 text-white"
                       nobg
+                      onClick={() => {
+                        if (deleteProjectId) {
+                          deleteProject(deleteProjectId);
+                          setIsOpenDeleteModel(false);
+                          dispatch(setProjectAdded());
+                        } else if (deleteSessionId) {
+                          deleteSession(deleteSessionId);
+                          setIsOpenDeleteModel(false);
+                          dispatch(setAddedSession());
+                        }
+                      }}
                     />
                   </div>
                 </Dialog.Panel>

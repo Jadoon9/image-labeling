@@ -6,6 +6,7 @@ const initialState = {
   sessionName: "",
   sessionId: "",
   deleteProjectId: null,
+  deleteSessionId: null,
   openModel: false,
 };
 
@@ -91,8 +92,14 @@ export const projectSlice = createSlice({
     addSessionId: (state, action) => {
       state.sessionId = action.payload;
     },
+
     deleteProject: (state, action) => {
-      state.id = action.payload;
+      state.deleteSessionId = null;
+      state.deleteProjectId = action.payload;
+    },
+    deleteSession: (state, action) => {
+      state.deleteProjectId = null;
+      state.deleteSessionId = action.payload;
     },
   },
 });
@@ -110,6 +117,7 @@ export const {
   addSessionId,
   deleteProject,
   addSession,
+  deleteSession,
 } = projectSlice.actions;
 
 export default projectSlice.reducer;

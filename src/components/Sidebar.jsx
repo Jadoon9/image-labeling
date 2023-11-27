@@ -19,6 +19,7 @@ import {
   addSessionId,
   addSidebarProjectList,
   deleteProject,
+  deleteSession,
 } from "../store/slice/projectSlice";
 import Papa from "papaparse";
 import CreateSession from "./models/CreateSubject";
@@ -130,6 +131,12 @@ const Sidebar = ({
     e.stopPropagation();
     console.log(id, "23123123");
     dispatch(deleteProject(id));
+    setIsOpenDeleteModel(true);
+  };
+  const handleDeleteSession = (e, id) => {
+    e.stopPropagation();
+    console.log(id, "23123123");
+    dispatch(deleteSession(id));
     setIsOpenDeleteModel(true);
   };
 
@@ -262,13 +269,21 @@ const Sidebar = ({
                               >
                                 {console.log(sess, "suib7877")}
                                 {`${sess.session_name}`}
-                                <BsFillCloudDownloadFill
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setCsvId(sess.id);
-                                    setIsClicked(!isClicked);
-                                  }}
-                                />
+                                <div className="flex justify-between items-center gap-2">
+                                  <AiTwotoneDelete
+                                    className=" h-4 w-4 text-red-400"
+                                    onClick={(e) =>
+                                      handleDeleteSession(e, sess.id)
+                                    }
+                                  />
+                                  <BsFillCloudDownloadFill
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setCsvId(sess.id);
+                                      setIsClicked(!isClicked);
+                                    }}
+                                  />
+                                </div>
                               </p>
                             ))}
                             {/* {item?.session[0]?.session?.map?.((item) => (
