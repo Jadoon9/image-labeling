@@ -5,10 +5,6 @@ import zoomIcon from "../assets/tabler_zoom-in-filled.svg";
 import dropIcon from "../assets/mdi_water-opacity.svg";
 import gameIcon from "../assets/game-icons_level-four.svg";
 
-import cornerstone from "cornerstone-core";
-import cornerstoneMath from "cornerstone-math";
-import cornerstoneTools from "cornerstone-tools";
-import Hammer from "hammerjs";
 import cornerstoneWADOImageLoader from "cornerstone-wado-image-loader";
 import dicomParser from "dicom-parser";
 import { RenderingEngine } from "@cornerstonejs/core";
@@ -32,6 +28,7 @@ const CategoryCard = ({
   index,
   setSyncedToolName,
   currentCaseIndex,
+  syncedToolName
 }) => {
   const toolGroupId = "myToolGroup" + idx;
   const syncedToolGroupId =
@@ -39,7 +36,6 @@ const CategoryCard = ({
   const viewportId = "CT_AXIAL_STACK" + idx;
   const renderingEngineId = "myRenderingEngine" + idx;
   let currentVoi;
-  const [, forceUpdate] = useState();
   const baseUrl = "http://127.0.0.1:8000/";
   const scheme = "wadouri";
   console.log(currentCaseIndex, "currentCaseIndex");
@@ -49,6 +45,11 @@ const CategoryCard = ({
   const elementRef = useRef(null);
 
   useEffect(() => {
+    if(synced) setToolName(syncedToolName[`id${idx}`])
+  }, [syncedToolName])
+
+  useEffect(() => {
+    console.log("fewrwerwere")
     if (!synced || idx % 2 === 1) return;
 
     const toolGroup = cornerstoneTools3D.ToolGroupManager.getToolGroup(
@@ -112,6 +113,7 @@ const CategoryCard = ({
         let element = elementRef.current;
         if (!element) return;
         const renderingEngine = new RenderingEngine(renderingEngineId);
+        element.oncontextmenu = (e) => e.preventDefault();
 
         const viewportInput = {
           viewportId,
@@ -174,15 +176,15 @@ const CategoryCard = ({
     loadImages();
   }, [id, currentCaseIndex, idx, renderingEngineId]);
 
-  const handleSetSyncedName = (id, name) => {
+  const handleSetSyncedName = (name) => {
     setSyncedToolName((prevSyncedToolName) => {
       const updatedSyncedName = { ...prevSyncedToolName };
 
       // Add or update the name for the current ID
-      updatedSyncedName[`id${id}`] = name;
+      updatedSyncedName[`id${idx}`] = name;
 
       // Determine the adjacent ID based on whether id is even or odd
-      const adjacentId = id % 2 === 0 ? id - 1 : id + 1;
+      const adjacentId = idx % 2 === 0 ? idx - 1 : idx + 1;
 
       // Add or update the name for the adjacent ID
       updatedSyncedName[`id${adjacentId}`] = name;
@@ -244,17 +246,24 @@ const CategoryCard = ({
     handleDisabledAllTools();
     const toolGroup =
       cornerstoneTools3D.ToolGroupManager.getToolGroup(toolGroupId);
-    toolGroup.setToolDisabled(cornerstoneTools3D.WindowLevelTool.toolName);
-    toolGroup.setToolDisabled(
-      cornerstoneTools3D.StackScrollMouseWheelTool.toolName
-    );
-    toolGroup.setToolDisabled(cornerstoneTools3D.PanTool.toolName);
-    toolGroup.setToolActive(cornerstoneTools3D.ZoomTool.toolName, {
-      bindings: [
-        {
-          mouseButton: cornerstoneTools3D.Enums.MouseBindings.Primary,
-        },
-      ],
+    const syncedToolGroup =
+      cornerstoneTools3D.ToolGroupManager.getToolGroup(syncedToolGroupId);
+    const toolGroups = synced ? [toolGroup, syncedToolGroup] : [toolGroup];
+    toolGroups.map((toolGroup) => {
+      toolGroup.setToolActive(cornerstoneTools3D.ZoomTool.toolName, {
+        bindings: [
+          {
+            mouseButton: cornerstoneTools3D.Enums.MouseBindings.Primary,
+          },
+        ],
+      });
+      toolGroup.setToolActive(cornerstoneTools3D.PanTool.toolName, {
+        bindings: [
+          {
+            mouseButton: cornerstoneTools3D.Enums.MouseBindings.Secondary,
+          },
+        ],
+      });
     });
   };
 
@@ -288,9 +297,6 @@ const CategoryCard = ({
       cornerstoneTools3D.ToolGroupManager.getToolGroup(syncedToolGroupId);
     const toolGroups = synced ? [toolGroup, syncedToolGroup] : [toolGroup];
     toolGroups.map((toolGroup) => {
-      toolGroup.setToolPassive(cornerstoneTools3D.ZoomTool.toolName);
-      toolGroup.setToolPassive(cornerstoneTools3D.PanTool.toolName);
-      toolGroup.setToolPassive(cornerstoneTools3D.WindowLevelTool.toolName);
       toolGroup.setToolActive(
         cornerstoneTools3D.StackScrollMouseWheelTool.toolName
       );

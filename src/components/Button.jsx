@@ -2,8 +2,7 @@ import { disable } from "cornerstone-core";
 import React from "react";
 import { BsChevronRight } from "react-icons/bs";
 
-const Button = ({ btnText, onClick, icon, nobg, type, disabled }) => {
-  console.log(disabled, "disabled");
+const Button = ({ btnText, onClick, icon, nobg, type, disabled, className }) => {
   return (
     <button
       className={`w-full cursor-pointer tracking-wider text-black text-center ${
@@ -12,7 +11,7 @@ const Button = ({ btnText, onClick, icon, nobg, type, disabled }) => {
         disabled || undefined
           ? "bg-red-400 border-primary-lighter cursor-not-allowed"
           : "hover:bg-primary hover:border-primary"
-      }`}
+      } ${className}`}
       onClick={onClick}
       type={type}
       disabled={disabled || undefined}
