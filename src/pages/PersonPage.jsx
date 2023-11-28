@@ -478,28 +478,31 @@ const PersonPage = () => {
 
         <div className="gap-2 flex ">
           <div className="flex-1 px-4 ">
-            <div className=" grid grid-cols-1 p-4 primary-border-color">
-              <h3 className="h3-bold mb-2">
-                {
-                  projectData?.session[0]?.case[currentCaseIndex]
-                    ?.reference_folder?.reference_name
-                }
-              </h3>
-              <div className="flex ">
-                <CategoryCard
-                  id={id}
-                  elemntId={`dicomImage-0`}
-                  images={
+            {projectData?.session[0]?.case[currentCaseIndex]
+              ?.reference_folder && (
+              <div className=" grid grid-cols-1 p-4 primary-border-color">
+                <h3 className="h3-bold mb-2">
+                  {
                     projectData?.session[0]?.case[currentCaseIndex]
-                      ?.reference_folder?.image_list
+                      ?.reference_folder?.reference_name
                   }
-                  hideTitle
-                  // idx={9800}
-                  idx={"id_" + Math.random().toString(36).substr(2, 9)}
-                  currentCaseIndex={currentCaseIndex}
-                />
+                </h3>
+                <div className="flex ">
+                  <CategoryCard
+                    id={id}
+                    elemntId={`dicomImage-0`}
+                    images={
+                      projectData?.session[0]?.case[currentCaseIndex]
+                        ?.reference_folder?.image_list
+                    }
+                    hideTitle
+                    // idx={9800}
+                    idx={"id_" + Math.random().toString(36).substr(2, 9)}
+                    currentCaseIndex={currentCaseIndex}
+                  />
+                </div>
               </div>
-            </div>
+            )}
 
             <div ref={dynamicGridRef} className={`grid w-full relative `}>
               {projectData?.session[0]?.case[

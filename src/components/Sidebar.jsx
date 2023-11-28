@@ -52,10 +52,14 @@ const Sidebar = ({
     );
 
   useEffect(() => {
+    refetch();
+  }, [projectAdded]);
+
+  useEffect(() => {
     if (isSuccess && data) {
       dispatch(addSidebarProjectList(data));
     }
-  }, [isSuccess, data]);
+  }, [isSuccess, data, projectAdded]);
 
   // useEffect(() => {
   //   console.log("ertyui");

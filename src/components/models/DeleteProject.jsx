@@ -34,7 +34,7 @@ export default function DeleteProject({
     { data: sessionData, isSuccess: sessionIsSuccess, isError: sessionIsError },
   ] = useDeleteSessionMutation();
 
-  console.log(sessionIsSuccess, "sessionIsSuccess");
+  console.log(sessionIsSuccess, isSuccess, "sessionIsSuccess");
 
   useEffect(() => {
     if (isSuccess) {
@@ -42,7 +42,7 @@ export default function DeleteProject({
         navigate("/");
       }
       toast.success("Successfully Deleted Project");
-      dispatch(setAddedSession());
+      dispatch(setProjectAdded());
     }
     if (sessionIsSuccess) {
       console.log(Number(id), Number(deleteSessionId), "asdasdasdasd");
@@ -50,7 +50,7 @@ export default function DeleteProject({
         navigate("/");
       }
       toast.success("Successfully Deleted Session");
-      dispatch(setAddedSession());
+      dispatch(setProjectAdded());
     }
   }, [isSuccess, sessionIsSuccess, id]);
 
