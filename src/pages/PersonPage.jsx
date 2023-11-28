@@ -30,18 +30,25 @@ import {
 } from "../store/slice/projectSlice";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
+import { useCallback } from "react";
 
 const PersonPage = () => {
   // * Start Sync Functionality ===========================================
   const [isSynced, setIsSynced] = useState([]);
   const [syncedToolName, setSyncedToolName] = useState({});
-  // console.log(syncedToolName, "syncedToolName");
 
-  const handleSync = (index, indexArr, column) => {
+  const handleSyncByIndex = (index) => () => {
+    if(isSynced.includes("all")){
+      alert("To sync these elements, please disable all sync first.");
+      return;
+    }
+    const indexArr = projectData?.session[0]?.case[currentCaseIndex]?.category_type;
+    const column = projectData?.session[0]?.case[currentCaseIndex]?.cols_number;
+    
     const objFind = indexArr.findIndex((obj) => obj.id === index);
 
     if (objFind === -1) {
-      return []; // ID not found
+      return; // ID not found
     }
 
     let col = column - 1;
@@ -49,59 +56,44 @@ const PersonPage = () => {
       Math.max(objFind - col, 0),
       objFind + 1
     );
-    let newArray = extractedObjects.map((data) => data.id);
 
-    // const viewPort1 = cornerstone3D
-    //   .getRenderingEngine(`myRenderingEngine${index - 1}`)
-    //   .getViewport(`CT_AXIAL_STACK${index - 1}`);
-    // const viewPort2 = cornerstone3D
-    //   .getRenderingEngine(`myRenderingEngine${index}`)
-    //   .getViewport(`CT_AXIAL_STACK${index}`);
-    // const viewPort3 = cornerstone3D
-    //   .getRenderingEngine(`myRenderingEngine${index + 1}`)
-    //   .getViewport(`CT_AXIAL_STACK${index + 1}`);
+    let viewPortIdsWillSynced = extractedObjects.map((data) => data.id);
+
+    handleSyncViewPorts(viewPortIdsWillSynced, index);
+  }
+
+  const handleSyncAll = () => {
+    if(isSynced.length > 0){
+      isSynced.map(index => {
+        const removeSync = handleRemoveSync(index);
+        removeSync();
+      })
+    }
+    const indexArr = projectData?.session[0]?.case[currentCaseIndex]?.category_type;
+    let viewPortIdsWillSynced = indexArr.map((data) => data.id);
+    handleSyncViewPorts(viewPortIdsWillSynced, "all");
+  }
+
+  const handleSyncViewPorts = (newArray, index) => {
     const viewPorts = newArray.map((index) => {
-      const currentRenderingEngine = cornerstone3D.getRenderingEngine(
-        `myRenderingEngine${index}`
-      );
-      const currentViewport = currentRenderingEngine.getViewport(
-        `CT_AXIAL_STACK${index}`
-      );
+      const currentRenderingEngine = cornerstone3D.getRenderingEngine(`myRenderingEngine${index}`);
+      const currentViewport = currentRenderingEngine.getViewport(`CT_AXIAL_STACK${index}`);
 
       return currentViewport;
     });
-    if (
-      cornerstoneTools3D.SynchronizerManager.getSynchronizer(
-        "zoomPanSynchronizer" + index
-      )
-    ) {
-      cornerstoneTools3D.SynchronizerManager.destroySynchronizer(
-        "zoomPanSynchronizer" + index
-      );
+    if (cornerstoneTools3D.SynchronizerManager.getSynchronizer("zoomPanSynchronizer" + index)) {
+      cornerstoneTools3D.SynchronizerManager.destroySynchronizer("zoomPanSynchronizer" + index);
     }
 
-    if (
-      cornerstoneTools3D.SynchronizerManager.getSynchronizer(
-        "stackScrollSynchronizer" + index
-      )
-    ) {
-      cornerstoneTools3D.SynchronizerManager.destroySynchronizer(
-        "stackScrollSynchronizer" + index
-      );
+    if (cornerstoneTools3D.SynchronizerManager.getSynchronizer("stackScrollSynchronizer" + index)) {
+      cornerstoneTools3D.SynchronizerManager.destroySynchronizer("stackScrollSynchronizer" + index);
     }
 
-    if (
-      cornerstoneTools3D.SynchronizerManager.getSynchronizer(
-        "wwcSynchronizer" + index
-      )
-    ) {
-      cornerstoneTools3D.SynchronizerManager.destroySynchronizer(
-        "wwcSynchronizer" + index
-      );
+    if (cornerstoneTools3D.SynchronizerManager.getSynchronizer("wwcSynchronizer" + index)) {
+      cornerstoneTools3D.SynchronizerManager.destroySynchronizer("wwcSynchronizer" + index);
     }
 
-    const panZoomSync =
-      cornerstoneTools3D.SynchronizerManager.createSynchronizer(
+    const panZoomSync = cornerstoneTools3D.SynchronizerManager.createSynchronizer(
         "zoomPanSynchronizer" + index,
         cornerstone3D.EVENTS.CAMERA_MODIFIED,
         (
@@ -116,9 +108,7 @@ const PersonPage = () => {
           const ItargetViewport = cornerstone3D
             .getRenderingEngine(targetViewport.renderingEngineId)
             .getViewport(targetViewport.viewportId);
-          ItargetViewport.setImageIdIndex(
-            IsourceViewport.getCurrentImageIdIndex()
-          );
+          ItargetViewport.setImageIdIndex(IsourceViewport.getCurrentImageIdIndex());
 
           const sCamera = IsourceViewport.getCamera();
           const tCamera = ItargetViewport.getCamera();
@@ -149,9 +139,7 @@ const PersonPage = () => {
           const ItargetViewport = cornerstone3D
             .getRenderingEngine(targetViewport.renderingEngineId)
             .getViewport(targetViewport.viewportId);
-          ItargetViewport.setImageIdIndex(
-            IsourceViewport.getCurrentImageIdIndex()
-          );
+          ItargetViewport.setImageIdIndex(IsourceViewport.getCurrentImageIdIndex());
           IsourceViewport.render();
           ItargetViewport.render();
         }
@@ -169,40 +157,43 @@ const PersonPage = () => {
     setIsSynced((prev) => [...prev, index]);
   };
 
-  const handleRemoveSync = (index) => {
-    if (
-      cornerstoneTools3D.SynchronizerManager.getSynchronizer(
-        "zoomPanSynchronizer" + index
-      )
-    ) {
-      cornerstoneTools3D.SynchronizerManager.destroySynchronizer(
-        "zoomPanSynchronizer" + index
-      );
+  const removeSync = (index) => {
+    if(cornerstoneTools3D.SynchronizerManager.getSynchronizer("zoomPanSynchronizer" + index)){
+      cornerstoneTools3D.SynchronizerManager.destroySynchronizer("zoomPanSynchronizer" + index);
     }
 
-    if (
-      cornerstoneTools3D.SynchronizerManager.getSynchronizer(
-        "stackScrollSynchronizer" + index
-      )
-    ) {
-      cornerstoneTools3D.SynchronizerManager.destroySynchronizer(
-        "stackScrollSynchronizer" + index
-      );
+    if(cornerstoneTools3D.SynchronizerManager.getSynchronizer("stackScrollSynchronizer" + index)){
+      cornerstoneTools3D.SynchronizerManager.destroySynchronizer("stackScrollSynchronizer" + index);
     }
 
-    if (
-      cornerstoneTools3D.SynchronizerManager.getSynchronizer(
-        "wwcSynchronizer" + index
-      )
-    ) {
-      cornerstoneTools3D.SynchronizerManager.destroySynchronizer(
-        "wwcSynchronizer" + index
-      );
+    if(cornerstoneTools3D.SynchronizerManager.getSynchronizer("wwcSynchronizer" + index)){
+      cornerstoneTools3D.SynchronizerManager.destroySynchronizer("wwcSynchronizer" + index);
     }
-    setIsSynced((prev) => {
-      return prev.filter((v) => v !== index);
-    });
-  };
+  }
+
+  const removeAllSync = () => {
+    const indexArr = projectData?.session[0]?.case[currentCaseIndex]?.category_type;
+    let allViewportIds = indexArr.map((data) => data.id);
+    allViewportIds.map((item) => {
+      const viewPort = cornerstone3D.getRenderingEngine(`myRenderingEngine${item}`).getViewport(`CT_AXIAL_STACK${item}`);
+      cornerstoneTools3D.SynchronizerManager.getSynchronizer("zoomPanSynchronizer" + "all").remove({renderingEngineId: viewPort.renderingEngineId, viewportId: viewPort.id})
+      cornerstoneTools3D.SynchronizerManager.getSynchronizer("stackScrollSynchronizer" + "all").remove({renderingEngineId: viewPort.renderingEngineId, viewportId: viewPort.id})
+      cornerstoneTools3D.SynchronizerManager.getSynchronizer("wwcSynchronizer" + "all").remove({renderingEngineId: viewPort.renderingEngineId, viewportId: viewPort.id})
+      removeSync(item.cat);
+    })
+  }
+
+  const handleRemoveSync = useCallback((index) => () => {
+    if(index == "all") {
+      removeAllSync();
+      setIsSynced([]);
+    } else {
+      removeSync(index);
+      setIsSynced(prev => {
+        return prev.filter(v => v !== index)
+      });
+    }
+  }, []) 
 
   // console.log(isSynced, "checksynced");
 
@@ -436,13 +427,9 @@ const PersonPage = () => {
     });
   };
 
-  // console.log(rangeValues, "jhjh");
-
   //* Check if there are more cases to display
   const hasMoreCases =
     currentCaseIndex < (data?.session?.[0]?.case.length || 1) - 1;
-
-  console.log(hasMoreCases, "jkjhjkhkj");
 
   if (isLoading) {
     return <Loader />;
@@ -491,7 +478,10 @@ const PersonPage = () => {
                 />
               </div>
             </div>
-
+            <div className="my-4">
+              {isSynced.includes("all") ? <Button onClick={handleRemoveSync("all")} btnText="Remove Sync All" className="bg-rose-700 text-white" nobg /> : 
+              <Button onClick={handleSyncAll} btnText="Sync All" />}
+            </div>
             <div ref={dynamicGridRef} className={`grid w-full relative `}>
               {projectData?.session[0]?.case[
                 currentCaseIndex
@@ -527,7 +517,7 @@ const PersonPage = () => {
                         <div className="w-[100%] absolute left-0 px-32 ">
                           {isSynced.includes(catItem.id) ? (
                             <Button
-                              onClick={() => handleRemoveSync(catItem.id)}
+                              onClick={handleRemoveSync(catItem.id)}
                               btnText="Remove Sync"
                               className="bg-rose-700 text-white"
                               nobg
@@ -535,17 +525,7 @@ const PersonPage = () => {
                           ) : (
                             <Button
                               id={catIdx}
-                              onClick={() =>
-                                handleSync(
-                                  catItem.id,
-                                  projectData?.session[0]?.case[
-                                    currentCaseIndex
-                                  ]?.category_type,
-                                  projectData?.session[0]?.case[
-                                    currentCaseIndex
-                                  ]?.cols_number
-                                )
-                              }
+                              onClick={handleSyncByIndex(catItem.id)}
                               btnText="Sync"
                               nobg
                             />

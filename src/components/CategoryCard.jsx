@@ -31,14 +31,12 @@ const CategoryCard = ({
   syncedToolName
 }) => {
   const toolGroupId = "myToolGroup" + idx;
-  const syncedToolGroupId =
-    idx % 2 === 0 ? `myToolGroup${idx - 1}` : `myToolGroup${idx + 1}`;
+  const syncedToolGroupId = idx % 2 === 0 ? `myToolGroup${idx - 1}` : `myToolGroup${idx + 1}`;
   const viewportId = "CT_AXIAL_STACK" + idx;
   const renderingEngineId = "myRenderingEngine" + idx;
   let currentVoi;
   const baseUrl = "http://127.0.0.1:8000/";
   const scheme = "wadouri";
-  console.log(currentCaseIndex, "currentCaseIndex");
 
   const [toolName, setToolName] = useState("");
 
@@ -49,7 +47,6 @@ const CategoryCard = ({
   }, [syncedToolName])
 
   useEffect(() => {
-    console.log("fewrwerwere")
     if (!synced || idx % 2 === 1) return;
 
     const toolGroup = cornerstoneTools3D.ToolGroupManager.getToolGroup(
