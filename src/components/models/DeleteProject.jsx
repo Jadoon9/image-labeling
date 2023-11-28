@@ -11,26 +11,53 @@ import {
   setAddedSession,
   setProjectAdded,
 } from "../../store/slice/layoutSlice";
+import { toast } from "react-toastify";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function DeleteProject({
   isOpen,
   handleOpen,
   handleOptions,
   setIsOpenDeleteModel,
+  id,
 }) {
+  console.log(id, "89090");
   const dispatch = useDispatch();
-  const { deleteProjectId, deleteSessionId } = useSelector(
+  const navigate = useNavigate();
+  const { deleteProjectId, deleteSessionId, sessionId } = useSelector(
     (state) => state.project
   );
   const [deleteProject, { data, isSuccess, isError }] =
     useDeleteProjectMutation();
-  const [deleteSession, { sessionData, sessionIsSuccess, sessionIsError }] =
-    useDeleteSessionMutation();
+  const [
+    deleteSession,
+    { data: sessionData, isSuccess: sessionIsSuccess, isError: sessionIsError },
+  ] = useDeleteSessionMutation();
+
+  console.log(sessionIsSuccess, "sessionIsSuccess");
+
+  useEffect(() => {
+    if (isSuccess) {
+      if (Number(id) === Number(deleteProjectId)) {
+        navigate("/");
+      }
+      toast.success("Successfully Deleted Project");
+      dispatch(setAddedSession());
+    }
+    if (sessionIsSuccess) {
+      console.log(Number(id), Number(deleteSessionId), "asdasdasdasd");
+      if (Number(sessionId) === Number(deleteSessionId)) {
+        navigate("/");
+      }
+      toast.success("Successfully Deleted Session");
+      dispatch(setAddedSession());
+    }
+  }, [isSuccess, sessionIsSuccess, id]);
 
   return (
     <>
       <Transition appear show={isOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={handleOpen}>
+        <Dialog as="div" className="relative z-50" onClose={handleOpen}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -71,11 +98,9 @@ export default function DeleteProject({
                         if (deleteProjectId) {
                           deleteProject(deleteProjectId);
                           setIsOpenDeleteModel(false);
-                          dispatch(setProjectAdded());
                         } else if (deleteSessionId) {
                           deleteSession(deleteSessionId);
                           setIsOpenDeleteModel(false);
-                          dispatch(setAddedSession());
                         }
                       }}
                     />

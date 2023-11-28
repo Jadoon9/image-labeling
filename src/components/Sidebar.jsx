@@ -43,36 +43,46 @@ const Sidebar = ({
 
   const [enabled, setEnabled] = useState(false);
   const { sidebarProjectsList } = useSelector((state) => state.project);
-  // const { isLoading, isSuccess, isError, refetch, data } =
-  //   useGetProjectsListQuery(null, {
-  //     refetchOnMountOrArgChange: true,
-  //   });
+  const { isLoading, isSuccess, isError, refetch, data } =
+    useGetProjectsListQuery(
+      { projectAdded, addedSession },
+      {
+        refetchOnMountOrArgChange: true,
+      }
+    );
 
   useEffect(() => {
-    const getSidebarProjects = async () => {
-      try {
-        const response = await fetch(`${baseUrl}/project/`);
+    if (isSuccess && data) {
+      dispatch(addSidebarProjectList(data));
+    }
+  }, [isSuccess, data]);
 
-        // Check if the response status is OK (status code 200-299)
-        if (!response.ok) {
-          throw new Error(
-            `Network response was not ok, status: ${response.status}`
-          );
-        }
+  // useEffect(() => {
+  //   console.log("ertyui");
+  //   const getSidebarProjects = async () => {
+  //     try {
+  //       const response = await fetch(`${baseUrl}/project/`);
 
-        // Parse the response JSON
-        const data = await response.json();
-        console.log(data, "checkdata");
-        if (data) {
-          dispatch(addSidebarProjectList(data));
-        }
-      } catch (error) {
-        // Handle errors during the fetch operation
-        console.error("Error during fetch:", error.message);
-      }
-    };
-    getSidebarProjects();
-  }, [projectAdded, addedSession]);
+  //       // Check if the response status is OK (status code 200-299)
+  //       if (!response.ok) {
+  //         throw new Error(
+  //           `Network response was not ok, status: ${response.status}`
+  //         );
+  //       }
+
+  //       // Parse the response JSON
+  //       const data = await response.json();
+  //       console.log(data, "checkdata");
+  //       if (data) {
+  //         dispatch(addSidebarProjectList(data));
+  //       }
+  //     } catch (error) {
+  //       // Handle errors during the fetch operation
+  //       console.error("Error during fetch:", error.message);
+  //     }
+  //   };
+  //   getSidebarProjects();
+  // }, [projectAdded, addedSession]);
 
   // const {
   //   isLoading: csvIsLoading,

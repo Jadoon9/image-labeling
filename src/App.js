@@ -1,4 +1,4 @@
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate, useParams } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import SignIn from "./pages/SignIn";
 import VerticalLayout from "./components/VerticalLayout";
@@ -31,6 +31,17 @@ function App() {
     cornerstoneTools3D.addTool(cornerstoneTools3D.WindowLevelTool);
     cornerstoneTools3D.addTool(cornerstoneTools3D.PanTool);
     cornerstoneTools3D.addTool(cornerstoneTools3D.StackScrollMouseWheelTool);
+  }, []);
+
+  useEffect(() => {
+    // Get the search parameters from the URL
+    const searchParams = new URLSearchParams(window.location.search);
+
+    // Get the value of the 'id' parameter
+    const id = searchParams.get("id");
+
+    // Now you can use the 'id' in your component
+    console.log("IDfromparams:", id);
   }, []);
 
   // const handleDeleteModal = () => {

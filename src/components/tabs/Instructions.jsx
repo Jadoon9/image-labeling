@@ -30,6 +30,7 @@ const Instructions = () => {
 
   const [createProject, { isLoading, isSuccess, isError, error, data }] =
     useCreateProjectMutation();
+
   const { taxonomy } = useSelector((item) => item.layout);
   const { foldersList } = useSelector((item) => item.folders);
 
@@ -76,7 +77,7 @@ const Instructions = () => {
 
       dispatch(setProjectAdded());
       toast.success("Project Created Successfully");
-      getSidebarProjects();
+      // getSidebarProjects();
       dispatch(resetTaxonomyData());
       dispatch(resetFolders());
     }

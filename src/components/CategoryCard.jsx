@@ -324,7 +324,7 @@ const CategoryCard = ({
               ref={elementRef}
             >
               {!images?.length && (
-                <div className="z-50 absolute top-0 bg-white left-0 right-0 bottom-0 flex justify-center items-center">
+                <div className="z-40 absolute top-0 bg-white left-0 right-0 bottom-0 flex justify-center items-center">
                   <p className="body-bold">No Images Found</p>
                 </div>
               )}

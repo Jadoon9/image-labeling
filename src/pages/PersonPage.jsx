@@ -237,6 +237,7 @@ const PersonPage = () => {
   const [currentCaseIndex, setCurrentCaseIndex] = useState(0);
   const [test, setTest] = useState(false);
 
+  console.log(id, "checkidd");
   const [rangeValues, setRangeValues] = useState([]);
 
   const dynamicGridRef = useRef(null);
