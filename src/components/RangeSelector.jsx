@@ -32,7 +32,7 @@ const YourComponent = ({ before, after, setRangeValue, rangeValue }) => {
           style={{
             position: "absolute",
             top: "-20px",
-            left: `calc(${calculatePercentage(rangeValue)} - 12px)`, // Adjust positioning as needed
+            left: `calc(${calculatePercentage(rangeValue)} - 5px)`, // Adjust positioning as needed
           }}
           className="text-sm text-gray-500"
         >

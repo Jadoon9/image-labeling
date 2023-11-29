@@ -594,16 +594,16 @@ const PersonPage = () => {
           </div>
 
           <div className="w-[200px] flex flex-col max-md:hidden primary-border-color p-2 h-auto">
-            <div className="h-[400px]"></div>
+            {projectData?.session[0]?.case[currentCaseIndex]
+              .reference_folder && <div className="h-[400px]"></div>}
             <div className="flex flex-col gap-6">
               {projectData?.session[0]?.case[currentCaseIndex].labels?.map(
                 (row, rowIndex) => (
                   <div
                     key={rowIndex}
-                    className="flex flex-col justify-center gap-4 p-1 min-h-[600px]"
+                    className="flex flex-col justify-center gap-4 p-1 h-[600px] overflow-scroll custom-scrollbar"
                   >
                     {row?.map?.((item, index) => {
-                      // item?.map?.((item, index) => {
                       if (item?.value?.includes("-")) {
                         const [before, after] = item.value.split("-");
                         return (

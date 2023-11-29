@@ -7,12 +7,9 @@ import {
   useDeleteProjectMutation,
   useDeleteSessionMutation,
 } from "../../store/services/projectService";
-import {
-  setAddedSession,
-  setProjectAdded,
-} from "../../store/slice/layoutSlice";
+import { setProjectAdded } from "../../store/slice/layoutSlice";
 import { toast } from "react-toastify";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function DeleteProject({
   isOpen,
@@ -97,7 +94,7 @@ export default function DeleteProject({
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900 mb-10"
                   >
-                    Are You sure you want to delete?
+                    Are you sure you want to delete?
                   </Dialog.Title>
                   <div className="flex justify-between gap-4">
                     <Button btnText="Cancel" onClick={handleOpen} />

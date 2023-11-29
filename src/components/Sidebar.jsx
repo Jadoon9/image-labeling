@@ -25,6 +25,7 @@ import Papa from "papaparse";
 import CreateSession from "./models/CreateSubject";
 import { baseUrl } from "../store/services/authService";
 import { AiTwotoneDelete } from "react-icons/ai";
+import { setSelectedTab } from "../store/slice/layoutSlice";
 
 const Sidebar = ({
   sidebarOpen,
@@ -34,11 +35,12 @@ const Sidebar = ({
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { id } = useParams();
   const [csvId, setCsvId] = useState(null);
   const [apiCallCount, setApiCallCount] = useState(0);
   const [filter, setFilter] = useState("");
   const [isClicked, setIsClicked] = useState(false);
-  const { projectAdded, addedSession } = useSelector((state) => state.layout);
+  const { projectAdded, selectedTab } = useSelector((state) => state.layout);
   const { sessionId } = useSelector((state) => state.project);
 
   const [enabled, setEnabled] = useState(false);
@@ -51,6 +53,8 @@ const Sidebar = ({
         refetchOnMountOrArgChange: true,
       }
     );
+
+  console.log(id, "checkjoi");
 
   useEffect(() => {
     refetch();
@@ -161,7 +165,7 @@ const Sidebar = ({
     <>
       {/* Desktop */}
       <section className="custom-scrollbar sticky left-0 top-0 flex h-screen flex-col justify-between overflow-y-auto p-4 pt-20  lg:w-[230px] max-md:hidden">
-        <div className="flex flex-1 flex-col  gap-6">
+        <div className="flex flex-1 flex-col gap-6">
           <div className="flex gap-2">
             <img src={Avatar} alt="avatar" className="w-10 h-10" />
             <div className="flex flex-col">
@@ -229,10 +233,7 @@ const Sidebar = ({
                             <p
                               className="cursor-pointer text-[#4444F4] px-2 py-2"
                               onClick={() => {
-                                dispatch(
-                                  // addSessionId(item.session[0]?.session[0]?.id)
-                                  addSessionId(item?.session[0]?.id)
-                                );
+                                dispatch(addSessionId(item?.session[0]?.id));
                                 setIsOpen(true);
                               }}
                             >
@@ -259,11 +260,12 @@ const Sidebar = ({
                               <p
                                 key={sess.id}
                                 className={`${
-                                  sess.id === sessionId
+                                  sess.id === selectedTab
                                     ? "bg-[#9f7aea] text-white"
                                     : ""
                                 } cursor-pointer flex items-center justify-between mt-2 py-2 px-2 rounded-lg`}
                                 onClick={() => {
+                                  dispatch(setSelectedTab(sess.id));
                                   dispatch(addSessionId(sess.id));
                                   navigate(`/person/${sess.id}`);
                                 }}

@@ -47,34 +47,11 @@ const Instructions = () => {
   const handleBackClick = () => {
     dispatch(setSelectedTab("Taxonomy"));
   };
-  console.log(data, isSuccess, "chehce");
-
-  const getSidebarProjects = async () => {
-    try {
-      const response = await fetch(`${baseUrl}/project/`);
-
-      // Check if the response status is OK (status code 200-299)
-      if (!response.ok) {
-        throw new Error(
-          `Network response was not ok, status: ${response.status}`
-        );
-      }
-
-      // Parse the response JSON
-      const data = await response.json();
-      if (data) {
-        dispatch(addSidebarProjectList(data));
-      }
-    } catch (error) {
-      // Handle errors during the fetch operation
-      console.error("Error during fetch:", error.message);
-    }
-  };
 
   useEffect(() => {
     if (isSuccess) {
       navigate(`/person/${data.session[0].id}`);
-
+      dispatch(setSelectedTab(data.session[0].id));
       dispatch(setProjectAdded());
       toast.success("Project Created Successfully");
       // getSidebarProjects();

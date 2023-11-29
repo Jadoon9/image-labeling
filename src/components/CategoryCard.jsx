@@ -369,9 +369,9 @@ const CategoryCard = ({
           </div>
         </div>
       </div>
-      <div className="flex flex-col gap-6 mt-2">
+      <div className="flex flex-wrap  gap-6  mt-2">
         {catItem?.options?.map((item, optIdx) => (
-          <div className=" w-full flex items-center gap-24" key={item?.id}>
+          <div className=" w-1/4  flex items-center gap-24" key={item?.id}>
             <input
               type="checkbox"
               className="hidden"

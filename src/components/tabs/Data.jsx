@@ -57,11 +57,9 @@ const Data = () => {
     dispatch(setIsUploading(isLoading));
   }, [isLoading]);
 
-  if (isLoading) {
+  if (isLoading || dbIsLoading) {
     return <Loader />;
   }
-
-  console.log(getDbData, dbIsSuccess, "getyuuu");
 
   return (
     <div className="flex flex-col items-center justify-center h-screen p-4">
