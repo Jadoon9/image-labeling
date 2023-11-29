@@ -506,6 +506,8 @@ const PersonPage = () => {
                         isSynced.includes(catItem.id) ||
                         isSynced.includes(catItem.id + 1)
                       }
+                      syncedAll={isSynced.includes("all")}
+                      categories={projectData?.session[0]?.case[currentCaseIndex]?.category_type}
                       // setZoomActive={setZoomActive}
                     />
 
