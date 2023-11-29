@@ -12,7 +12,7 @@ const YourComponent = ({ before, after, setRangeValue, rangeValue }) => {
   };
 
   return (
-    <div className="py-5">
+    <div className="py-2">
       <div style={{ position: "relative" }}>
         <input
           id="small-range"
@@ -31,7 +31,7 @@ const YourComponent = ({ before, after, setRangeValue, rangeValue }) => {
         <div
           style={{
             position: "absolute",
-            top: "-20px",
+            top: "-15px",
             left: `calc(${calculatePercentage(rangeValue)} - 5px)`, // Adjust positioning as needed
           }}
           className="text-sm text-gray-500"

@@ -18,7 +18,6 @@ export default function DeleteProject({
   setIsOpenDeleteModel,
   id,
 }) {
-  console.log(id, "89090");
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [projectDeleted, setProjectDeleted] = useState(false);

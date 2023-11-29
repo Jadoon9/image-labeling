@@ -601,7 +601,7 @@ const PersonPage = () => {
                 (row, rowIndex) => (
                   <div
                     key={rowIndex}
-                    className="flex flex-col justify-center gap-4 p-1 h-[600px] overflow-scroll custom-scrollbar"
+                    className="flex flex-col justify-center gap-4 px-1 h-[500px] overflow-scroll custom-scrollbar"
                   >
                     {row?.map?.((item, index) => {
                       if (item?.value?.includes("-")) {
