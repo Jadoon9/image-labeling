@@ -38,7 +38,6 @@ const CategoryCard = ({
   let currentVoi;
   const baseUrl = "http://127.0.0.1:8000/";
   const scheme = "wadouri";
-  console.log(currentCaseIndex, "currentCaseIndex");
 
   const [toolName, setToolName] = useState("");
   const elementRef = useRef(null);
