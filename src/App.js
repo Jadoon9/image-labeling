@@ -16,6 +16,7 @@ import * as cornerstone3D from "@cornerstonejs/core";
 import * as cornerstoneTools3D from "@cornerstonejs/tools";
 import DeleteProject from "./components/models/DeleteProject";
 import { closeModal, deleteProject } from "./store/slice/projectSlice";
+import Loader from "./components/Loader";
 
 function App() {
   const { isLoggedIn } = useSelector((state) => state.auth);
@@ -31,17 +32,6 @@ function App() {
     cornerstoneTools3D.addTool(cornerstoneTools3D.WindowLevelTool);
     cornerstoneTools3D.addTool(cornerstoneTools3D.PanTool);
     cornerstoneTools3D.addTool(cornerstoneTools3D.StackScrollMouseWheelTool);
-  }, []);
-
-  useEffect(() => {
-    // Get the search parameters from the URL
-    const searchParams = new URLSearchParams(window.location.search);
-
-    // Get the value of the 'id' parameter
-    const id = searchParams.get("id");
-
-    // Now you can use the 'id' in your component
-    console.log("IDfromparams:", id);
   }, []);
 
   // const handleDeleteModal = () => {

@@ -1,5 +1,5 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useState } from "react";
 import Button from "../Button";
 import { useDispatch, useSelector } from "react-redux";
 import { baseUrl } from "../../store/services/authService";
@@ -24,11 +24,14 @@ export default function DeleteProject({
   console.log(id, "89090");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { deleteProjectId, deleteSessionId, sessionId } = useSelector(
-    (state) => state.project
-  );
+  const [projectDeleted, setProjectDeleted] = useState(false);
+  const [sessionDeleted, setSessionDeleted] = useState(false);
+
+  const { deleteProjectId, deleteSessionId, sessionId, sidebarProjectsList } =
+    useSelector((state) => state.project);
   const [deleteProject, { data, isSuccess, isError }] =
     useDeleteProjectMutation();
+
   const [
     deleteSession,
     { data: sessionData, isSuccess: sessionIsSuccess, isError: sessionIsError },
@@ -37,22 +40,30 @@ export default function DeleteProject({
   console.log(sessionIsSuccess, isSuccess, "sessionIsSuccess");
 
   useEffect(() => {
-    if (isSuccess) {
-      if (Number(id) === Number(deleteProjectId)) {
+    if (isSuccess && projectDeleted) {
+      const projectToDelete = sidebarProjectsList.find(
+        (item) => item.id === deleteProjectId
+      );
+      if (projectToDelete) {
+        const check = projectToDelete.session.some((sess) => sess.id === id);
+        console.log(check, "checkooo");
         navigate("/");
       }
+
       toast.success("Successfully Deleted Project");
       dispatch(setProjectAdded());
+      return;
     }
-    if (sessionIsSuccess) {
+    if (sessionIsSuccess && sessionDeleted) {
       console.log(Number(id), Number(deleteSessionId), "asdasdasdasd");
       if (Number(sessionId) === Number(deleteSessionId)) {
         navigate("/");
       }
       toast.success("Successfully Deleted Session");
       dispatch(setProjectAdded());
+      return;
     }
-  }, [isSuccess, sessionIsSuccess, id]);
+  }, [isSuccess, sessionIsSuccess]);
 
   return (
     <>
@@ -97,10 +108,14 @@ export default function DeleteProject({
                       onClick={() => {
                         if (deleteProjectId) {
                           deleteProject(deleteProjectId);
+                          setSessionDeleted(false);
+                          setProjectDeleted(true);
                           setIsOpenDeleteModel(false);
                         } else if (deleteSessionId) {
                           deleteSession(deleteSessionId);
                           setIsOpenDeleteModel(false);
+                          setSessionDeleted(true);
+                          setProjectDeleted(false);
                         }
                       }}
                     />

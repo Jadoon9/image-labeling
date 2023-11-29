@@ -43,9 +43,10 @@ const Sidebar = ({
 
   const [enabled, setEnabled] = useState(false);
   const { sidebarProjectsList } = useSelector((state) => state.project);
+
   const { isLoading, isSuccess, isError, refetch, data } =
     useGetProjectsListQuery(
-      { projectAdded, addedSession },
+      { projectAdded },
       {
         refetchOnMountOrArgChange: true,
       }
@@ -143,13 +144,11 @@ const Sidebar = ({
 
   const handleDeleteProject = (e, id) => {
     e.stopPropagation();
-    console.log(id, "23123123");
     dispatch(deleteProject(id));
     setIsOpenDeleteModel(true);
   };
   const handleDeleteSession = (e, id) => {
     e.stopPropagation();
-    console.log(id, "23123123");
     dispatch(deleteSession(id));
     setIsOpenDeleteModel(true);
   };
@@ -160,8 +159,6 @@ const Sidebar = ({
 
   return (
     <>
-      {/* Mobile Sidebar */}
-
       {/* Desktop */}
       <section className="custom-scrollbar sticky left-0 top-0 flex h-screen flex-col justify-between overflow-y-auto p-4 pt-20  lg:w-[230px] max-md:hidden">
         <div className="flex flex-1 flex-col  gap-6">

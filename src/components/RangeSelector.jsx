@@ -13,20 +13,32 @@ const YourComponent = ({ before, after, setRangeValue, rangeValue }) => {
 
   return (
     <div className="py-5">
-      <input
-        id="small-range"
-        type="range"
-        min={Number(before)}
-        max={Number(after)}
-        value={rangeValue}
-        onChange={handleRangeChange}
-        style={{
-          background: `linear-gradient(to right, #A993FF 0%, #A993FF ${calculatePercentage(
-            rangeValue
-          )}, #D1D5DB ${calculatePercentage(rangeValue)}, #D1D5DB 100%)`,
-        }}
-        className="w-full h-1 mb-6 bg-gray-200 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700"
-      ></input>
+      <div style={{ position: "relative" }}>
+        <input
+          id="small-range"
+          type="range"
+          min={Number(before)}
+          max={Number(after)}
+          value={rangeValue}
+          onChange={handleRangeChange}
+          style={{
+            background: `linear-gradient(to right, #A993FF 0%, #A993FF ${calculatePercentage(
+              rangeValue
+            )}, #D1D5DB ${calculatePercentage(rangeValue)}, #D1D5DB 100%)`,
+          }}
+          className="w-full h-1 mb-6 bg-gray-200 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700"
+        ></input>
+        <div
+          style={{
+            position: "absolute",
+            top: "-20px",
+            left: `calc(${calculatePercentage(rangeValue)} - 12px)`, // Adjust positioning as needed
+          }}
+          className="text-sm text-gray-500"
+        >
+          <span>{rangeValue}</span>
+        </div>
+      </div>
       <div className="flex justify-between text-sm text-gray-500">
         <span>{before}</span>
         <span>{after}</span>

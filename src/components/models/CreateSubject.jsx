@@ -8,6 +8,7 @@ import { addSession } from "../../store/slice/projectSlice";
 import { useAddSessionMutation } from "../../store/services/projectService";
 import { toast } from "react-toastify";
 import { setProjectAdded } from "../../store/slice/layoutSlice";
+import Loader from "../Loader";
 
 export default function CreateSession({ isOpen, handleOpen }) {
   const dispatch = useDispatch();
@@ -20,7 +21,12 @@ export default function CreateSession({ isOpen, handleOpen }) {
       toast.success("Session Created");
       dispatch(setProjectAdded());
     }
-  }, [isSuccess]);
+  }, [isSuccess, isLoading]);
+
+  // if (isLoading) {
+  //   return <Loader />;
+  // }
+
   return (
     <>
       <Transition appear show={isOpen} as={Fragment}>
