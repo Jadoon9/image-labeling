@@ -131,7 +131,7 @@ const PersonPage = () => {
           synchronizerInstance,
           sourceViewport,
           targetViewport,
-          cameraModifiedEvent
+          event
         ) => {
           const IsourceViewport = cornerstone3D
             .getRenderingEngine(sourceViewport.renderingEngineId)
@@ -139,7 +139,9 @@ const PersonPage = () => {
           const ItargetViewport = cornerstone3D
             .getRenderingEngine(targetViewport.renderingEngineId)
             .getViewport(targetViewport.viewportId);
-          ItargetViewport.setImageIdIndex(IsourceViewport.getCurrentImageIdIndex());
+          let targetViewPortIndex = IsourceViewport.getCurrentImageIdIndex();
+          if(targetViewPortIndex > ItargetViewport.imageIds.length - 1) targetViewPortIndex = ItargetViewport.imageIds.length - 1;
+          ItargetViewport.setImageIdIndex(targetViewPortIndex);
           IsourceViewport.render();
           ItargetViewport.render();
         }

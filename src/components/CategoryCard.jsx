@@ -11,6 +11,7 @@ import { RenderingEngine } from "@cornerstonejs/core";
 import { ViewportType } from "@cornerstonejs/core/dist/esm/enums";
 import * as cornerstone3D from "@cornerstonejs/core";
 import * as cornerstoneTools3D from "@cornerstonejs/tools";
+import { MultiTargetEventListenerManager } from "@cornerstonejs/core/dist/esm/utilities/eventListener";
 
 cornerstoneWADOImageLoader.external.cornerstone = cornerstone3D;
 cornerstoneWADOImageLoader.external.dicomParser = dicomParser;
@@ -53,6 +54,7 @@ const CategoryCard = ({
   const scheme = "wadouri";
 
   const [toolName, setToolName] = useState("");
+  const [stackImageIndex, setStackImageIndex] = useState(0)
 
   const elementRef = useRef(null);
 
@@ -60,15 +62,15 @@ const CategoryCard = ({
     if(synced || syncedAll) setToolName(syncedToolName[`id${idx}`])
   }, [syncedToolName])
 
-  useEffect(() => {
-    if(!synced || idx % 2 === 1) return;
-    handleToolActiveWhenSynced(idx - 1)
-  }, [synced])
+  // useEffect(() => {
+  //   if(!synced || idx % 2 === 1) return;
+  //   handleToolActiveWhenSynced(idx - 1)
+  // }, [synced])
   
   useEffect(() => {
-    if(syncedAll)
+    if(syncedAll || synced)
     handleToolActiveWhenSynced(idx)
-  }, [syncedAll])
+  }, [syncedAll, synced])
 
   const handleToolActiveWhenSynced = (idx) => {
     const toolGroup = cornerstoneTools3D.ToolGroupManager.getToolGroup('myToolGroup' + (idx));
@@ -144,6 +146,16 @@ const CategoryCard = ({
           // Set the stack if there are images
           viewport.setStack(imageIds, Math.floor(imageIds.length / 2));
         }
+
+        const eventListnerManager = new MultiTargetEventListenerManager();
+
+        // eventListnerManager.addEventListener(element, cornerstone3D.EVENTS.VOI_MODIFIED, () => {
+        //   currentVoi = viewport.voiRange;
+        // })
+
+        eventListnerManager.addEventListener(element, cornerstone3D.EVENTS.STACK_NEW_IMAGE, () => {
+          setStackImageIndex(viewport.getCurrentImageIdIndex());
+        })
         // if (imageIds.length === 0) {
         //   // Render "No Images Found" message
         //   element.innerHTML =
@@ -352,6 +364,7 @@ const CategoryCard = ({
               className="overflow-hidden relative w-full h-[270px]"
               ref={elementRef}
             >
+              <div className="absolute top-1 left-2 text-yellow-200 z-[1]">{stackImageIndex}</div>
               {!images?.length && (
                 <div className="z-50 absolute top-0 bg-white left-0 right-0 bottom-0 flex justify-center items-center">
                   <p className="body-bold">No Images Found</p>
