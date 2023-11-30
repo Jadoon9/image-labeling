@@ -7,7 +7,6 @@ const initialState = {
   sessionId: "",
   deleteProjectId: null,
   deleteSessionId: null,
-  openModel: false,
 };
 
 export const projectSlice = createSlice({

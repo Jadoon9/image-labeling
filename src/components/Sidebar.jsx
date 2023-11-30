@@ -1,19 +1,14 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { sidebarItems } from "../constants";
 import Avatar from "../assets/avatar.jpg";
-import { Dialog, Disclosure, Switch, Transition } from "@headlessui/react";
+import { Disclosure, Switch } from "@headlessui/react";
 
 import { CiSearch } from "react-icons/ci";
 import { BsChevronDown } from "react-icons/bs";
 import { BsSun, BsFillCloudDownloadFill } from "react-icons/bs";
 import { TbLogout } from "react-icons/tb";
-import { MdCancel } from "react-icons/md";
-import { useNavigate, useParams } from "react-router-dom";
-import {
-  useAddSessionMutation,
-  useGetCsvQuery,
-  useGetProjectsListQuery,
-} from "../store/services/projectService";
+import { useNavigate } from "react-router-dom";
+import { BsInfoCircle } from "react-icons/bs";
+
 import { useDispatch, useSelector } from "react-redux";
 import {
   addSessionId,
@@ -25,49 +20,43 @@ import Papa from "papaparse";
 import CreateSession from "./models/CreateSubject";
 import { baseUrl } from "../store/services/authService";
 import { AiTwotoneDelete } from "react-icons/ai";
-import { setSelectedTab } from "../store/slice/layoutSlice";
+import { setOpenInfo, setSelectedTab } from "../store/slice/layoutSlice";
+import NotesInfo from "./models/NotesInfo";
+import DeleteProject from "./models/DeleteProject";
+import { useGetProjectsListQuery } from "../store/services/projectService";
 
-const Sidebar = ({
-  sidebarOpen,
-  setSidebarOpen,
-  setIsOpen,
-  setIsOpenDeleteModel,
-}) => {
+const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { id } = useParams();
+
   const [csvId, setCsvId] = useState(null);
   const [apiCallCount, setApiCallCount] = useState(0);
   const [filter, setFilter] = useState("");
   const [isClicked, setIsClicked] = useState(false);
   const { projectAdded, selectedTab } = useSelector((state) => state.layout);
   const { sessionId } = useSelector((state) => state.project);
-
   const [enabled, setEnabled] = useState(false);
   const { sidebarProjectsList } = useSelector((state) => state.project);
+  const [isOpenNotesMoadal, setIsOpenNotesModal] = useState(false);
+  const [isOpenCreateSession, setIsOpenCreateSession] = useState(false);
+  const [isOpenDeleteModel, setIsOpenDeleteModel] = useState(false);
 
   const { isLoading, isSuccess, isError, refetch, data } =
-    useGetProjectsListQuery(
-      { projectAdded },
-      {
-        refetchOnMountOrArgChange: true,
-      }
-    );
+    useGetProjectsListQuery();
 
-  console.log(id, "checkjoi");
+  // useEffect(() => {
+  //   console.log("data isSuccess && data", isSuccess && data);
+  //   if (isSuccess && data) {
+  //     console.log("data", data);
+  //     dispatch(addSidebarProjectList(data));
+  //   }
+  // }, [isSuccess, data]);
 
   useEffect(() => {
     refetch();
-  }, [projectAdded]);
-
-  useEffect(() => {
-    if (isSuccess && data) {
-      dispatch(addSidebarProjectList(data));
-    }
-  }, [isSuccess, data, projectAdded]);
+  }, []);
 
   // useEffect(() => {
-  //   console.log("ertyui");
   //   const getSidebarProjects = async () => {
   //     try {
   //       const response = await fetch(`${baseUrl}/project/`);
@@ -91,7 +80,7 @@ const Sidebar = ({
   //     }
   //   };
   //   getSidebarProjects();
-  // }, [projectAdded, addedSession]);
+  // }, [projectAdded]);
 
   // const {
   //   isLoading: csvIsLoading,
@@ -161,9 +150,27 @@ const Sidebar = ({
     setFilter(event.target.value);
   };
 
+  const handleNotesOpen = () => {
+    setIsOpenNotesModal(!isOpenNotesMoadal);
+  };
+  const handleCreateSession = () => {
+    setIsOpenCreateSession(!isOpenCreateSession);
+  };
+
   return (
     <>
-      {/* Desktop */}
+      <CreateSession
+        isOpen={isOpenCreateSession}
+        handleOpen={handleCreateSession}
+        refetch={refetch}
+      />
+      <NotesInfo isOpen={isOpenNotesMoadal} handleOpen={handleNotesOpen} />
+      <DeleteProject
+        isOpen={isOpenDeleteModel}
+        handleOpen={() => setIsOpenDeleteModel(!isOpenDeleteModel)}
+        setIsOpenDeleteModel={setIsOpenDeleteModel}
+        refetch={refetch}
+      />
       <section className="custom-scrollbar sticky left-0 top-0 flex h-screen flex-col justify-between overflow-y-auto p-4 pt-20  lg:w-[230px] max-md:hidden">
         <div className="flex flex-1 flex-col gap-6">
           <div className="flex gap-2">
@@ -207,6 +214,7 @@ const Sidebar = ({
                   )
               )
               .map?.((item, idx) => {
+                console.log(item, "checkitem");
                 return (
                   <>
                     <Disclosure key={idx}>
@@ -217,6 +225,14 @@ const Sidebar = ({
                               {item?.project_name}
                             </span>
                             <div className="flex justify-between gap-3">
+                              <BsInfoCircle
+                                className=" h-4 w-4"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  dispatch(setOpenInfo(item.notes));
+                                  setIsOpenNotesModal(!isOpenNotesMoadal);
+                                }}
+                              />
                               <AiTwotoneDelete
                                 className=" h-4 w-4 text-red-400"
                                 onClick={(e) => handleDeleteProject(e, item.id)}
@@ -234,7 +250,8 @@ const Sidebar = ({
                               className="cursor-pointer text-[#4444F4] px-2 py-2"
                               onClick={() => {
                                 dispatch(addSessionId(item?.session[0]?.id));
-                                setIsOpen(true);
+                                setIsOpenCreateSession(true);
+                                // setIsOpen(true);
                               }}
                             >
                               Create a Session +

@@ -16,6 +16,7 @@ export default function DeleteProject({
   handleOpen,
   handleOptions,
   setIsOpenDeleteModel,
+  refetch,
   id,
 }) {
   const dispatch = useDispatch();
@@ -46,6 +47,7 @@ export default function DeleteProject({
         navigate("/");
       }
 
+      refetch();
       toast.success("Successfully Deleted Project");
       dispatch(setProjectAdded());
       return;
@@ -55,6 +57,7 @@ export default function DeleteProject({
       if (Number(sessionId) === Number(deleteSessionId)) {
         navigate("/");
       }
+      refetch();
       toast.success("Successfully Deleted Session");
       dispatch(setProjectAdded());
       return;

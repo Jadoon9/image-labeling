@@ -78,7 +78,6 @@ const Instructions = () => {
           reference_name: taxonomy?.referenceClass,
         },
         case_name: "test",
-        notes: taxonomy?.notes,
         randomize_cases: taxonomy?.randomizeCases,
         randomize_categories: taxonomy?.randomizeCat,
         cols_number: taxonomy?.columns,
@@ -88,6 +87,7 @@ const Instructions = () => {
     zip_folder: foldersList?.result_lists?.zip_folder,
     project_name: taxonomy?.projectName,
     question: taxonomy?.question,
+    notes: taxonomy?.notes,
   };
 
   return (

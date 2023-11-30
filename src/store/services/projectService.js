@@ -14,7 +14,7 @@ const createProjectService = apiWithTag.injectEndpoints({
           body: data,
         };
       },
-      invalidatesTags: ["Project"],
+      // invalidatesTags: ["Project"],
     }),
     updateSession: build.mutation({
       query: (data) => {
@@ -24,7 +24,6 @@ const createProjectService = apiWithTag.injectEndpoints({
           body: data.data,
         };
       },
-      invalidatesTags: ["Project"],
     }),
     getProject: build.query({
       query: (id) => {
@@ -41,7 +40,7 @@ const createProjectService = apiWithTag.injectEndpoints({
           method: "GET",
         };
       },
-      providesTags: (result, error, id) => [{ type: "Project", id }],
+      // providesTags: ["Project"],
     }),
     getFromDb: build.query({
       query: () => {
@@ -50,7 +49,6 @@ const createProjectService = apiWithTag.injectEndpoints({
           method: "GET",
         };
       },
-      providesTags: ["Project"],
     }),
     getCsv: build.query({
       query: (id) => {

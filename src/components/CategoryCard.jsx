@@ -47,7 +47,6 @@ const CategoryCard = ({
   }, [syncedToolName]);
 
   useEffect(() => {
-    console.log("fewrwerwere");
     if (!synced || idx % 2 === 1) return;
 
     const toolGroup = cornerstoneTools3D.ToolGroupManager.getToolGroup(

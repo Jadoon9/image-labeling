@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 import { setProjectAdded } from "../../store/slice/layoutSlice";
 import Loader from "../Loader";
 
-export default function CreateSession({ isOpen, handleOpen }) {
+export default function CreateSession({ isOpen, handleOpen, refetch }) {
   const dispatch = useDispatch();
   const { sessionId } = useSelector((state) => state.project);
   const [createProject, { isLoading, isSuccess, data }] =
@@ -19,6 +19,7 @@ export default function CreateSession({ isOpen, handleOpen }) {
   useEffect(() => {
     if (isSuccess) {
       toast.success("Session Created");
+      refetch();
       dispatch(setProjectAdded());
     }
   }, [isSuccess, isLoading]);
@@ -68,7 +69,6 @@ export default function CreateSession({ isOpen, handleOpen }) {
                     }}
                     // validationSchema={taxonomySchema}
                     onSubmit={(values) => {
-                      console.log(values, "valuess");
                       createProject({
                         session_id: sessionId,
                         session_name: values.sessionNamee,

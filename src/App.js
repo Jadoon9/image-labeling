@@ -1,4 +1,4 @@
-import { Route, Routes, useNavigate, useParams } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import SignIn from "./pages/SignIn";
 import VerticalLayout from "./components/VerticalLayout";
@@ -10,20 +10,13 @@ import CreateSubject from "./components/models/CreateSubject";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { useDcomImage } from "./hooks/useDcomImage";
 import { ToastContainer } from "react-toastify";
 import * as cornerstone3D from "@cornerstonejs/core";
 import * as cornerstoneTools3D from "@cornerstonejs/tools";
 import DeleteProject from "./components/models/DeleteProject";
-import { closeModal, deleteProject } from "./store/slice/projectSlice";
-import Loader from "./components/Loader";
 
 function App() {
   const { isLoggedIn } = useSelector((state) => state.auth);
-  const { openModel } = useSelector((state) => state.project);
-  const [isOpen, setIsOpen] = useState(false);
-  const [isOpenDeleteModel, setIsOpenDeleteModel] = useState(false);
-  const dispatch = useDispatch();
 
   useEffect(() => {
     cornerstone3D.init({ gpuTier: { tier: 0 } });
@@ -34,27 +27,11 @@ function App() {
     cornerstoneTools3D.addTool(cornerstoneTools3D.StackScrollMouseWheelTool);
   }, []);
 
-  // const handleDeleteModal = () => {
-  //   dispatch(deleteProject(null));
-  // };
   return (
     <div>
-      <CreateSubject isOpen={isOpen} handleOpen={() => setIsOpen(!isOpen)} />
-      <DeleteProject
-        isOpen={isOpenDeleteModel}
-        handleOpen={() => setIsOpenDeleteModel(!isOpenDeleteModel)}
-        setIsOpenDeleteModel={setIsOpenDeleteModel}
-      />
       <Routes>
         <Route element={<IsAuthenticated isLoggedIn={isLoggedIn} />}>
-          <Route
-            element={
-              <VerticalLayout
-                setIsOpen={setIsOpen}
-                setIsOpenDeleteModel={setIsOpenDeleteModel}
-              />
-            }
-          >
+          <Route element={<VerticalLayout />}>
             <Route path="/" element={<CreateProject />} />
             <Route path="/tabs-page" element={<TabsPage />} />
             <Route path="/person/:id" element={<PersonPage />} />

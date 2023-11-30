@@ -16,8 +16,11 @@ const initialState = {
     columnlist: [],
     selectedTab: "Data",
     isUploading: false,
-    addedSession: false,
   },
+  projectAdded: false,
+  addedSession: false,
+  openInfo: false,
+  selectedProjectNotes: null,
 };
 
 export const layoutSlice = createSlice({
@@ -106,6 +109,10 @@ export const layoutSlice = createSlice({
     setProjectAdded: (state, action) => {
       state.projectAdded = !state.projectAdded;
     },
+    setOpenInfo: (state, action) => {
+      state.openInfo = !state.openInfo;
+      state.selectedProjectNotes = action.payload;
+    },
   },
 });
 
@@ -120,6 +127,7 @@ export const {
   setIsUploading,
   setAddedSession,
   setProjectAdded,
+  setOpenInfo,
 } = layoutSlice.actions;
 
 export default layoutSlice.reducer;

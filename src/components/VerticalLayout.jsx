@@ -21,7 +21,6 @@ const VerticalLayout = ({ children, setIsOpen, setIsOpenDeleteModel }) => {
         <Sidebar
           sidebarOpen={open}
           setSidebarOpen={handleSidebar}
-          setIsOpen={setIsOpen}
           setIsOpenDeleteModel={setIsOpenDeleteModel}
         />
         <div className="flex-1 px-5">
