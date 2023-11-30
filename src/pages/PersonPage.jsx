@@ -504,10 +504,7 @@ const PersonPage = () => {
     return <Loader />;
   }
 
-  console.log(
-    projectData?.session[0]?.case[currentCaseIndex].labels,
-    "212123123"
-  );
+  console.log(projectData, "ere3344");
 
   return (
     <>
@@ -560,6 +557,9 @@ const PersonPage = () => {
             )}
 
             <div className="my-4">
+              <p className="border border-[#9f7aea] p-3 mx-auto w-3/4 mb-2 rounded-md">
+                Tesaskdjaskd asj dja daj dka dja iah daj js s da dska
+              </p>
               {isSynced.includes("all") ? (
                 <Button
                   onClick={handleRemoveSync("all")}
