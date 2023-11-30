@@ -44,17 +44,17 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const { isLoading, isSuccess, isError, refetch, data } =
     useGetProjectsListQuery();
 
-  // useEffect(() => {
-  //   console.log("data isSuccess && data", isSuccess && data);
-  //   if (isSuccess && data) {
-  //     console.log("data", data);
-  //     dispatch(addSidebarProjectList(data));
-  //   }
-  // }, [isSuccess, data]);
+  useEffect(() => {
+    console.log("data isSuccess && data", isSuccess && data);
+    if (isSuccess && data) {
+      console.log("data", data);
+      dispatch(addSidebarProjectList(data));
+    }
+  }, [isSuccess, data]);
 
   useEffect(() => {
     refetch();
-  }, []);
+  }, [projectAdded]);
 
   // useEffect(() => {
   //   const getSidebarProjects = async () => {
