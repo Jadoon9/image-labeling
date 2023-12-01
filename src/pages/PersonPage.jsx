@@ -526,6 +526,9 @@ const PersonPage = () => {
 
         <div className="gap-2 flex ">
           <div className="flex-1 px-4 ">
+            <p className="border border-[#9f7aea] p-4 mx-auto w-3/4 mb-3 rounded-md ">
+              {projectData?.session?.[0]?.notes}
+            </p>
             {projectData?.session[0]?.case[currentCaseIndex]
               ?.reference_folder && (
               <div className=" grid grid-cols-1 p-4 primary-border-color">
@@ -553,9 +556,6 @@ const PersonPage = () => {
             )}
 
             <div className="my-4">
-              <p className="border border-[#9f7aea] p-4 mx-auto w-3/4 mb-3 rounded-md ">
-                {projectData?.session?.[0]?.notes}
-              </p>
               {isSynced.includes("all") ? (
                 <Button
                   onClick={handleRemoveSync("all")}
