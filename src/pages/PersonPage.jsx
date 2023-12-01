@@ -557,8 +557,8 @@ const PersonPage = () => {
             )}
 
             <div className="my-4">
-              <p className="border border-[#9f7aea] p-3 mx-auto w-3/4 mb-2 rounded-md">
-                Tesaskdjaskd asj dja daj dka dja iah daj js s da dska
+              <p className="border border-[#9f7aea] p-4 mx-auto w-3/4 mb-3 rounded-md ">
+                {projectData?.session?.[0]?.notes}
               </p>
               {isSynced.includes("all") ? (
                 <Button
