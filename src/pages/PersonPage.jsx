@@ -154,21 +154,17 @@ const PersonPage = () => {
       cornerstoneTools3D.SynchronizerManager.createSynchronizer(
         "stackScrollSynchronizer" + index,
         cornerstone3D.EVENTS.STACK_NEW_IMAGE,
-        (
-          synchronizerInstance,
-          sourceViewport,
-          targetViewport,
-          cameraModifiedEvent
-        ) => {
+        (synchronizerInstance, sourceViewport, targetViewport, event) => {
           const IsourceViewport = cornerstone3D
             .getRenderingEngine(sourceViewport.renderingEngineId)
             .getViewport(sourceViewport.viewportId);
           const ItargetViewport = cornerstone3D
             .getRenderingEngine(targetViewport.renderingEngineId)
             .getViewport(targetViewport.viewportId);
-          ItargetViewport.setImageIdIndex(
-            IsourceViewport.getCurrentImageIdIndex()
-          );
+          let targetViewPortIndex = IsourceViewport.getCurrentImageIdIndex();
+          if (targetViewPortIndex > ItargetViewport.imageIds.length - 1)
+            targetViewPortIndex = ItargetViewport.imageIds.length - 1;
+          ItargetViewport.setImageIdIndex(targetViewPortIndex);
           IsourceViewport.render();
           ItargetViewport.render();
         }
@@ -594,6 +590,11 @@ const PersonPage = () => {
                       synced={
                         isSynced.includes(catItem.id) ||
                         isSynced.includes(catItem.id + 1)
+                      }
+                      syncedAll={isSynced.includes("all")}
+                      categories={
+                        projectData?.session[0]?.case[currentCaseIndex]
+                          ?.category_type
                       }
                       // setZoomActive={setZoomActive}
                     />
