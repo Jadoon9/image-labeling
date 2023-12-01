@@ -229,7 +229,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                                 className=" h-4 w-4"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  dispatch(setOpenInfo(item.notes));
+                                  dispatch(
+                                    setOpenInfo(item?.session?.[0]?.notes)
+                                  );
                                   setIsOpenNotesModal(!isOpenNotesMoadal);
                                 }}
                               />
